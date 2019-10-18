@@ -4,6 +4,25 @@ A custom [Lovelace](https://www.home-assistant.io/lovelace/) component for displ
 
 ![logbook card example](images/screenshot.png)
 
+## Installation
+
+### HACS
+
+This card will be available in HACS (Home Assistant Community Store).
+
+For now, you can add the repository as custom repository of type `plugin` in the settings page.
+
+### Manual
+
+Download the logbook-card.js from the latest release and store it in your configuration/www folder.
+Configure Lovelace to load the card:
+
+```yaml
+resources:
+  - url: /local/logbook-card.js?v=1
+    type: js
+```
+
 ## Using the card
 
 ### Options
