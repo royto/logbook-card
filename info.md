@@ -8,4 +8,4 @@ it displays:
 - the duration
 - the start and end date
 
-![logbook card example](images/screenshot.png)
+![logbook card example](https://raw.githubusercontent.com/royto/logbook-card/master/images/screenshot.png)
