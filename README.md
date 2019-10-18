@@ -22,7 +22,7 @@ A custom [Lovelace](https://www.home-assistant.io/lovelace/) component for displ
 ### Example usage
 
 ```yaml
-type: 'custom:history-card'
+type: 'custom:logbook-card'
 desc: true
 entity: sun.sun
 hiddenState:
