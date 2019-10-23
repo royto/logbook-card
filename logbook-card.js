@@ -27,12 +27,16 @@ class LogbookCard extends Polymer.Element {
             </template>
             <div class="card-content grid" style="[[contentStyle]]">
               <div>
-                <template is="dom-repeat" items="{{history}}">
+                <template is="dom-repeat" rendered-item-count="{{itemsCount}}" items="{{history}}">
                   <div class="item">
                     <span>[[item.state]]</span> 
                     <span class="duration">[[getDuration(item.duration)]]</span>
                     <div class="date"> [[_displayDate(item.start)]] - [[_displayDate(item.end)]]</div>
                   </div>
+                </template>
+
+                <template is="dom-if" if="{{!itemsCount}}">
+                  [[_config.no_event]]
                 </template>
               </div>
             </div>
@@ -77,7 +81,8 @@ class LogbookCard extends Polymer.Element {
         const defaultConfig = {
             history: 5,
             hiddenState: [],
-            desc: true
+            desc: true,
+            no_event: 'No event on the period'
         };
 
         this._config = Object.assign(defaultConfig, config);

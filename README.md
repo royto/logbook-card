@@ -29,7 +29,7 @@ resources:
 
 #### Card options
 
-| Name | Type | Default | Since | Default | Description |
+| Name | Type | Required | Since | Default | Description |
 |------|------|---------|-------|---------|-------------|
 | type | string | **required** | v0.1 | | `custom:logbook-card`|
 | entity | string | **required** | v0.1 | | An entity_id.|
@@ -37,6 +37,7 @@ resources:
 | history | integer | optional | v0.1 | 5 | Numbers of days of history of the logbook |
 | hiddenState | string[] | optional | v0.1 | [] | States to hide|
 | desc | bool | optional | v0.1 | True | is logbook ordered descending|
+| no_event | string | optional | v0.1 | No event on the period | message displayed if no event to display |
 
 ### Example usage
 
