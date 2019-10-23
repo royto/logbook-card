@@ -3,19 +3,10 @@ class LogbookCard extends Polymer.Element {
     static get template() {
         return Polymer.html`
           <style>
-            .title {
-              font-size: 20px;
-              padding: 16px;
-              text-align: center;
-              white-space: nowrap;
-              text-overflow: ellipsis;
-              overflow: hidden;
-            }
             .content {
               cursor: pointer;
             }
             .item {
-              padding: 5px;
               font-size: 1.2em;
             }
             .duration {
@@ -30,9 +21,11 @@ class LogbookCard extends Polymer.Element {
           </style>
           <ha-card hass="[[_hass]]" config="[[_config]]">
             <template is="dom-if" if="{{title}}">
-              <div class="title" style="[[contentText]]">[[title]]</div>
+              <div class="card-header">
+                <div class="name">[[title]]</div>  
+              </div>
             </template>
-            <div class="content grid" style="[[contentStyle]]">
+            <div class="card-content grid" style="[[contentStyle]]">
               <div>
                 <template is="dom-repeat" items="{{history}}">
                   <div class="item">
