@@ -74,20 +74,18 @@ class LogbookCard extends Polymer.Element {
     }
 
     setConfig(config) {
-        const labels = {
-            duration: 'duration'
-        };
-
         const defaultConfig = {
             history: 5,
             hiddenState: [],
             desc: true,
-            no_event: 'No event on the period'
+            no_event: 'No event on the period',
+            max_items: -1
         };
 
         this._config = Object.assign(defaultConfig, config);
 
         if (!config.entity) throw new Error('Please define an entity.');
+        if (config.max_items !== undefined && !Number.isInteger(config.max_items)) throw new Error('Max_items must be an Integer.');
         //if hiddenState != Array 
     }
 
@@ -126,6 +124,10 @@ class LogbookCard extends Polymer.Element {
 
                     if (this._config.desc === true) {
                         this.history = this.history.reverse();
+                    }
+
+                    if (this._config.max_items > 0) {
+                        this.history = this.history.splice(0, this._config.max_items);
                     }
                 });
 

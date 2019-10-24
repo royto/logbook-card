@@ -38,6 +38,7 @@ resources:
 | hiddenState | string[] | optional | v0.1 | [] | States to hide|
 | desc | bool | optional | v0.1 | True | is logbook ordered descending|
 | no_event | string | optional | v0.1 | No event on the period | message displayed if no event to display |
+| max_items | integer | optional | v0.2 | -1 | Number of items to display. Ignored if < 0 |
 
 ### Example usage
 
