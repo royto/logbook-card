@@ -39,8 +39,18 @@ resources:
 | desc | bool | optional | v0.1 | True | is logbook ordered descending|
 | no_event | string | optional | v0.1 | No event on the period | message displayed if no event to display |
 | max_items | integer | optional | v0.2 | -1 | Number of items to display. Ignored if < 0 |
+| state_map | [state map object](#state-map-object) | optional | v0.2 | [] | List of entity states to convert |
+
+#### State map object
+
+| Name | Type | Default | Description |
+|------|:----:|:-------:|-------------|
+| value ***(required)*** | string |  | Value to convert.
+| label | string | same as value | String to show as label.
 
 ### Example usage
+
+Example with hidden states
 
 ```yaml
 type: 'custom:logbook-card'
@@ -49,4 +59,18 @@ entity: sun.sun
 hiddenState:
   - above_horizon
 title: Day history
+```
+
+Example with state label
+
+```yaml
+entity: binary_sensor.garage_opening_sensor
+max_items: 10
+state_map:
+  - label: Open
+    value: on
+  - label: Closed
+    value: off
+title: 'Garage door history'
+type: 'custom:history-card'
 ```

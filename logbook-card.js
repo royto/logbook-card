@@ -74,19 +74,25 @@ class LogbookCard extends Polymer.Element {
     }
 
     setConfig(config) {
-        const defaultConfig = {
+        this._config = {
             history: 5,
             hiddenState: [],
             desc: true,
             no_event: 'No event on the period',
-            max_items: -1
+            max_items: -1,
+            state_map: [],
+            ...config
         };
-
-        this._config = Object.assign(defaultConfig, config);
 
         if (!config.entity) throw new Error('Please define an entity.');
         if (config.max_items !== undefined && !Number.isInteger(config.max_items)) throw new Error('Max_items must be an Integer.');
-        //if hiddenState != Array 
+        if (config.hiddenState && !Array.isArray(config.hiddenState)) throw new Error('hiddenState must be an array'); 
+        if (config.state_map && !Array.isArray(config.state_map)) throw new Error('state_map must be an array');
+    }
+
+    mapState(state) {
+      var s = this._config.state_map.find(s => s.value === state);
+      return s !== undefined && s.label ? s.label : state;
     }
 
     set hass(hass) {
@@ -104,7 +110,7 @@ class LogbookCard extends Polymer.Element {
             this._hass.callApi('get', uri)
                 .then(history => {
                     this.history = history[0].map(hist => ({
-                        state: hist.state,
+                        state: this.mapState(hist.state),
                         start: new Date(hist.last_changed)
                     }))
                         .map((x, i, arr) => {
