@@ -40,6 +40,7 @@ resources:
 | no_event | string | optional | v0.1 | No event on the period | message displayed if no event to display |
 | max_items | integer | optional | v0.2 | -1 | Number of items to display. Ignored if < 0 |
 | state_map | [state map object](#state-map-object) | optional | v0.2 | [] | List of entity states to convert |
+| show | list | optional | v0.2 | | List of UI elements to display/hide, for available items see available [show options](#available-show-options).
 
 #### State map object
 
@@ -47,6 +48,17 @@ resources:
 |------|:----:|:-------:|-------------|
 | value ***(required)*** | string |  | Value to convert.
 | label | string | same as value | String to show as label.
+
+#### Available show options
+
+All properties are optional.
+
+| Name | Default | Options | Description |
+|------|:-------:|:-------:|-------------|
+| state | `true` | `true` / `false` | Display state |
+| duration | `true` | `true` / `false` | Display duration |
+| start_date | `true` | `true` / `false` | Display start date |
+| end_date | `true` | `true` / `false` | Display end date |
 
 ### Example usage
 
@@ -73,4 +85,7 @@ state_map:
     value: off
 title: 'Garage door history'
 type: 'custom:history-card'
+show:
+  end_date: false
+  start_date: false
 ```
