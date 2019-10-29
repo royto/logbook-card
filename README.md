@@ -84,7 +84,7 @@ state_map:
   - label: Closed
     value: off
 title: 'Garage door history'
-type: 'custom:history-card'
+type: 'custom:logbook-card'
 show:
   end_date: false
   start_date: false
