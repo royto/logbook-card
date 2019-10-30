@@ -4,13 +4,15 @@ A custom [Lovelace](https://www.home-assistant.io/lovelace/) component for displ
 
 ![logbook card example](images/screenshot.png)
 
+[![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg?style=for-the-badge)](https://github.com/custom-components/hacs)
+[![GitHub Release][releases-shield]][releases]
+[![License][license-shield]](LICENSE)
+
 ## Installation
 
 ### HACS
 
-This card will be available in HACS (Home Assistant Community Store).
-
-For now, you can add the repository as custom repository of type `plugin` in the settings page.
+This card is available in [HACS](https://hacs.xyz/) (Home Assistant Community Store).
 
 ### Manual
 
