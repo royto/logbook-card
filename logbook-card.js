@@ -105,6 +105,16 @@ class LogbookCard extends Polymer.Element {
     return s !== undefined && s.label ? s.label : state;
   }
 
+  squashSameState(array, val) {
+    var prev = array[array.length -1];
+    if (!prev || (prev.state !== val.state && val.state !== 'unknown')) {
+      array.push(val);
+    } else {
+      prev.end = val.end;
+    }
+    return array;
+  }
+
   set hass(hass) {
     this._hass = hass;
 
@@ -136,6 +146,8 @@ class LogbookCard extends Polymer.Element {
             ...x,
             duration: x.end - x.start
           }))
+          //squash same state or unknown with previous state
+          .reduce(this.squashSameState, [])
           .filter(x => !this._config.hiddenState.includes(x.state));
 
           if (this._config.desc === true) {
