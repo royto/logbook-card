@@ -8,8 +8,6 @@ A custom [Lovelace](https://www.home-assistant.io/lovelace/) component for displ
 [![GitHub version](https://img.shields.io/github/v/release/royto/logbook-card?style=for-the-badge)](https://github.com/royto/logbook-card/releases)
 [![GitHub license](https://img.shields.io/badge/LICENCE-GPLv3-green.svg?style=for-the-badge)](/LICENSE)
 
-
-
 ## Installation
 
 ### HACS
@@ -44,7 +42,8 @@ resources:
 | no_event | string | optional | v0.1 | No event on the period | message displayed if no event to display |
 | max_items | integer | optional | v0.2 | -1 | Number of items to display. Ignored if < 0 |
 | state_map | [state map object](#state-map-object) | optional | v0.2 | [] | List of entity states to convert |
-| show | list | optional | v0.2 | | List of UI elements to display/hide, for available items see available [show options](#available-show-options).
+| show | list | optional | v0.2 | | List of UI elements to display/hide, for available items see available [show options](#available-show-options). |
+| attirbutes | [attributes object][#attributes] | optional | v0.4 | | List of attributes to display. |
 
 #### State map object
 
@@ -63,6 +62,13 @@ All properties are optional.
 | duration | `true` | `true` / `false` | Display duration |
 | start_date | `true` | `true` / `false` | Display start date |
 | end_date | `true` | `true` / `false` | Display end date |
+
+#### Attribute object
+
+| Name | Type | Default | Description |
+|------|:----:|:-------:|-------------|
+| value ***(required)*** | string |  | name of the attributes.
+| label | string | same as value | String to show as label.
 
 ### Example usage
 
@@ -92,4 +98,17 @@ type: 'custom:logbook-card'
 show:
   end_date: false
   start_date: false
+```
+
+Example with attributes
+
+```yaml
+type: 'custom:logbook-card'
+desc: true
+entity: sun.sun
+title: Day history
+attributes:
+  - value: elevation
+  - value: next_rising
+    label: Next Rising
 ```
