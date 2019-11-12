@@ -43,7 +43,7 @@ resources:
 | max_items | integer | optional | v0.2 | -1 | Number of items to display. Ignored if < 0 |
 | state_map | [state map object](#state-map-object) | optional | v0.2 | [] | List of entity states to convert |
 | show | list | optional | v0.2 | | List of UI elements to display/hide, for available items see available [show options](#available-show-options). |
-| attirbutes | [attributes object][#attributes] | optional | v0.4 | | List of attributes to display. |
+| attirbutes | [attributes object](#attribute-object) | optional | v0.4 | | List of attributes to display. |
 
 #### State map object
 
