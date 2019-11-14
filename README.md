@@ -67,8 +67,9 @@ All properties are optional.
 
 | Name | Type | Default | Description |
 |------|:----:|:-------:|-------------|
-| value ***(required)*** | string |  | name of the attributes.
-| label | string | same as value | String to show as label.
+| value ***(required)*** | string |  | name of the attributes. |
+| label | string | same as value | String to show as label. |
+| type | string | string | Type of the value used for formatting. Only date is currently supported |
 
 ### Example usage
 

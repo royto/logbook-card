@@ -126,12 +126,19 @@ class LogbookCard extends Polymer.Element {
     return array;
   }
 
+  formatAttibuteValue(value, type) {
+    if (type === 'date') {
+      return this._displayDate(new Date(value));
+    }
+    return value;
+  }
+
   extractAttributes(item) {
     return this._config.attributes.reduce((p, c) => {
       if (item.attributes[c.value]) {
         p.push({
           name: c.label ? c.label : c.value,
-          value: item.attributes[c.value]
+          value: this.formatAttibuteValue(item.attributes[c.value], c.type)
         });
         return p;
       }
