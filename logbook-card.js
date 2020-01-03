@@ -122,6 +122,7 @@ class LogbookCard extends Polymer.Element {
       array.push(val);
     } else {
       prev.end = val.end;
+      prev.duration += val.duration;
     }
     return array;
   }
