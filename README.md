@@ -78,9 +78,13 @@ Allows to have custom labels for duration. Must contains `${value}` which will b
 
 | Name    |  Type  |   Default   | Description        |
 | ------- | :----: | :---------: | ------------------ |
+| second  | string | `${value}s` | label for second.  |
 | seconds | string | `${value}s` | label for seconds. |
+| minute  | string | `${value}m` | label for minute.  |
 | minutes | string | `${value}m` | label for minutes. |
+| hour    | string | `${value}h` | label for hour.    |
 | hours   | string | `${value}h` | label for hours.   |
+| day     | string | `${value}d` | label for day.     |
 | days    | string | `${value}d` | label for days.    |
 
 ### Example usage
@@ -134,8 +138,12 @@ desc: true
 entity: binary_sensor.garage_opening_sensor
 title: 'Garage'
 duration_labels:
+  second:  '${value} seconde'
   seconds: '${value} secondes'
+  minute:  '${value} minute'
   minutes: '${value} minutes'
+  hour:    '${value} heure'
   hours:   '${value} heures'
+  day:     '${value} jour'
   days:    '${value} jours'
 ```

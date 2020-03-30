@@ -65,8 +65,11 @@ class LogbookCard extends Polymer.Element {
     return date.toLocaleString(this._hass.language);
   }
 
-  formatDuration(label, value) {
-    return label.replace("${value}", value);
+  
+  formatDuration(labelOne, labelMultiple,  value) {
+    return value === 1 
+    ? labelOne.replace("${value}", value)
+    : labelMultiple.replace("${value}", value);
   } 
 
   getDuration(durationInMs, labels) {
@@ -76,21 +79,22 @@ class LogbookCard extends Polymer.Element {
     const durationInS = durationInMs / 1000;
     if (durationInS < 60) {
        var value = Math.round(durationInS);
-       return this.formatDuration(labels.seconds, value);
+       return this.formatDuration(labels.second, labels.seconds, value);
     }
     const durationInMin = durationInS / 60;
     if (durationInMin < 60) {
       var value = Math.round(durationInMin);
-      return this.formatDuration(labels.minutes, value);
+      return this.formatDuration(labels.minute, labels.minutes, value);
     }
     const durationInHours = durationInMin / 60;
     if (durationInHours < 24) {
       var value = Math.round(durationInHours);
-      return this.formatDuration(labels.hours, value);
+      return this.formatDuration(labels.hour, labels.hours, value);
     }
     var value = Math.round(durationInHours / 24);
-    return this.formatDuration(labels.days, value);
+    return this.formatDuration(label.day, labels.days, value);
   }
+
 
   setConfig(config) {
     const DEFAULT_SHOW = {
@@ -101,10 +105,14 @@ class LogbookCard extends Polymer.Element {
     };
 
     const DEFAULT_DURATION_LABELS = {
+      second: '${values}s',
       seconds: '${values}s',
+      minute: '${value}m',
       minutes: '${value}m',
+      hour: '${value}h',
       hours: '${value}h',
-      days: '${value}d',
+      day: '${value}d',
+      days: '${value}d'
     };
 
     this._config = {
