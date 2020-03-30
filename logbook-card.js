@@ -105,8 +105,8 @@ class LogbookCard extends Polymer.Element {
     };
 
     const DEFAULT_DURATION_LABELS = {
-      second: '${values}s',
-      seconds: '${values}s',
+      second: '${value}s',
+      seconds: '${value}s',
       minute: '${value}m',
       minutes: '${value}m',
       hour: '${value}h',
