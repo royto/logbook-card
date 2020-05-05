@@ -45,13 +45,16 @@ resources:
 | show            | list                                              | optional     | v0.2  |                         | List of UI elements to display/hide, for available items see available [show options](#available-show-options). |
 | attributes      | [attributes object](#attribute-object)            | optional     | v0.4  |                         | List of attributes to display.                                                                                  |
 | duration_labels | [duration_labels object](#duration-labels-object) | optional     | v0.5  |                         | labels for duration.                                                                                            |
+| date_format     | string                                            | optional     | v1.0  | default date time format                        | see [fecha formatting token](https://github.com/taylorhakes/fecha#formatting-tokens)       |
+| separator_style     | [separator_style object](#separator-style-object)                          | optional     | v1.0  |                          | see style for separator (if activated)       |
 
 #### State map object
 
-| Name                   |  Type  |    Default    | Description              |
-| ---------------------- | :----: | :-----------: | ------------------------ |
-| value **_(required)_** | string |               | Value to convert.        |
-| label                  | string | same as value | String to show as label. |
+| Name                   |  Type  |    Default         | Description              |
+| ---------------------- | :----: | :----------------: | ------------------------ |
+| value **_(required)_** | string |                    | Value to convert.        |
+| label                  | string | same as value      | String to show as label. |
+| icon                   | string | default state icon | Icon to show.            |
 
 #### Available show options
 
@@ -63,6 +66,8 @@ All properties are optional.
 | duration   | `true`  | `true` / `false` | Display duration   |
 | start_date | `true`  | `true` / `false` | Display start date |
 | end_date   | `true`  | `true` / `false` | Display end date   |
+| icon       | `true`  | `true` / `false` | Display icon       |
+| separator  | `false` | `true` / `false` | Display separator  |
 
 #### Attribute object
 
@@ -86,6 +91,14 @@ Allows to have custom labels for duration. Must contains `${value}` which will b
 | hours   | string | `${value}h` | label for hours.   |
 | day     | string | `${value}d` | label for day.     |
 | days    | string | `${value}d` | label for days.    |
+
+#### Separator style object
+
+| Name       |  Type  |    Default         | Description              |
+| -----------| :----: | :----------------: | ------------------------ |
+| width      | number | `1`                    | Width of the separator. |
+| style      | string | `solid`                | [Style](https://developer.mozilla.org/en-US/docs/Web/CSS/border-style) of the separator. |
+| color      | string | `var(--divider-color)` | Color of the separator. |
 
 ### Example usage
 
