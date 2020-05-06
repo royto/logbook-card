@@ -22,7 +22,7 @@ Configure Lovelace to load the card:
 ```yaml
 resources:
   - url: /local/logbook-card.js?v=1
-    type: js
+    type: module
 ```
 
 ## Using the card
