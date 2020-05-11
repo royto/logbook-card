@@ -384,6 +384,7 @@ export class LogbookCard extends LitElement {
       }
       .item-icon {
         flex: 0 0 40px;
+        color: var(--paper-item-icon-color, #44739e);
       }
       .duration {
         font-size: 0.85em;
