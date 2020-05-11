@@ -34,8 +34,6 @@ export class LogbookCard extends LitElement {
   private MAX_UPDATE_DURATION = 5000;
 
   public setConfig(config: LogbookCardConfig): void {
-    console.log('set config logbook', config);
-    // TODO Check for required fields and that they are of the proper format
     if (!config) {
       throw new Error(localize('common.invalid_configuration'));
     }
@@ -249,7 +247,6 @@ export class LogbookCard extends LitElement {
   }
 
   protected render(): TemplateResult | void {
-    console.log('Render', this.history);
     if (!this.config || !this.hass) {
       return html``;
     }
