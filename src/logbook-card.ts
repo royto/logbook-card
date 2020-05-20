@@ -41,7 +41,7 @@ export class LogbookCard extends LitElement {
       throw new Error('Please define an entity.');
     }
     if (config.max_items !== undefined && !Number.isInteger(config.max_items)) {
-      throw new Error('Max_items must be an Integer.');
+      throw new Error('max_items must be an Integer.');
     }
     if (config.hiddenState && !Array.isArray(config.hiddenState)) {
       throw new Error('hiddenState must be an array');
@@ -54,6 +54,12 @@ export class LogbookCard extends LitElement {
     }
     if (config.desc && typeof config.desc !== 'boolean') {
       throw new Error('desc must be a boolean');
+    }
+    if (config.collapse && !Number.isInteger(config.collapse)) {
+      throw new Error('collapse must be a number');
+    }
+    if (config.collapse && config.max_items && config.collapse > config.max_items) {
+      throw new Error('collapse must be greater than max-items');
     }
 
     /*if (config.test_gui) {
@@ -272,16 +278,41 @@ export class LogbookCard extends LitElement {
     return html`
       <ha-card .header=${this.config.title} tabindex="0" aria-label=${`${this.config.title}`}>
         <div class="card-content grid" style="[[contentStyle]]">
-          ${this.history?.map((item, index, array) => this.renderHistoryItem(item, index + 1 === array.length))}
-          ${this.history?.length === 0
-            ? html`
-                <p>
-                  ${this.config.no_event}
-                </p>
-              `
-            : html``}
+          ${this.renderHistory(this.history, this.config)}
         </div>
       </ha-card>
+    `;
+  }
+
+  renderHistory(items: History[] | undefined, config: LogbookCardConfig): TemplateResult {
+    if (!items || items?.length === 0) {
+      return html`
+        <p>
+          ${config.no_event}
+        </p>
+      `;
+    }
+
+    if (config.collapse && items.length > config.collapse) {
+      const elemId = `expander${Math.random()
+        .toString(10)
+        .substr(2)}`;
+      return html`
+        ${this.renderHistoryItems(items.slice(0, config.collapse))}
+        <input type="checkbox" class="expand" id="${elemId}" />
+        <label for="${elemId}"><div>&lsaquo;</div></label>
+        <div>
+          ${this.renderHistoryItems(items.slice(config.collapse))}
+        </div>
+      `;
+    } else {
+      return this.renderHistoryItems(items);
+    }
+  }
+
+  renderHistoryItems(items: History[]): TemplateResult {
+    return html`
+      ${items?.map((item, index, array) => this.renderHistoryItem(item, index + 1 === array.length))}
     `;
   }
 
@@ -398,6 +429,36 @@ export class LogbookCard extends LitElement {
       .attribute {
         display: flex;
         justify-content: space-between;
+      }
+      .expand {
+        display: none;
+      }
+      .expand + label {
+        display: block;
+        text-align: right;
+        cursor: pointer;
+      }
+      .expand + label > div {
+        display: inline-block;
+        transform: rotate(-90deg);
+        font-size: 26px;
+        height: 29px;
+        width: 29px;
+        text-align: center;
+      }
+      .expand + label > div,
+      .expand + label + div {
+        transition: 0.5s ease-in-out;
+      }
+      .expand:checked + label > div {
+        transform: rotate(-90deg) scaleX(-1);
+      }
+      .expand + label + div {
+        max-height: 0;
+        overflow: hidden;
+      }
+      .expand:checked + label + div {
+        max-height: 1000px;
       }
     `;
   }

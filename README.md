@@ -47,8 +47,9 @@ resources:
 | show            | list                                              | optional     | v0.2  |                         | List of UI elements to display/hide, for available items see available [show options](#available-show-options). |
 | attributes      | [attributes object](#attribute-object)            | optional     | v0.4  |                         | List of attributes to display.                                                                                  |
 | duration_labels | [duration_labels object](#duration-labels-object) | optional     | v0.5  |                         | labels for duration.                                                                                            |
-| date_format     | string                                            | optional     | v1.0  | default date time format                        | see [fecha formatting token](https://github.com/taylorhakes/fecha#formatting-tokens)       |
-| separator_style     | [separator_style object](#separator-style-object)                          | optional     | v1.0  |                          | see style for separator (if activated)       |
+| date_format     | string                                            | optional     | v1.0  | default date time format | see [fecha formatting token](https://github.com/taylorhakes/fecha#formatting-tokens)       |
+| separator_style | [separator_style object](#separator-style-object) | optional     | v1.0  |                          | see style for separator (if activated)       |
+| collapse        | number                                            | optional     | v1.2  | | Number of entities to show. Rest will be available in expandable section |
 
 #### State map object
 
@@ -207,3 +208,16 @@ type: 'custom:logbook-card'
 ```
 
 ![custom icon](images/custom-icon.png)
+
+Example with collapsed view:
+
+```yaml
+entity: sensor.vacuum
+hiddenState:
+  - ''
+collapse: 5
+title: Vacuum History
+type: 'custom:logbook-card'
+```
+
+![custom icon](images/collapse.png)

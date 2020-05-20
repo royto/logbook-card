@@ -16,6 +16,7 @@ export interface LogbookCardConfig {
   show?: ShowConfiguration;
   date_format?: string;
   separator_style?: SeparatorStyleConfig;
+  collapse?: number;
 
   tap_action?: ActionConfig;
   hold_action?: ActionConfig;
