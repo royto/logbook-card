@@ -173,7 +173,7 @@ export class LogbookCard extends LitElement {
       if (stateObj) {
         this.config.title = this.config?.title ?? stateObj.attributes.friendly_name + ' History';
 
-        const startDate = new Date(new Date().setDate(new Date().getDate() - this.config.history));
+        const startDate = new Date(new Date().setDate(new Date().getDate() - (this.config.history ?? 5)));
 
         const uri =
           'history/period/' +
@@ -210,7 +210,7 @@ export class LogbookCard extends LitElement {
             }))
             //squash same state or unknown with previous state
             .reduce(this.squashSameState, [])
-            .filter(x => !this.config?.hiddenState.includes(x.state))
+            .filter(x => !this.config?.hiddenState?.includes(x.state))
             .map(x => ({
               ...x,
               duration: this.getDuration(x.duration, this.config?.duration_labels ?? DEFAULT_DURATION_LABELS),
@@ -219,7 +219,7 @@ export class LogbookCard extends LitElement {
           if (historyTemp && this.config?.desc) {
             historyTemp = historyTemp.reverse();
           }
-          if (historyTemp && this.config && this.config.max_items > 0) {
+          if (historyTemp && this.config && this.config.max_items && this.config.max_items > 0) {
             historyTemp = historyTemp.splice(0, this.config?.max_items);
           }
           this.history = historyTemp;
