@@ -23,6 +23,14 @@ console.info(
   'color: white; font-weight: bold; background: dimgray',
 );
 
+// Puts card into the UI card picker dialog
+(window as any).customCards = (window as any).customCards || [];
+(window as any).customCards.push({
+  type: 'logbook-card',
+  name: 'Logbook Card',
+  description: 'A custom card to display entity history',
+});
+
 @customElement('logbook-card')
 export class LogbookCard extends LitElement {
   // Add any properties that should cause your element to re-render here
