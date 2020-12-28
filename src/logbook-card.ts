@@ -1,3 +1,6 @@
+import { LogbookCardEditor } from './editor';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { LitElement, html, customElement, property, CSSResult, TemplateResult, css, PropertyValues } from 'lit-element';
 import { styleMap, StyleInfo } from 'lit-html/directives/style-map';
 import {
@@ -6,7 +9,10 @@ import {
   stateIcon,
   formatDateTime,
   computeStateDisplay,
+  LovelaceCardEditor,
 } from 'custom-card-helpers';
+
+import './editor';
 
 import { format } from 'fecha';
 
@@ -33,6 +39,14 @@ console.info(
 
 @customElement('logbook-card')
 export class LogbookCard extends LitElement {
+  public static async getConfigElement(): Promise<LovelaceCardEditor> {
+    return document.createElement('logbook-card-editor') as LogbookCardEditor;
+  }
+
+  public static getStubConfig(): object {
+    return {};
+  }
+
   // Add any properties that should cause your element to re-render here
   @property() public hass?: HomeAssistant;
   @property() private config?: LogbookCardConfig;
