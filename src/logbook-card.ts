@@ -369,7 +369,7 @@ export class LogbookCard extends LitElement {
   }
 
   renderHistoryDate(item: History): TemplateResult {
-    if (this.config?.show?.end_date && this.config?.show?.end_date) {
+    if (this.config?.show?.start_date && this.config?.show?.end_date) {
       return html`
         <div class="date">${this._displayDate(item.start)} - ${this._displayDate(item.end)}</div>
       `;
