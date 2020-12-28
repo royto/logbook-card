@@ -70,10 +70,6 @@ export class LogbookCard extends LitElement {
       throw new Error('collapse must be greater than max-items');
     }
 
-    /*if (config.test_gui) {
-      getLovelace().setEditMode(true);
-    }*/
-
     this.config = {
       history: 5,
       hiddenState: [],
