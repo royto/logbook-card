@@ -1,7 +1,7 @@
-import { ActionConfig } from 'custom-card-helpers';
+import { ActionConfig, LovelaceCardConfig } from 'custom-card-helpers';
 
 // TODO Add your configuration elements here for type-checking
-export interface LogbookCardConfig {
+export interface LogbookCardConfig extends LovelaceCardConfig {
   type: string;
   title?: string;
   history?: number;
