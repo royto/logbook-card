@@ -34,6 +34,7 @@ console.info(
 (window as any).customCards.push({
   type: 'logbook-card',
   name: 'Logbook Card',
+  preview: true,
   description: 'A custom card to display entity history',
 });
 
@@ -43,8 +44,11 @@ export class LogbookCard extends LitElement {
     return document.createElement('logbook-card-editor') as LogbookCardEditor;
   }
 
-  public static getStubConfig(): object {
-    return {};
+  public static getStubConfig(_hass: HomeAssistant, entities: Array<any>): object {
+    console.table(entities);
+    return {
+      entity: entities[0],
+    };
   }
 
   // Add any properties that should cause your element to re-render here
