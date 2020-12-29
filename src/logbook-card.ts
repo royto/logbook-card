@@ -45,7 +45,6 @@ export class LogbookCard extends LitElement {
   }
 
   public static getStubConfig(_hass: HomeAssistant, entities: Array<any>): object {
-    console.table(entities);
     return {
       entity: entities[0],
     };
