@@ -21,13 +21,13 @@ const options = {
     show: true,
   },
   showOptions: {
-    icon: 'palette',
+    icon: 'toggle-switch',
     name: 'Show',
     secondary: 'Customize what to display',
     show: false,
   },
   appearance: {
-    icon: 'toggle-switch',
+    icon: 'palette',
     name: 'Appearance',
     secondary: 'Customize the title, number of events to display, etc',
     show: false,
