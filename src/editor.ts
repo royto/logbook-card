@@ -37,7 +37,7 @@ const options = {
 @customElement('logbook-card-editor')
 export class LogbookCardEditor extends LitElement implements LovelaceCardEditor {
   @property({ attribute: false }) public hass?: HomeAssistant;
-  @internalProperty() private _config?: LogbookCardConfig;
+  @internalProperty() private _config?: Partial<LogbookCardConfig>;
   @internalProperty() private _toggle?: boolean;
   @internalProperty() private _helpers?: any;
   private _initialized = false;
