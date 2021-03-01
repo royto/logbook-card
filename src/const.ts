@@ -1,5 +1,5 @@
 import { ShowConfiguration, DurationLabels, SeparatorStyleConfig } from './types';
-export const CARD_VERSION = '1.3.1';
+export const CARD_VERSION = '1.3.2';
 
 export const DEFAULT_SHOW: ShowConfiguration = {
   state: true,
