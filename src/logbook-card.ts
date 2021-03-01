@@ -208,7 +208,7 @@ export class LogbookCard extends LitElement {
 
         //TODO Convert to async await ?
         hass.callApi('GET', uri).then((history: any) => {
-          historyTemp = history[0]
+          historyTemp = (history[0] || []) //empty if no history
             .map(h => ({
               state: h.state,
               label: this.mapState(h),
