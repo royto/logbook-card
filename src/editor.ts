@@ -166,7 +166,7 @@ export class LogbookCardEditor extends LitElement implements LovelaceCardEditor 
     }
 
     // You can restrict on domain type
-    const entities = Object.keys(this.hass.states);
+    const entities = Object.keys(this.hass.states).sort();
 
     return html`
       <div class="card-config">
