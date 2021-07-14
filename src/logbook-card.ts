@@ -57,6 +57,7 @@ export class LogbookCard extends LitElement {
 
   private lastHistoryChanged?: Date;
   private MAX_UPDATE_DURATION = 5000;
+  private hiddenStateRegexp: Array<RegExp> = new Array<RegExp>();
 
   public setConfig(config: LogbookCardConfig): void {
     if (!config) {
@@ -93,20 +94,27 @@ export class LogbookCard extends LitElement {
       desc: true,
       max_items: -1,
       no_event: 'No event on the period',
-      state_map: [],
       attributes: [],
       ...config,
+      state_map:
+        config.state_map?.map(state => {
+          return {
+            ...state,
+            regexp: this.wildcardToRegExp(state.value ?? ''),
+          };
+        }) ?? [],
       show: { ...DEFAULT_SHOW, ...config.show },
       duration_labels: { ...DEFAULT_DURATION_LABELS, ...config.duration_labels },
       separator_style: { ...DEFAULT_SEPARATOR_STYLE, ...config.separator_style },
     };
+
     if (config.hiddenState) {
       this.hiddenStateRegexp = config.hiddenState.map(hs => this.wildcardToRegExp(hs));
     }
   }
 
   mapState(entity: HassEntity): string {
-    const s = this.config?.state_map?.find(s => this.wildcardToRegExp(s.value ?? '').test(entity.state));
+    const s = this.config?.state_map?.find(s => s.regexp?.test(entity.state));
     return s !== undefined && s.label
       ? s.label
       : this.hass
@@ -115,7 +123,7 @@ export class LogbookCard extends LitElement {
   }
 
   mapIcon(item: HassEntity): string {
-    const s = this.config?.state_map?.find(s => this.wildcardToRegExp(s.value ?? '').test(item.state));
+    const s = this.config?.state_map?.find(s => s.regexp?.test(item.state));
     return s !== undefined && s.icon ? s.icon : stateIcon(item);
   }
 

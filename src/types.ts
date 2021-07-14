@@ -38,6 +38,7 @@ export interface StateMap {
   value?: string;
   label?: string;
   icon?: string;
+  regexp?: RegExp;
 }
 
 export interface ShowConfiguration {
