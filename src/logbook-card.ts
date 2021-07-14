@@ -100,6 +100,9 @@ export class LogbookCard extends LitElement {
       duration_labels: { ...DEFAULT_DURATION_LABELS, ...config.duration_labels },
       separator_style: { ...DEFAULT_SEPARATOR_STYLE, ...config.separator_style },
     };
+    if (config.hiddenState) {
+      this.hiddenStateRegexp = config.hiddenState.map(hs => this.wildcardToRegExp(hs));
+    }
   }
 
   mapState(entity: HassEntity): string {
@@ -254,7 +257,7 @@ export class LogbookCard extends LitElement {
             }))
             //squash same state or unknown with previous state
             .reduce(this.squashSameState, [])
-            .filter(x => !this.config?.hiddenState?.includes(x.state))
+            .filter(x => !this.hiddenStateRegexp.some(regexp => regexp.test(x.state)))
             .map(x => ({
               ...x,
               duration: this.getDuration(x.duration, this.config?.duration_labels ?? DEFAULT_DURATION_LABELS),
