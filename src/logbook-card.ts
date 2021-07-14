@@ -103,7 +103,7 @@ export class LogbookCard extends LitElement {
   }
 
   mapState(entity: HassEntity): string {
-    const s = this.config?.state_map?.find(s => s.value === entity.state);
+    const s = this.config?.state_map?.find(s => this.wildcardToRegExp(s.value ?? '').test(entity.state));
     return s !== undefined && s.label
       ? s.label
       : this.hass
@@ -112,8 +112,31 @@ export class LogbookCard extends LitElement {
   }
 
   mapIcon(item: HassEntity): string {
-    const s = this.config?.state_map?.find(s => s.value === item.state);
+    const s = this.config?.state_map?.find(s => this.wildcardToRegExp(s.value ?? '').test(item.state));
     return s !== undefined && s.icon ? s.icon : stateIcon(item);
+  }
+
+  // From https://gist.github.com/donmccurdy/6d073ce2c6f3951312dfa45da14a420f by donmccurdy
+  /**
+   * Creates a RegExp from the given string, converting asterisks to .* expressions,
+   * and escaping all other characters.
+   */
+  wildcardToRegExp(s: string): RegExp {
+    return new RegExp(
+      '^' +
+        s
+          .split(/\*+/)
+          .map(x => this.regExpEscape(x))
+          .join('.*') +
+        '$',
+    );
+  }
+
+  /**
+   * RegExp-escapes all characters in the given string.
+   */
+  regExpEscape(s: string): string {
+    return s.replace(/[|\\{}()[\]^$+*?.]/g, '\\$&');
   }
 
   squashSameState(array: Array<History>, val: History): Array<History> {
