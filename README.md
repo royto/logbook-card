@@ -33,31 +33,33 @@ resources:
 
 #### Card options
 
-| Name            | Type                                              | Required     | Since | Default                 | Description                                                                                                     |
-| --------------- | ------------------------------------------------- | ------------ | ----- | ----------------------- | --------------------------------------------------------------------------------------------------------------- |
-| type            | string                                            | **required** | v0.1  |                         | `custom:logbook-card`                                                                                           |
-| entity          | string                                            | **required** | v0.1  |                         | An entity_id.                                                                                                   |
-| title           | string                                            | optional     | v0.1  | _friendly_name_ History | Card title                                                                                                      |
-| history         | integer                                           | optional     | v0.1  | 5                       | Numbers of days of history of the logbook                                                                       |
-| hiddenState     | string[]                                          | optional     | v0.1  | []                      | States to hide                                                                                                  |
-| desc            | bool                                              | optional     | v0.1  | True                    | is logbook ordered descending                                                                                   |
-| no_event        | string                                            | optional     | v0.1  | No event on the period  | message displayed if no event to display                                                                        |
-| max_items       | integer                                           | optional     | v0.2  | -1                      | Number of items to display. Ignored if < 0                                                                      |
-| state_map       | [state map object](#state-map-object)             | optional     | v0.2  | []                      | List of entity states to convert                                                                                |
-| show            | list                                              | optional     | v0.2  |                         | List of UI elements to display/hide, for available items see available [show options](#available-show-options). |
-| attributes      | [attributes object](#attribute-object)            | optional     | v0.4  |                         | List of attributes to display.                                                                                  |
-| duration_labels | [duration_labels object](#duration-labels-object) | optional     | v0.5  |                         | labels for duration.                                                                                            |
-| date_format     | string                                            | optional     | v1.0  | default date time format | see [fecha formatting token](https://github.com/taylorhakes/fecha#formatting-tokens)       |
-| separator_style | [separator_style object](#separator-style-object) | optional     | v1.0  |                          | see style for separator (if activated)       |
-| collapse        | number                                            | optional     | v1.2  | | Number of entities to show. Rest will be available in expandable section |
+| Name            | Type                                              | Required     | Since | Default                  | Description                                                                                                     |
+| --------------- | ------------------------------------------------- | ------------ | ----- | ------------------------ | --------------------------------------------------------------------------------------------------------------- |
+| type            | string                                            | **required** | v0.1  |                          | `custom:logbook-card`                                                                                           |
+| entity          | string                                            | **required** | v0.1  |                          | An entity_id.                                                                                                   |
+| title           | string                                            | optional     | v0.1  | _friendly_name_ History  | Card title                                                                                                      |
+| history         | integer                                           | optional     | v0.1  | 5                        | Numbers of days of history of the logbook                                                                       |
+| hiddenState     | string[]                                          | optional     | v0.1  | []                       | States to hide. wildcards are supported.                                                                        |
+| desc            | bool                                              | optional     | v0.1  | True                     | is logbook ordered descending                                                                                   |
+| no_event        | string                                            | optional     | v0.1  | No event on the period   | message displayed if no event to display                                                                        |
+| max_items       | integer                                           | optional     | v0.2  | -1                       | Number of items to display. Ignored if < 0                                                                      |
+| state_map       | [state map object](#state-map-object)             | optional     | v0.2  | []                       | List of entity states to convert                                                                                |
+| show            | list                                              | optional     | v0.2  |                          | List of UI elements to display/hide, for available items see available [show options](#available-show-options). |
+| attributes      | [attributes object](#attribute-object)            | optional     | v0.4  |                          | List of attributes to display.                                                                                  |
+| duration_labels | [duration_labels object](#duration-labels-object) | optional     | v0.5  |                          | labels for duration.                                                                                            |
+| date_format     | string                                            | optional     | v1.0  | default date time format | see [fecha formatting token](https://github.com/taylorhakes/fecha#formatting-tokens)                            |
+| separator_style | [separator_style object](#separator-style-object) | optional     | v1.0  |                          | see style for separator (if activated)                                                                          |
+| collapse        | number                                            | optional     | v1.2  |                          | Number of entities to show. Rest will be available in expandable section                                        |
 
 #### State map object
 
-| Name                   |  Type  |    Default         | Description              |
-| ---------------------- | :----: | :----------------: | ------------------------ |
-| value **_(required)_** | string |                    | Value to convert.        |
-| label                  | string | same as value      | String to show as label. |
-| icon                   | string | default state icon | Icon to show.            |
+| Name                   |  Type  |      Default       | Description                             |
+| ---------------------- | :----: | :----------------: | --------------------------------------- |
+| value **_(required)_** | string |                    | Value to convert. wildcard is supported |
+| label                  | string |   same as value    | String to show as label.                |
+| icon                   | string | default state icon | Icon to show.                           |
+
+If you use wildcard, make sure to put the more specific states first.
 
 #### Available show options
 
@@ -97,18 +99,18 @@ Allows to have custom labels for duration. Must contains `${value}` which will b
 
 #### Separator style object
 
-| Name       |  Type  |    Default         | Description              |
-| -----------| :----: | :----------------: | ------------------------ |
-| width      | number | `1`                    | Width of the separator. |
-| style      | string | `solid`                | [Style](https://developer.mozilla.org/en-US/docs/Web/CSS/border-style) of the separator. |
-| color      | string | `var(--divider-color)` | Color of the separator. |
+| Name  |  Type  |        Default         | Description                                                                              |
+| ----- | :----: | :--------------------: | ---------------------------------------------------------------------------------------- |
+| width | number |          `1`           | Width of the separator.                                                                  |
+| style | string |        `solid`         | [Style](https://developer.mozilla.org/en-US/docs/Web/CSS/border-style) of the separator. |
+| color | string | `var(--divider-color)` | Color of the separator.                                                                  |
 
 ### Example usage
 
 Example with hidden states
 
 ```yaml
-type: "custom:logbook-card"
+type: 'custom:logbook-card'
 desc: true
 entity: sun.sun
 hiddenState:
@@ -126,8 +128,8 @@ state_map:
     value: on
   - label: Closed
     value: off
-title: "Garage door history"
-type: "custom:logbook-card"
+title: 'Garage door history'
+type: 'custom:logbook-card'
 show:
   end_date: false
   start_date: true
@@ -138,7 +140,7 @@ show:
 Example with attributes and custom date format
 
 ```yaml
-type: "custom:logbook-card"
+type: 'custom:logbook-card'
 desc: true
 entity: sun.sun
 title: Day history
@@ -155,25 +157,25 @@ date_format: dd/MM/YYYY hh:mm
 Example with duration labels in french:
 
 ```yaml
-type: "custom:logbook-card"
+type: 'custom:logbook-card'
 desc: true
 entity: binary_sensor.garage_opening_sensor
 title: 'Garage'
 duration_labels:
-  second:  '${value} seconde'
+  second: '${value} seconde'
   seconds: '${value} secondes'
-  minute:  '${value} minute'
+  minute: '${value} minute'
   minutes: '${value} minutes'
-  hour:    '${value} heure'
-  hours:   '${value} heures'
-  day:     '${value} jour'
-  days:    '${value} jours'
+  hour: '${value} heure'
+  hours: '${value} heures'
+  day: '${value} jour'
+  days: '${value} jours'
 ```
 
 Example with custom separator style:
 
 ```yaml
-type: "custom:logbook-card"
+type: 'custom:logbook-card'
 desc: true
 entity: binary_sensor.garage_opening_sensor
 title: 'Garage Door History'
