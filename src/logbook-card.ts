@@ -168,10 +168,21 @@ export class LogbookCard extends LitElement {
 
     return this.config?.attributes.reduce((p: Array<Attribute>, c: AttributeConfig): Array<Attribute> => {
       if (item.attributes[c.value]) {
-        p.push({
-          name: c.label ? c.label : c.value,
-          value: this.formatAttributeValue(item.attributes[c.value], c.type),
-        });
+        if (typeof item.attributes[c.value] === 'object') {
+          const obj = item.attributes[c.value];
+          const keys = Object.keys(obj);
+          keys.forEach(key => {
+            p.push({
+              name: key,
+              value: this.formatAttributeValue(obj[key], undefined),
+            });
+          });
+        } else {
+          p.push({
+            name: c.label ? c.label : c.value,
+            value: this.formatAttributeValue(item.attributes[c.value], c.type),
+          });
+        }
       }
       return p;
     }, []);
