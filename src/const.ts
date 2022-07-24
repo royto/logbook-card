@@ -1,4 +1,4 @@
-import { ShowConfiguration, DurationLabels, SeparatorStyleConfig } from './types';
+import { ShowConfiguration, SeparatorStyleConfig, DurationConfig } from './types';
 export const CARD_VERSION = '1.4.1';
 
 export const DEFAULT_SHOW: ShowConfiguration = {
@@ -10,15 +10,9 @@ export const DEFAULT_SHOW: ShowConfiguration = {
   separator: false,
 };
 
-export const DEFAULT_DURATION_LABELS: DurationLabels = {
-  second: '${value}s',
-  seconds: '${value}s',
-  minute: '${value}m',
-  minutes: '${value}m',
-  hour: '${value}h',
-  hours: '${value}h',
-  day: '${value}d',
-  days: '${value}d',
+export const DEFAULT_DURATION: DurationConfig = {
+  largest: 1,
+  labels: undefined,
 };
 
 export const DEFAULT_SEPARATOR_STYLE: SeparatorStyleConfig = {

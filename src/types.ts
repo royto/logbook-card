@@ -11,7 +11,7 @@ export interface LogbookCardConfig extends LovelaceCardConfig {
   max_items?: number;
   attributes?: Array<AttributeConfig>;
   state_map?: Array<StateMap>;
-  duration_labels: DurationLabels;
+  duration?: DurationConfig;
   hiddenState?: Array<string>;
   show?: ShowConfiguration;
   date_format?: string;
@@ -23,15 +23,18 @@ export interface LogbookCardConfig extends LovelaceCardConfig {
   double_tap_action?: ActionConfig;
 }
 
-export interface DurationLabels {
-  second: string;
-  seconds: string;
-  minute: string;
-  minutes: string;
-  hour: string;
-  hours: string;
+export interface DurationConfig {
+  largest: number | 'full';
+  labels: DurationLabel | undefined;
+}
+
+export interface DurationLabel {
+  month: string;
+  week: string;
   day: string;
-  days: string;
+  hour: string;
+  minute: string;
+  second: string;
 }
 
 export interface StateMap {
