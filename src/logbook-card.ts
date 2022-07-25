@@ -14,13 +14,13 @@ import {
 
 import './editor';
 
-import { HumanizeDurationLanguage, HumanizeDuration, HumanizeDurationOptions, Language } from 'humanize-duration-ts';
+import { HumanizeDurationLanguage, HumanizeDuration, HumanizeDurationOptions } from 'humanize-duration-ts';
 
 import { format } from 'fecha';
 
 import { HassEntity } from 'home-assistant-js-websocket';
 
-import { LogbookCardConfig, History, Attribute, AttributeConfig, DurationConfig } from './types';
+import { LogbookCardConfig, History, Attribute, AttributeConfig } from './types';
 import { CARD_VERSION, DEFAULT_SHOW, DEFAULT_SEPARATOR_STYLE, DEFAULT_DURATION } from './const';
 import { localize } from './localize/localize';
 
