@@ -87,8 +87,8 @@ All properties are optional.
 
 | Name  |  Type  |        Default         | Description                                                                              |
 | ----- | :----: | :--------------------: | ---------------------------------------------------------------------------------------- |
-| largest | number |          `1`           | Number representing the maximum number of units to display for the duration.                                                                  |
-| labels  | [duration object](#from-v150) |                        | [Style](https://developer.mozilla.org/en-US/docs/Web/CSS/border-style) of the separator. |
+| largest | number |          `1`           | Number representing the maximum number of units to display for the duration. Use `full` for no limitation                                                       |
+| labels  | [duration labels object](#from-v150) |                        | [Style](https://developer.mozilla.org/en-US/docs/Web/CSS/border-style) of the separator. |
 
 #### Duration labels object
 
