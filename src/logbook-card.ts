@@ -14,12 +14,14 @@ import {
 
 import './editor';
 
+import { HumanizeDurationLanguage, HumanizeDuration, HumanizeDurationOptions } from 'humanize-duration-ts';
+
 import { format } from 'fecha';
 
 import { HassEntity } from 'home-assistant-js-websocket';
 
-import { LogbookCardConfig, History, Attribute, AttributeConfig, DurationLabels } from './types';
-import { CARD_VERSION, DEFAULT_SHOW, DEFAULT_DURATION_LABELS, DEFAULT_SEPARATOR_STYLE } from './const';
+import { LogbookCardConfig, History, Attribute, AttributeConfig } from './types';
+import { CARD_VERSION, DEFAULT_SHOW, DEFAULT_SEPARATOR_STYLE, DEFAULT_DURATION } from './const';
 import { localize } from './localize/localize';
 
 /* eslint no-console: 0 */
@@ -104,7 +106,8 @@ export class LogbookCard extends LitElement {
           };
         }) ?? [],
       show: { ...DEFAULT_SHOW, ...config.show },
-      duration_labels: { ...DEFAULT_DURATION_LABELS, ...config.duration_labels },
+      duration: { ...DEFAULT_DURATION, ...config.duration },
+      duration_labels: { ...config.duration_labels },
       separator_style: { ...DEFAULT_SEPARATOR_STYLE, ...config.separator_style },
     };
 
@@ -193,33 +196,42 @@ export class LogbookCard extends LitElement {
     }, []);
   }
 
-  formatDuration(labelOne: string, labelMultiple: string, value: number): string {
-    return value === 1
-      ? labelOne.replace('${value}', value.toString())
-      : labelMultiple.replace('${value}', value.toString());
-  }
-
-  getDuration(durationInMs: number, labels: DurationLabels): string {
+  getDuration(durationInMs: number): string {
     if (!durationInMs) {
       return '';
     }
-    const durationInS = durationInMs / 1000;
-    if (durationInS < 60) {
-      const value = Math.round(durationInS);
-      return this.formatDuration(labels.second, labels.seconds, value);
+
+    const humanizeDuration = new HumanizeDuration(new HumanizeDurationLanguage());
+    let language = humanizeDuration.getSupportedLanguages().includes(this.hass?.language ?? 'en')
+      ? this.hass?.language
+      : 'en';
+
+    if (this.config?.duration?.labels) {
+      humanizeDuration.addLanguage('custom', {
+        y: () => 'y',
+        mo: () => this.config?.duration?.labels?.month ?? 'mo',
+        w: () => this.config?.duration?.labels?.week ?? 'w',
+        d: () => this.config?.duration?.labels?.day ?? 'd',
+        h: () => this.config?.duration?.labels?.hour ?? 'h',
+        m: () => this.config?.duration?.labels?.minute ?? 'm',
+        s: () => this.config?.duration?.labels?.second ?? 's',
+        ms: () => 'ms',
+        decimal: '',
+      });
+      language = 'custom';
     }
-    const durationInMin = durationInS / 60;
-    if (durationInMin < 60) {
-      const value = Math.round(durationInMin);
-      return this.formatDuration(labels.minute, labels.minutes, value);
+
+    const humanizeDurationOptions: HumanizeDurationOptions = {
+      language,
+      units: ['w', 'd', 'h', 'm', 's'],
+      round: true,
+    };
+
+    if (this.config?.duration?.largest !== 'full') {
+      humanizeDurationOptions['largest'] = this.config?.duration?.largest;
     }
-    const durationInHours = durationInMin / 60;
-    if (durationInHours < 24) {
-      const value = Math.round(durationInHours);
-      return this.formatDuration(labels.hour, labels.hours, value);
-    }
-    const value = Math.round(durationInHours / 24);
-    return this.formatDuration(labels.day, labels.days, value);
+
+    return humanizeDuration.humanize(durationInMs, humanizeDurationOptions);
   }
 
   formatAttributeValue(value: any, type: string | undefined): string {
@@ -284,7 +296,7 @@ export class LogbookCard extends LitElement {
             .filter(x => !this.hiddenStateRegexp.some(regexp => regexp.test(x.state)))
             .map(x => ({
               ...x,
-              duration: this.getDuration(x.duration, this.config?.duration_labels ?? DEFAULT_DURATION_LABELS),
+              duration: this.getDuration(x.duration),
             }));
 
           if (historyTemp && this.config?.desc) {

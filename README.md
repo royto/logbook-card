@@ -33,23 +33,24 @@ resources:
 
 #### Card options
 
-| Name            | Type                                              | Required     | Since | Default                  | Description                                                                                                     |
-| --------------- | ------------------------------------------------- | ------------ | ----- | ------------------------ | --------------------------------------------------------------------------------------------------------------- |
+| Name            | Type                                              | Required     | Since | Deprecated | Default                  | Description                                                                                                     |
+| --------------- | ------------------------------------------------- | ------------ | ----- | ---------- |------------------------ | --------------------------------------------------------------------------------------------------------------- |
 | type            | string                                            | **required** | v0.1  |                          | `custom:logbook-card`                                                                                           |
 | entity          | string                                            | **required** | v0.1  |                          | An entity_id.                                                                                                   |
-| title           | string                                            | optional     | v0.1  | _friendly_name_ History  | Card title                                                                                                      |
-| history         | integer                                           | optional     | v0.1  | 5                        | Numbers of days of history of the logbook                                                                       |
-| hiddenState     | string[]                                          | optional     | v0.1  | []                       | States to hide. wildcards are supported.                                                                        |
-| desc            | bool                                              | optional     | v0.1  | True                     | is logbook ordered descending                                                                                   |
-| no_event        | string                                            | optional     | v0.1  | No event on the period   | message displayed if no event to display                                                                        |
-| max_items       | integer                                           | optional     | v0.2  | -1                       | Number of items to display. Ignored if < 0                                                                      |
-| state_map       | [state map object](#state-map-object)             | optional     | v0.2  | []                       | List of entity states to convert                                                                                |
-| show            | list                                              | optional     | v0.2  |                          | List of UI elements to display/hide, for available items see available [show options](#available-show-options). |
+| title           | string                                            | optional     | v0.1  | |_friendly_name_ History  | Card title                                                                                                      |
+| history         | integer                                           | optional     | v0.1  | | 5                        | Numbers of days of history of the logbook                                                                       |
+| hiddenState     | string[]                                          | optional     | v0.1  | | []                       | States to hide. wildcards are supported.                                                                        |
+| desc            | bool                                              | optional     | v0.1  | | True                     | is logbook ordered descending                                                                                   |
+| no_event        | string                                            | optional     | v0.1  | | No event on the period   | message displayed if no event to display                                                                        |
+| max_items       | integer                                           | optional     | v0.2  | | -1                       | Number of items to display. Ignored if < 0                                                                      |
+| state_map       | [state map object](#state-map-object)             | optional     | v0.2  | | []                       | List of entity states to convert                                                                                |
+| show            | list                                              | optional     | v0.2  |  |                         | List of UI elements to display/hide, for available items see available [show options](#available-show-options). |
 | attributes      | [attributes object](#attribute-object)            | optional     | v0.4  |                          | List of attributes to display.                                                                                  |
-| duration_labels | [duration_labels object](#duration-labels-object) | optional     | v0.5  |                          | labels for duration.                                                                                            |
-| date_format     | string                                            | optional     | v1.0  | default date time format | see [fecha formatting token](https://github.com/taylorhakes/fecha#formatting-tokens)                            |
-| separator_style | [separator_style object](#separator-style-object) | optional     | v1.0  |                          | see style for separator (if activated)                                                                          |
-| collapse        | number                                            | optional     | v1.2  |                          | Number of entities to show. Rest will be available in expandable section                                        |
+| duration_labels | [duration_labels object](#until-v141) | optional     | v0.5  | v1.5.0 |                         | labels for duration.                                                                                            |
+| date_format     | string                                            | optional     | v1.0  |  | default date time format | see [fecha formatting token](https://github.com/taylorhakes/fecha#formatting-tokens)                            |
+| separator_style | [separator_style object](#separator-style-object) | optional     | v1.0  |  |                         | see style for separator (if activated)                                                                          |
+| collapse        | number                                            | optional     | v1.2  | |                          | Number of entities to show. Rest will be available in expandable section                                        |
+| duration        | [duration object](#duration-object)               | optional     | v1.5.0 | | duration configuration |
 
 #### State map object
 
@@ -82,7 +83,18 @@ All properties are optional.
 | label                  | string | same as value | String to show as label.                                                |
 | type                   | string |    string     | Type of the value used for formatting. Only date is currently supported |
 
+#### Duration object
+
+| Name  |  Type  |        Default         | Description                                                                              |
+| ----- | :----: | :--------------------: | ---------------------------------------------------------------------------------------- |
+| largest | number |          `1`           | Number representing the maximum number of units to display for the duration. Use `full` for no limitation                                                       |
+| labels  | [duration labels object](#from-v150) |                        | [Style](https://developer.mozilla.org/en-US/docs/Web/CSS/border-style) of the separator. |
+
 #### Duration labels object
+
+##### Until v1.4.1
+
+This configuration is _Deprecated since v.1.5.0_.
 
 Allows to have custom labels for duration. Must contains `${value}` which will be replaced by the duration.
 
@@ -96,6 +108,19 @@ Allows to have custom labels for duration. Must contains `${value}` which will b
 | hours   | string | `${value}h` | label for hours.   |
 | day     | string | `${value}d` | label for day.     |
 | days    | string | `${value}d` | label for days.    |
+
+##### FROM v1.5.0
+
+Allows to have custom labels for duration.
+
+| Name    |  Type  |   Default   | Description        |
+| ------- | :----: | :---------: | ------------------ |
+| second  | string | `s`         | label for second.  |
+| minute  | string | `m`         | label for minute.  |
+| hour    | string | `h`         | label for hour.    |
+| day     | string | `d`         | label for day.     |
+| week    | string | `w`         | label for week.    |
+| month   | string | `m`         | label for month.   |
 
 #### Separator style object
 
@@ -154,7 +179,7 @@ date_format: dd/MM/YYYY hh:mm
 
 ![Attributes and custom date format](images/attributes.png)
 
-Example with duration labels in french:
+Example with short duration labels:
 
 ```yaml
 type: 'custom:logbook-card'
@@ -162,14 +187,12 @@ desc: true
 entity: binary_sensor.garage_opening_sensor
 title: 'Garage'
 duration_labels:
-  second: '${value} seconde'
-  seconds: '${value} secondes'
-  minute: '${value} minute'
-  minutes: '${value} minutes'
-  hour: '${value} heure'
-  hours: '${value} heures'
-  day: '${value} jour'
-  days: '${value} jours'
+  second: 's'
+  minute: 'm'
+  hour: 'h'
+  day: 'j'
+  week: 'w'
+  month: 'm'
 ```
 
 Example with custom separator style:
