@@ -1,4 +1,5 @@
 import { ActionConfig, LovelaceCardConfig } from 'custom-card-helpers';
+import { UnitName } from 'humanize-duration-ts';
 
 // TODO Add your configuration elements here for type-checking
 export interface LogbookCardConfig extends LovelaceCardConfig {
@@ -24,8 +25,10 @@ export interface LogbookCardConfig extends LovelaceCardConfig {
 }
 
 export interface DurationConfig {
-  largest: number | 'full';
-  labels: DurationLabel | undefined;
+  largest?: number | 'full';
+  labels?: DurationLabel | undefined;
+  delimiter?: string;
+  units?: Array<UnitName>;
 }
 
 export interface DurationLabel {

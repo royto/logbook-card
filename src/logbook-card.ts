@@ -89,6 +89,12 @@ export class LogbookCard extends LitElement {
     if (config.collapse && config.max_items && config.collapse > config.max_items) {
       throw new Error('collapse must be greater than max-items');
     }
+    if (config.duration?.units && !Array.isArray(config.duration.units)) {
+      throw new Error('duration.units must be an array');
+    }
+    if (config.duration?.largest && !Number.isInteger(config.duration.largest) && config.duration.largest !== 'full') {
+      throw new Error('duration.largest should be a number or `full`');
+    }
 
     this.config = {
       history: 5,
@@ -223,12 +229,16 @@ export class LogbookCard extends LitElement {
 
     const humanizeDurationOptions: HumanizeDurationOptions = {
       language,
-      units: ['w', 'd', 'h', 'm', 's'],
+      units: this.config?.duration?.units,
       round: true,
     };
 
     if (this.config?.duration?.largest !== 'full') {
       humanizeDurationOptions['largest'] = this.config?.duration?.largest;
+    }
+
+    if (this.config?.duration?.delimiter !== undefined) {
+      humanizeDurationOptions['delimiter'] = this.config.duration.delimiter;
     }
 
     return humanizeDuration.humanize(durationInMs, humanizeDurationOptions);

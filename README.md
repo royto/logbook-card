@@ -85,10 +85,12 @@ All properties are optional.
 
 #### Duration object
 
-| Name  |  Type  |        Default         | Description                                                                              |
-| ----- | :----: | :--------------------: | ---------------------------------------------------------------------------------------- |
-| largest | number |          `1`           | Number representing the maximum number of units to display for the duration. Use `full` for no limitation                                                       |
-| labels  | [duration labels object](#from-v150) |                        | [Style](https://developer.mozilla.org/en-US/docs/Web/CSS/border-style) of the separator. |
+| Name      |  Type        |        Default          | Description                                                                                                                                     |
+| --------- | :----------: | :---------------------: | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| largest   | number       |          `1`            | Number representing the maximum number of units to display for the duration. Use `full` for no limitation                                       |
+| labels    | [duration labels object](#from-v150) | | [Style](https://developer.mozilla.org/en-US/docs/Web/CSS/border-style) of the separator.                                                        |
+| units     | string array |                         | Array of strings to define which units are used to display the duration (if needed). Allowed values: ['y', 'mo', 'w', 'd', 'h', 'm', 's', 'ms'] |
+| delimiter | string       |                         | String to display between the previous unit and the next value.                                                                                 |
 
 #### Duration labels object
 
