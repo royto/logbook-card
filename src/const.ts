@@ -13,6 +13,8 @@ export const DEFAULT_SHOW: ShowConfiguration = {
 export const DEFAULT_DURATION: DurationConfig = {
   largest: 1,
   labels: undefined,
+  delimiter: undefined,
+  units: ['w', 'd', 'h', 'm', 's'],
 };
 
 export const DEFAULT_SEPARATOR_STYLE: SeparatorStyleConfig = {
