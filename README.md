@@ -54,11 +54,12 @@ resources:
 
 #### State map object
 
-| Name                   |  Type  |      Default       | Description                             |
-| ---------------------- | :----: | :----------------: | --------------------------------------- |
-| value **_(required)_** | string |                    | Value to convert. wildcard is supported |
-| label                  | string |   same as value    | String to show as label.                |
-| icon                   | string | default state icon | Icon to show.                           |
+| Name                   |  Type  |      Default       | Description                             | Since  |
+| ---------------------- | :----: | :----------------: | --------------------------------------- | ------ |
+| value **_(required)_** | string |                    | Value to convert. wildcard is supported |        |
+| label                  | string |   same as value    | String to show as label.                |        |
+| icon                   | string | default state icon | Icon to show.                           |        |
+| icon_color             | string |                    | icon color for this state.              | v1.6.0 |
 
 If you use wildcard, make sure to put the more specific states first.
 

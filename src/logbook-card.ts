@@ -20,7 +20,7 @@ import { format } from 'fecha';
 
 import { HassEntity } from 'home-assistant-js-websocket';
 
-import { LogbookCardConfig, History, Attribute, AttributeConfig } from './types';
+import { LogbookCardConfig, History, Attribute, AttributeConfig, IconState } from './types';
 import { CARD_VERSION, DEFAULT_SHOW, DEFAULT_SEPARATOR_STYLE, DEFAULT_DURATION } from './const';
 import { localize } from './localize/localize';
 
@@ -131,9 +131,11 @@ export class LogbookCard extends LitElement {
       : entity.state;
   }
 
-  mapIcon(item: HassEntity): string {
+  mapIcon(item: HassEntity): IconState {
     const s = this.config?.state_map?.find(s => s.regexp?.test(item.state));
-    return s !== undefined && s.icon ? s.icon : stateIcon(item);
+    const iconSvg = s !== undefined && s.icon ? s.icon : stateIcon(item);
+
+    return { icon: iconSvg, color: s?.icon_color || null };
   }
 
   // From https://gist.github.com/donmccurdy/6d073ce2c6f3951312dfa45da14a420f by donmccurdy
@@ -389,7 +391,7 @@ export class LogbookCard extends LitElement {
     if (config.collapse && items.length > config.collapse) {
       const elemId = `expander${Math.random()
         .toString(10)
-        .substr(2)}`;
+        .substring(2)}`;
       return html`
         ${this.renderHistoryItems(items.slice(0, config.collapse))}
         <input type="checkbox" class="expand" id="${elemId}" />
@@ -447,7 +449,7 @@ export class LogbookCard extends LitElement {
     if (this.config?.show?.icon) {
       return html`
         <div class="item-icon">
-          <ha-icon .icon=${item.icon}></ha-icon>
+          <ha-icon .icon=${item.icon.icon} style=${item.icon.color ? `color: ${item.icon.color}` : ``}></ha-icon>
         </div>
       `;
     }

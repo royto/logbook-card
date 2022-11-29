@@ -44,7 +44,13 @@ export interface StateMap {
   value?: string;
   label?: string;
   icon?: string;
+  icon_color: string | null;
   regexp?: RegExp;
+}
+
+export interface IconState {
+  icon: string;
+  color: string | null;
 }
 
 export interface ShowConfiguration {
@@ -69,7 +75,7 @@ export interface History {
   end: Date;
   attributes: Array<Attribute>;
   duration: number;
-  icon: string;
+  icon: IconState;
 }
 
 export interface Attribute {
