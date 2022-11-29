@@ -418,7 +418,7 @@ export class LogbookCard extends LitElement {
         <div class="item-content">
           ${this.config?.show?.state
             ? html`
-                <span>${item.label}</span>
+                <span class="state">${item.label}</span>
               `
             : html``}
           ${this.config?.show?.duration
