@@ -1,7 +1,6 @@
 import { ActionConfig, LovelaceCardConfig } from 'custom-card-helpers';
 import { UnitName } from 'humanize-duration-ts';
 
-// TODO Add your configuration elements here for type-checking
 export interface LogbookCardConfig extends LovelaceCardConfig {
   type: string;
   title?: string;
@@ -14,6 +13,7 @@ export interface LogbookCardConfig extends LovelaceCardConfig {
   state_map?: Array<StateMap>;
   duration?: DurationConfig;
   hiddenState?: Array<string>;
+  hidden_state?: Array<string>;
   show?: ShowConfiguration;
   date_format?: string;
   separator_style?: SeparatorStyleConfig;

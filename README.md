@@ -39,7 +39,8 @@ resources:
 | entity          | string                                            | **required** | v0.1  |                          | An entity_id.                                                                                                   |
 | title           | string                                            | optional     | v0.1  | |_friendly_name_ History  | Card title                                                                                                      |
 | history         | integer                                           | optional     | v0.1  | | 5                        | Numbers of days of history of the logbook                                                                       |
-| hiddenState     | string[]                                          | optional     | v0.1  | | []                       | States to hide. wildcards are supported.                                                                        |
+| hiddenState     | string[]                                          | optional     | v0.1  | v1.6.0 | []                       | **Deprecated: use hidden_state instead**                                                       |
+| hidden_state     | string[]                                          | optional     | v1.6.0  | | []                       | States to hide. wildcards are supported.                                                                        |
 | desc            | bool                                              | optional     | v0.1  | | True                     | is logbook ordered descending                                                                                   |
 | no_event        | string                                            | optional     | v0.1  | | No event on the period   | message displayed if no event to display                                                                        |
 | max_items       | integer                                           | optional     | v0.2  | | -1                       | Number of items to display. Ignored if < 0                                                                      |
@@ -141,7 +142,7 @@ Example with hidden states
 type: 'custom:logbook-card'
 desc: true
 entity: sun.sun
-hiddenState:
+hidden_state:
   - above_horizon
 title: Day history
 ```
@@ -218,7 +219,7 @@ Example with custom icons:
 
 ```yaml
 entity: sensor.vacuum
-hiddenState:
+hidden_state:
   - ''
 state_map:
   - icon: 'mdi:stove'
@@ -241,7 +242,7 @@ Example with collapsed view:
 
 ```yaml
 entity: sensor.vacuum
-hiddenState:
+hidden_state:
   - ''
 collapse: 5
 title: Vacuum History

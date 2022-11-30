@@ -71,7 +71,10 @@ export class LogbookCard extends LitElement {
     if (config.max_items !== undefined && !Number.isInteger(config.max_items)) {
       throw new Error('max_items must be an Integer.');
     }
-    if (config.hiddenState && !Array.isArray(config.hiddenState)) {
+    if (config.hidden_state && !Array.isArray(config.hidden_state)) {
+      throw new Error('hidden_state must be an array');
+    }
+    if (!config.hidden_state && config.hiddenState && !Array.isArray(config.hiddenState)) {
       throw new Error('hiddenState must be an array');
     }
     if (config.state_map && !Array.isArray(config.state_map)) {
@@ -98,6 +101,7 @@ export class LogbookCard extends LitElement {
 
     this.config = {
       history: 5,
+      hidden_state: [],
       hiddenState: [],
       desc: true,
       max_items: -1,
@@ -117,8 +121,13 @@ export class LogbookCard extends LitElement {
       separator_style: { ...DEFAULT_SEPARATOR_STYLE, ...config.separator_style },
     };
 
-    if (config.hiddenState) {
-      this.hiddenStateRegexp = config.hiddenState.map(hs => this.wildcardToRegExp(hs));
+    //Kept for backward compatibility
+    if (!config.hidden_state && !!config.hiddenState) {
+      this.config.hidden_state = config.hiddenState;
+    }
+
+    if (this.config.hidden_state) {
+      this.hiddenStateRegexp = this.config.hidden_state.map(hs => this.wildcardToRegExp(hs));
     }
   }
 

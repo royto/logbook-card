@@ -336,7 +336,7 @@ export class LogbookCardEditor extends LitElement implements LovelaceCardEditor 
       </div>
 
       <p class="note">
-        Note: Setting hiddenState, duration_labels, attributes, separator_style, state_map are available exclusively
+        Note: Setting hidden_state, duration_labels, attributes, separator_style, state_map are available exclusively
         using Code Editor.
       </p>
     `;
