@@ -1,14 +1,6 @@
 import { DEFAULT_SHOW } from './const';
-import {
-  LitElement,
-  html,
-  customElement,
-  property,
-  TemplateResult,
-  CSSResult,
-  css,
-  internalProperty,
-} from 'lit-element';
+import { LitElement, html, TemplateResult, CSSResult, css } from 'lit';
+import { customElement, property, state } from 'lit/decorators';
 import { HomeAssistant, fireEvent, LovelaceCardEditor, ActionConfig } from 'custom-card-helpers';
 
 import { LogbookCardConfig } from './types';
@@ -37,9 +29,9 @@ const options = {
 @customElement('logbook-card-editor')
 export class LogbookCardEditor extends LitElement implements LovelaceCardEditor {
   @property({ attribute: false }) public hass?: HomeAssistant;
-  @internalProperty() private _config?: Partial<LogbookCardConfig>;
-  @internalProperty() private _toggle?: boolean;
-  @internalProperty() private _helpers?: any;
+  @state() private _config?: Partial<LogbookCardConfig>;
+  @state() private _toggle?: boolean;
+  @state() private _helpers?: any;
   private _initialized = false;
 
   public setConfig(config: LogbookCardConfig): void {

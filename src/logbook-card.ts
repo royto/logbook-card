@@ -18,11 +18,10 @@ import { HumanizeDurationLanguage, HumanizeDuration, HumanizeDurationOptions } f
 
 import { format } from 'fecha';
 
-import { HassEntity } from 'home-assistant-js-websocket';
-
 import { LogbookCardConfig, History, Attribute, AttributeConfig, IconState } from './types';
 import { CARD_VERSION, DEFAULT_SHOW, DEFAULT_SEPARATOR_STYLE, DEFAULT_DURATION } from './const';
 import { localize } from './localize/localize';
+import { HassEntity } from 'home-assistant-js-websocket/dist/types';
 
 /* eslint no-console: 0 */
 console.info(
@@ -136,7 +135,7 @@ export class LogbookCard extends LitElement {
     return s !== undefined && s.label
       ? s.label
       : this.hass
-      ? computeStateDisplay(this.hass.localize, entity, this.hass.selectedLanguage)
+      ? computeStateDisplay(this.hass.localize, entity, this.hass.locale)
       : entity.state;
   }
 
@@ -266,7 +265,7 @@ export class LogbookCard extends LitElement {
     if (this.config?.date_format) {
       return format(date, this.config?.date_format ?? undefined);
     }
-    return formatDateTime(date, this.hass?.language || 'en');
+    return formatDateTime(date, this.hass!.locale);
   }
 
   updateHistory(): void {
