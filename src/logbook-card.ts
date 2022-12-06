@@ -1,7 +1,8 @@
 import { LogbookCardEditor } from './editor';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { LitElement, html, customElement, property, CSSResult, TemplateResult, css, PropertyValues } from 'lit-element';
+import { LitElement, html, TemplateResult, css, PropertyValues, CSSResult } from 'lit';
+import { customElement, property, state } from 'lit/decorators';
 import { styleMap, StyleInfo } from 'lit-html/directives/style-map';
 import {
   HomeAssistant,
@@ -56,8 +57,8 @@ export class LogbookCard extends LitElement {
   }
 
   // Add any properties that should cause your element to re-render here
-  @property() public hass?: HomeAssistant;
-  @property() private config?: LogbookCardConfig;
+  @property() public hass!: HomeAssistant;
+  @state() private config!: LogbookCardConfig;
   @property() private history?: Array<History>;
 
   private lastHistoryChanged?: Date;
