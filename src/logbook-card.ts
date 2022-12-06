@@ -10,6 +10,9 @@ import {
   formatDateTime,
   computeStateDisplay,
   LovelaceCardEditor,
+  handleAction,
+  ActionHandlerEvent,
+  hasAction,
 } from 'custom-card-helpers';
 
 import './editor';
@@ -22,6 +25,7 @@ import { LogbookCardConfig, History, Attribute, AttributeConfig, IconState } fro
 import { CARD_VERSION, DEFAULT_SHOW, DEFAULT_SEPARATOR_STYLE, DEFAULT_DURATION } from './const';
 import { localize } from './localize/localize';
 import { HassEntity } from 'home-assistant-js-websocket/dist/types';
+import { actionHandler } from './action-handler-directive';
 
 /* eslint no-console: 0 */
 console.info(
@@ -355,6 +359,12 @@ export class LogbookCard extends LitElement {
     return false;
   }
 
+  private _handleAction(ev: ActionHandlerEvent): void {
+    if (this.hass && this.config && ev.detail.action) {
+      handleAction(this, this.hass, this.config, ev.detail.action);
+    }
+  }
+
   protected render(): TemplateResult | void {
     if (!this.config || !this.hass) {
       return html``;
@@ -369,17 +379,17 @@ export class LogbookCard extends LitElement {
       `;
     }*/
 
-    /*
-    @action=${this._handleAction}
-    .actionHandler=${actionHandler({
-      hasHold: this.config.hold_action.action !== 'none',
-      hasDoubleTap: this.config.double_tap_action !== 'none',
-      repeat: this.config.hold_action ? this.config.hold_action.repeat : undefined,
-    })}
-    //*/
-
     return html`
-      <ha-card .header=${this.config.title} tabindex="0" aria-label=${`${this.config.title}`}>
+      <ha-card
+        @action=${this._handleAction}
+        .actionHandler=${actionHandler({
+          hasHold: hasAction(this.config.hold_action),
+          hasDoubleClick: hasAction(this.config.double_tap_action),
+        })}
+        .header=${this.config.title}
+        tabindex="0"
+        aria-label=${`${this.config.title}`}
+      >
         <div class="card-content grid" style="[[contentStyle]]">
           ${this.renderHistory(this.history, this.config)}
         </div>

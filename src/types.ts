@@ -18,7 +18,6 @@ export interface LogbookCardConfig extends LovelaceCardConfig {
   date_format?: string;
   separator_style?: SeparatorStyleConfig;
   collapse?: number;
-
   tap_action?: ActionConfig;
   hold_action?: ActionConfig;
   double_tap_action?: ActionConfig;
