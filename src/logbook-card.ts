@@ -1,7 +1,7 @@
 import { LogbookCardEditor } from './editor';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { LitElement, html, TemplateResult, css, PropertyValues, CSSResult } from 'lit';
+import { LitElement, html, TemplateResult, css, PropertyValues, CSSResultGroup } from 'lit';
 import { customElement, property, state } from 'lit/decorators';
 import { styleMap, StyleInfo } from 'lit-html/directives/style-map';
 import {
@@ -335,12 +335,6 @@ export class LogbookCard extends LitElement {
       }
 
       this.lastHistoryChanged = new Date();
-
-      // New Feature
-      // l10n
-      // Editor
-      // Action -> button card as reference for this: https://github.com/custom-cards/button-card/blob/605e42ff39f0ea3ea9c99fc3d62aa2489ef68c8a/src/button-card.ts#L933
-      // Azure Pipeline ?
     }
   }
 
@@ -370,15 +364,6 @@ export class LogbookCard extends LitElement {
     if (!this.config || !this.hass) {
       return html``;
     }
-
-    // TODO Check for stateObj or other necessary things and render a warning if missing
-    /*if (this.config.show_warning) {
-      return html`
-        <ha-card>
-          <div class="warning">${localize('common.show_warning')}</div>
-        </ha-card>
-      `;
-    }*/
 
     return html`
       <ha-card
@@ -502,22 +487,8 @@ export class LogbookCard extends LitElement {
     `;
   }
 
-  /*
-  private _handleAction(ev: any): void {
-    if (this.hass && this.config && ev.detail.action) {
-      handleAction(this, this.hass, this.config, ev.detail.action);
-    }
-  }
-  //*/
-
-  static get styles(): CSSResult {
+  static get styles(): CSSResultGroup {
     return css`
-      .warning {
-        display: block;
-        color: black;
-        background-color: #fce588;
-        padding: 8px;
-      }
       .item {
         clear: both;
         padding: 5px 0;
