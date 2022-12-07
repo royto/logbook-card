@@ -20,7 +20,11 @@
     "humanize-duration-ts": "2.1.1",
     "lit": "2.4.1",
     "fecha": "4.2.1",
-    "@material/mwc-ripple": "^0.25.3"
+    "@material/mwc-ripple": "^0.25.3",
+    "@material/mwc-select": "^0.25.3",
+    "@material/mwc-textfield": "^0.25.3",
+    "@material/mwc-formfield": "^0.25.3",
+    "@material/mwc-switch": "^0.25.3"
   },
   "devDependencies": {
     "@babel/core": "^7.12.3",
