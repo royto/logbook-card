@@ -50,7 +50,7 @@ export class LogbookCard extends LitElement {
     return document.createElement('logbook-card-editor') as LogbookCardEditor;
   }
 
-  public static getStubConfig(_hass: HomeAssistant, entities: Array<any>): object {
+  public static getStubConfig(_hass: HomeAssistant, entities: Array<any>): Record<string, unknown> {
     return {
       entity: entities[0],
     };
@@ -270,7 +270,7 @@ export class LogbookCard extends LitElement {
     if (this.config?.date_format) {
       return format(date, this.config?.date_format ?? undefined);
     }
-    return formatDateTime(date, this.hass!.locale);
+    return formatDateTime(date, this.hass.locale);
   }
 
   updateHistory(): void {
