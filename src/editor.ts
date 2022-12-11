@@ -170,7 +170,7 @@ export class LogbookCardEditor extends LitElement implements LovelaceCardEditor 
         ${options.required.show
           ? html`
               <div class="values">
-                <mwc-select
+                <ha-select
                   naturalMenuWidth
                   fixedMenuPosition
                   label="Entity (Required)"
@@ -184,7 +184,7 @@ export class LogbookCardEditor extends LitElement implements LovelaceCardEditor 
                       <mwc-list-item .value=${entity}>${entity}</mwc-list-item>
                     `;
                   })}
-                </mwc-select>
+                </ha-select>
               </div>
             `
           : ''}
@@ -196,56 +196,56 @@ export class LogbookCardEditor extends LitElement implements LovelaceCardEditor 
         ${options.appearance.show
           ? html`
               <div class="values">
-                <mwc-textfield
+                <ha-textfield
                   label="Title (Optional)"
                   .value=${this._title}
                   .configValue=${'title'}
                   @input=${this._valueChanged}
-                ></mwc-textfield>
-                <mwc-textfield
+                ></ha-textfield>
+                <ha-textfield
                   type="number"
                   label="History: Numbers of days of history of the logbook"
                   min="1"
                   .value=${this._history}
                   .configValue=${'history'}
                   @input=${this._valueChanged}
-                ></mwc-textfield>
-                <mwc-textfield
+                ></ha-textfield>
+                <ha-textfield
                   type="number"
                   min="-1"
                   label="Max Items: Maximum of events to display (-1 to display all events)"
                   .value=${this._max_items}
                   .configValue=${'max_items'}
                   @input=${this._valueChanged}
-                ></mwc-textfield>
-                <mwc-textfield
+                ></ha-textfield>
+                <ha-textfield
                   label="Text when no event"
                   .value=${this._no_event}
                   .configValue=${'no_event'}
                   @input=${this._valueChanged}
-                ></mwc-textfield>
-                <mwc-textfield
+                ></ha-textfield>
+                <ha-textfield
                   type="number"
                   label="Collapse: Number of entities to show. Rest will be available in expandable section"
                   .value=${this._collapse}
                   .configValue=${'collapse'}
                   @input=${this._valueChanged}
-                ></mwc-textfield>
-                <mwc-textfield
+                ></ha-textfield>
+                <ha-textfield
                   label="Date format"
                   .value=${this._date_format}
                   .configValue=${'date_format'}
                   @input=${this._valueChanged}
-                ></mwc-textfield>
+                ></ha-textfield>
                 <p>
-                  <mwc-formfield .label=${`Display events descending ${this._desc ? 'on' : 'off'}`}>
-                    <mwc-switch
+                  <ha-formfield .label=${`Display events descending ${this._desc ? 'on' : 'off'}`}>
+                    <ha-switch
                       aria-label=${`Toggle desc ${this._desc ? 'on' : 'off'}`}
                       .checked=${this._desc !== false}
                       .configValue=${'desc'}
                       @change=${this._valueChanged}
                     ></mwv-switch>
-                  </mwc-formfield>
+                  </ha-formfield>
                 </p>
               </div>
             `
@@ -258,54 +258,54 @@ export class LogbookCardEditor extends LitElement implements LovelaceCardEditor 
         ${options.showOptions.show
           ? html`
               <div class="values">
-                <mwc-formfield .label=${`Display state`}>
-                  <mwc-switch
+                <ha-formfield .label=${`Display state`}>
+                  <ha-switch
                     aria-label=${`Toggle display of state ${this._show_state ? 'off' : 'on'}`}
                     .checked=${this._show_state !== false}
                     .configValue=${'state'}
                     @change=${this._showOptionChanged}
-                  ></mwc-switch>
-                </mwc-formfield>
-                <mwc-formfield .label=${`Display duration`}>
-                  <mwc-switch
+                  ></ha-switch>
+                </ha-formfield>
+                <ha-formfield .label=${`Display duration`}>
+                  <ha-switch
                     aria-label=${`Toggle display of duration ${this._show_state ? 'off' : 'on'}`}
                     .checked=${this._show_duration !== false}
                     .configValue=${'duration'}
                     @change=${this._showOptionChanged}
-                  ></mwc-switch>
-                </mwc-formfield>
-                <mwc-formfield .label=${`Display start date`}>
-                  <mwc-switch
+                  ></ha-switch>
+                </ha-formfield>
+                <ha-formfield .label=${`Display start date`}>
+                  <ha-switch
                     aria-label=${`Toggle display of start date ${this._show_start_date ? 'off' : 'on'}`}
                     .checked=${this._show_start_date !== false}
                     .configValue=${'start_date'}
                     @change=${this._showOptionChanged}
-                  ></mwc-switch>
-                </mwc-formfield>
-                <mwc-formfield .label=${`Display end date`}>
-                  <mwc-switch
+                  ></ha-switch>
+                </ha-formfield>
+                <ha-formfield .label=${`Display end date`}>
+                  <ha-switch
                     aria-label=${`Toggle display of end date ${this._show_end_date ? 'off' : 'on'}`}
                     .checked=${this._show_end_date !== false}
                     .configValue=${'end_date'}
                     @change=${this._showOptionChanged}
-                  ></mwc-switch>
-                </mwc-formfield>
-                <mwc-formfield .label=${`Display icon`}>
-                  <mwc-switch
+                  ></ha-switch>
+                </ha-formfield>
+                <ha-formfield .label=${`Display icon`}>
+                  <ha-switch
                     aria-label=${`Toggle display of icon ${this._show_icon ? 'off' : 'on'}`}
                     .checked=${this._show_icon === true}
                     .configValue=${'icon'}
                     @change=${this._showOptionChanged}
-                  ></mwc-switch>
-                </mwc-formfield>
-                <mwc-formfield .label=${`Display separator`}>
-                  <mwc-switch
+                  ></ha-switch>
+                </ha-formfield>
+                <ha-formfield .label=${`Display separator`}>
+                  <ha-switch
                     aria-label=${`Toggle display of event separator ${this._show_separator ? 'off' : 'on'}`}
                     .checked=${this._show_separator !== false}
                     .configValue=${'separator'}
                     @change=${this._showOptionChanged}
-                  ></mwc-switch>
-                </mwc-formfield>
+                  ></ha-switch>
+                </ha-formfield>
               </div>
             `
           : ''}
@@ -418,17 +418,17 @@ export class LogbookCardEditor extends LitElement implements LovelaceCardEditor 
         padding-inline: 1rem;
         padding-block: 0.5rem;
       }
-      mwc-select,
-      mwc-textfield {
+      ha-select,
+      ha-textfield {
         margin-bottom: 1rem;
         display: block;
       }
-      mwc-formfield {
+      ha-formfield {
         display: block;
         margin-inline: 0.5rem;
         margin-block: 1rem;
       }
-      mwc-switch {
+      ha-switch {
         --mdc-theme-secondary: var(--switch-checked-color);
       }
       .note {
