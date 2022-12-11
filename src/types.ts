@@ -12,7 +12,6 @@ export interface LogbookCardConfig extends LovelaceCardConfig {
   attributes?: Array<AttributeConfig>;
   state_map?: Array<StateMap>;
   duration?: DurationConfig;
-  hiddenState?: Array<string>;
   hidden_state?: Array<string>;
   show?: ShowConfiguration;
   date_format?: string;

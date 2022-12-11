@@ -78,9 +78,6 @@ export class LogbookCard extends LitElement {
     if (config.hidden_state && !Array.isArray(config.hidden_state)) {
       throw new Error('hidden_state must be an array');
     }
-    if (!config.hidden_state && config.hiddenState && !Array.isArray(config.hiddenState)) {
-      throw new Error('hiddenState must be an array');
-    }
     if (config.state_map && !Array.isArray(config.state_map)) {
       throw new Error('state_map must be an array');
     }
@@ -106,7 +103,6 @@ export class LogbookCard extends LitElement {
     this.config = {
       history: 5,
       hidden_state: [],
-      hiddenState: [],
       desc: true,
       max_items: -1,
       no_event: 'No event on the period',
@@ -124,11 +120,6 @@ export class LogbookCard extends LitElement {
       duration_labels: { ...config.duration_labels },
       separator_style: { ...DEFAULT_SEPARATOR_STYLE, ...config.separator_style },
     };
-
-    //Kept for backward compatibility
-    if (!config.hidden_state && !!config.hiddenState) {
-      this.config.hidden_state = config.hiddenState;
-    }
 
     if (this.config.hidden_state) {
       this.hiddenStateRegexp = this.config.hidden_state.map(hs => this.wildcardToRegExp(hs));
