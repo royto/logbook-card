@@ -15,7 +15,7 @@
   "author": "Julien Roy <royto81+github@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "custom-card-helpers": "^1.7.2",
+    "custom-card-helpers": "1.7.1",
     "home-assistant-js-websocket": "^6.0.1",
     "humanize-duration-ts": "2.1.1",
     "lit": "2.4.1",
