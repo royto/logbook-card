@@ -30,9 +30,9 @@ import { actionHandler } from './action-handler-directive';
 
 /* eslint no-console: 0 */
 console.info(
-  `%c  LOGBOOK-CARD \n%c  ${localize('common.version')} ${CARD_VERSION}    `,
+  `%c LOGBOOK-CARD %c ${CARD_VERSION} `,
   'color: orange; font-weight: bold; background: black',
-  'color: white; font-weight: bold; background: dimgray',
+  'color: darkblue; font-weight: bold; background: white',
 );
 
 // Puts card into the UI card picker dialog
