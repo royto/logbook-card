@@ -1,3 +1,4 @@
+import { HassEntity } from 'home-assistant-js-websocket/dist/types';
 import { ActionConfig, LovelaceCardConfig } from 'custom-card-helpers';
 import { UnitName } from 'humanize-duration-ts';
 
@@ -43,7 +44,7 @@ export interface StateMap {
   value?: string;
   label?: string;
   icon?: string;
-  icon_color: string | null;
+  icon_color?: string;
   regexp?: RegExp;
 }
 
@@ -68,6 +69,7 @@ export interface AttributeConfig {
 }
 
 export interface History {
+  stateObj: HassEntity;
   state: string;
   label: string;
   start: Date;

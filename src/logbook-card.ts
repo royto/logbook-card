@@ -136,8 +136,13 @@ export class LogbookCard extends LitElement {
       : entity.state;
   }
 
-  mapIcon(item: HassEntity): IconState {
+  mapIcon(item: HassEntity): IconState | null {
     const s = this.config?.state_map?.find(s => s.regexp?.test(item.state));
+    console.log(s, s?.icon, s?.icon_color);
+    if (s === undefined || (s.icon === undefined && s.icon_color === undefined)) {
+      return null;
+    }
+
     const iconSvg = s !== undefined && s.icon ? s.icon : stateIcon(item);
 
     return { icon: iconSvg, color: s?.icon_color || null };
@@ -289,6 +294,7 @@ export class LogbookCard extends LitElement {
         hass.callApi('GET', uri).then((history: any) => {
           historyTemp = (history[0] || []) //empty if no history
             .map(h => ({
+              stateObj: h,
               state: h.state,
               label: this.mapState(h),
               start: new Date(h.last_changed),
@@ -447,9 +453,16 @@ export class LogbookCard extends LitElement {
 
   renderIcon(item: History): TemplateResult | void {
     if (this.config?.show?.icon) {
+      if (item.icon !== null) {
+        return html`
+          <div class="item-icon">
+            <ha-icon .icon=${item.icon.icon} style=${item.icon.color ? `color: ${item.icon.color}` : ``}></ha-icon>
+          </div>
+        `;
+      }
       return html`
         <div class="item-icon">
-          <ha-icon .icon=${item.icon.icon} style=${item.icon.color ? `color: ${item.icon.color}` : ``}></ha-icon>
+          <state-badge stateObj=${item.stateObj} stateColor="${true}"></state-badge>
         </div>
       `;
     }
@@ -503,6 +516,10 @@ export class LogbookCard extends LitElement {
       .item-icon {
         flex: 0 0 40px;
         color: var(--paper-item-icon-color, #44739e);
+      }
+      state-badge {
+        width: 1.5rem;
+        line-height: 1.5rem;
       }
       .state {
         white-space: pre-wrap;
