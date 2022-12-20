@@ -497,13 +497,14 @@ export class LogbookCard extends LitElement {
         white-space: pre-wrap;
       }
       .duration {
-        font-size: 0.85em;
+        font-size: 0.85rem;
         font-style: italic;
         float: right;
       }
       .date,
       .attribute {
-        font-size: 0.7em;
+        font-size: 0.8rem;
+        color: var(--secondary-text-color);
       }
       .attribute {
         display: flex;
