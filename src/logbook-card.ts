@@ -131,7 +131,7 @@ export class LogbookCard extends LitElement {
     return s !== undefined && s.label
       ? s.label
       : this.hass
-      ? computeStateDisplay(this.hass.localize, entity, this.hass.locale)
+      ? computeStateDisplay(this.hass.localize, entity, this.hass.locale!)
       : entity.state;
   }
 
@@ -261,7 +261,7 @@ export class LogbookCard extends LitElement {
     if (this.config?.date_format) {
       return format(date, this.config?.date_format ?? undefined);
     }
-    return formatDateTime(date, this.hass.locale);
+    return formatDateTime(date, this.hass.locale!);
   }
 
   updateHistory(): void {
@@ -357,16 +357,18 @@ export class LogbookCard extends LitElement {
     }
 
     return html`
-      <ha-card
-        @action=${this._handleAction}
-        .actionHandler=${actionHandler({
-          hasHold: hasAction(this.config.hold_action),
-          hasDoubleClick: hasAction(this.config.double_tap_action),
-        })}
-        .header=${this.config.title}
-        tabindex="0"
-        aria-label=${`${this.config.title}`}
-      >
+      <ha-card tabindex="0">
+        <h1
+          aria-label=${`${this.config.title}`}
+          class="card-header"
+          @action=${this._handleAction}
+          .actionHandler=${actionHandler({
+            hasHold: hasAction(this.config.hold_action),
+            hasDoubleClick: hasAction(this.config.double_tap_action),
+          })}
+        >
+          ${this.config.title}
+        </h1>
         <div class="card-content grid" style="[[contentStyle]]">
           ${this.renderHistory(this.history, this.config)}
         </div>
