@@ -482,6 +482,12 @@ export class LogbookCard extends LitElement {
 
   static get styles(): CSSResultGroup {
     return css`
+      .card-content {
+        max-height: 345px;
+        overflow-y: auto;
+        scrollbar-width: thin;
+        scrollbar-gutter: table;
+      }
       .item {
         clear: both;
         padding: 5px 0;
