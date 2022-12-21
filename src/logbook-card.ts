@@ -486,7 +486,7 @@ export class LogbookCard extends LitElement {
         max-height: 345px;
         overflow-y: auto;
         scrollbar-width: thin;
-        scrollbar-gutter: table;
+        scrollbar-gutter: stable;
       }
       .item {
         clear: both;
