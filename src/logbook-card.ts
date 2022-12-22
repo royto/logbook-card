@@ -107,6 +107,7 @@ export class LogbookCard extends LitElement {
       max_items: -1,
       no_event: 'No event on the period',
       attributes: [],
+      scroll: true,
       ...config,
       state_map:
         config.state_map?.map(state => {
@@ -356,6 +357,8 @@ export class LogbookCard extends LitElement {
       return html``;
     }
 
+    const contentCardClass = this.config.scroll ? 'card-content-scroll' : '';
+
     return html`
       <ha-card tabindex="0">
         <h1
@@ -369,7 +372,7 @@ export class LogbookCard extends LitElement {
         >
           ${this.config.title}
         </h1>
-        <div class="card-content grid" style="[[contentStyle]]">
+        <div class="card-content ${contentCardClass} grid" style="[[contentStyle]]">
           ${this.renderHistory(this.history, this.config)}
         </div>
       </ha-card>
@@ -482,7 +485,7 @@ export class LogbookCard extends LitElement {
 
   static get styles(): CSSResultGroup {
     return css`
-      .card-content {
+      .card-content-scroll {
         max-height: 345px;
         overflow-y: auto;
         scrollbar-width: thin;
