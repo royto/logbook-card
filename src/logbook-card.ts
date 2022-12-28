@@ -27,6 +27,7 @@ import { CARD_VERSION, DEFAULT_SHOW, DEFAULT_SEPARATOR_STYLE, DEFAULT_DURATION }
 import { localize } from './localize/localize';
 import { HassEntity } from 'home-assistant-js-websocket/dist/types';
 import { actionHandler } from './action-handler-directive';
+import { addSlashes, wildcardToRegExp } from './helpers';
 
 /* eslint no-console: 0 */
 console.info(
@@ -113,7 +114,7 @@ export class LogbookCard extends LitElement {
         config.state_map?.map(state => {
           return {
             ...state,
-            regexp: this.wildcardToRegExp(state.value ?? ''),
+            regexp: wildcardToRegExp(state.value ?? ''),
           };
         }) ?? [],
       show: { ...DEFAULT_SHOW, ...config.show },
@@ -123,7 +124,7 @@ export class LogbookCard extends LitElement {
     };
 
     if (this.config.hidden_state) {
-      this.hiddenStateRegexp = this.config.hidden_state.map(hs => this.wildcardToRegExp(hs));
+      this.hiddenStateRegexp = this.config.hidden_state.map(hs => wildcardToRegExp(hs));
     }
   }
 
@@ -137,7 +138,7 @@ export class LogbookCard extends LitElement {
   }
 
   mapIcon(item: HassEntity): IconState | null {
-    const s = this.config?.state_map?.find(s => s.regexp?.test(item.state));
+    const s = this.config?.state_map?.find(s => s.regexp?.test(addSlashes(item.state)));
     console.log(s, s?.icon, s?.icon_color);
     if (s === undefined || (s.icon === undefined && s.icon_color === undefined)) {
       return null;
@@ -146,29 +147,6 @@ export class LogbookCard extends LitElement {
     const iconSvg = s !== undefined && s.icon ? s.icon : stateIcon(item);
 
     return { icon: iconSvg, color: s?.icon_color || null };
-  }
-
-  // From https://gist.github.com/donmccurdy/6d073ce2c6f3951312dfa45da14a420f by donmccurdy
-  /**
-   * Creates a RegExp from the given string, converting asterisks to .* expressions,
-   * and escaping all other characters.
-   */
-  wildcardToRegExp(s: string): RegExp {
-    return new RegExp(
-      '^' +
-        s
-          .split(/\*+/)
-          .map(x => this.regExpEscape(x))
-          .join('.*') +
-        '$',
-    );
-  }
-
-  /**
-   * RegExp-escapes all characters in the given string.
-   */
-  regExpEscape(s: string): string {
-    return s.replace(/[|\\{}()[\]^$+*?.]/g, '\\$&');
   }
 
   squashSameState(array: Array<History>, val: History): Array<History> {
@@ -316,7 +294,7 @@ export class LogbookCard extends LitElement {
             }))
             //squash same state or unknown with previous state
             .reduce(this.squashSameState, [])
-            .filter(x => !this.hiddenStateRegexp.some(regexp => regexp.test(x.state)))
+            .filter(x => !this.hiddenStateRegexp.some(regexp => regexp.test(addSlashes(x.state))))
             .map(x => ({
               ...x,
               duration: this.getDuration(x.duration),
