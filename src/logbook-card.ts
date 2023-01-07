@@ -540,11 +540,11 @@ export class LogbookCard extends LitElement {
         transform: rotate(-90deg) scaleX(-1);
       }
       .expand + label + div {
-        max-height: 0;
+        display: none;
         overflow: hidden;
       }
       .expand:checked + label + div {
-        max-height: 1000px;
+        display: block;
       }
     `;
   }
