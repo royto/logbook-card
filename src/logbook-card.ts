@@ -91,8 +91,8 @@ export class LogbookCard extends LitElement {
     if (config.collapse && !Number.isInteger(config.collapse)) {
       throw new Error('collapse must be a number');
     }
-    if (config.collapse && config.max_items && config.collapse > config.max_items) {
-      throw new Error('collapse must be greater than max-items');
+    if (config.collapse && config.max_items && config.max_items > 0 && config.collapse > config.max_items) {
+      throw new Error('collapse must be lower than max-items');
     }
     if (config.duration?.units && !Array.isArray(config.duration.units)) {
       throw new Error('duration.units must be an array');
