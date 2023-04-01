@@ -1,5 +1,6 @@
-export function addSlashes(myString: string): string {
+export function addSlashes(myString: string | number): string {
   return myString
+    .toString()
     .replace(/\\/g, '\\\\')
     .replace(/\u0008/g, '\\b')
     .replace(/\t/g, '\\t')
@@ -22,7 +23,10 @@ function regExpEscape(s: string): string {
  * Creates a RegExp from the given string, converting asterisks to .* expressions,
  * and escaping all other characters.
  */
-export function wildcardToRegExp(s: string): RegExp {
+export function wildcardToRegExp(s: string | undefined): RegExp | undefined {
+  if (!s) {
+    return undefined;
+  }
   return new RegExp(
     '^' +
       s

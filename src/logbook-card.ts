@@ -22,7 +22,7 @@ import { HumanizeDurationLanguage, HumanizeDuration, HumanizeDurationOptions } f
 
 import { format } from 'fecha';
 
-import { LogbookCardConfig, History, Attribute, AttributeConfig, IconState } from './types';
+import { LogbookCardConfig, History, Attribute, AttributeConfig, IconState, HiddenConfig, HiddenRegExp } from './types';
 import { CARD_VERSION, DEFAULT_SHOW, DEFAULT_SEPARATOR_STYLE, DEFAULT_DURATION } from './const';
 import { localize } from './localize/localize';
 import { HassEntity } from 'home-assistant-js-websocket/dist/types';
@@ -64,7 +64,7 @@ export class LogbookCard extends LitElement {
 
   private lastHistoryChanged?: Date;
   private MAX_UPDATE_DURATION = 5000;
-  private hiddenStateRegexp: Array<RegExp> = new Array<RegExp>();
+  private hiddenStateRegexp: Array<HiddenRegExp> = new Array<HiddenRegExp>();
 
   public setConfig(config: LogbookCardConfig): void {
     if (!config) {
@@ -124,7 +124,19 @@ export class LogbookCard extends LitElement {
     };
 
     if (this.config.hidden_state) {
-      this.hiddenStateRegexp = this.config.hidden_state.map(hs => wildcardToRegExp(hs));
+      this.hiddenStateRegexp = this.config.hidden_state
+        .map(h => (typeof h === 'string' ? { state: h } : h))
+        .map(hs => ({
+          state: wildcardToRegExp(hs.state),
+          attribute: !hs.attribute
+            ? undefined
+            : {
+                name: hs.attribute.name,
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                value: wildcardToRegExp(hs.attribute.value)!,
+                hideIfMissing: hs.attribute.hideIfMissing ?? false,
+              },
+        }));
     }
   }
 
@@ -139,7 +151,6 @@ export class LogbookCard extends LitElement {
 
   mapIcon(item: HassEntity): IconState | null {
     const s = this.config?.state_map?.find(s => s.regexp?.test(addSlashes(item.state)));
-    console.log(s, s?.icon, s?.icon_color);
     if (s === undefined || (s.icon === undefined && s.icon_color === undefined)) {
       return null;
     }
@@ -248,6 +259,31 @@ export class LogbookCard extends LitElement {
     return formatDateTime(date, this.hass.locale!);
   }
 
+  filterEntry(entry: History): boolean {
+    if (this.hiddenStateRegexp.length === 0) {
+      return true;
+    }
+    return !this.hiddenStateRegexp.some(regexp => {
+      if (!!regexp.attribute && !entry.attributes.some(a => a.name === regexp.attribute?.name)) {
+        return regexp.attribute.hideIfMissing;
+      }
+
+      if (!!regexp.state && !!regexp.attribute) {
+        return (
+          regexp.state.test(addSlashes(entry.state)) &&
+          regexp.attribute.value.test(addSlashes(entry.stateObj.attributes[regexp.attribute.name]))
+        );
+      }
+
+      if (!!regexp.attribute) {
+        return regexp.attribute.value.test(addSlashes(entry.stateObj.attributes[regexp.attribute.name]));
+      }
+
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      return regexp.state!.test(addSlashes(entry.state));
+    });
+  }
+
   updateHistory(): void {
     const hass = this.hass;
     if (hass && this.config && this.config.entity) {
@@ -294,7 +330,7 @@ export class LogbookCard extends LitElement {
             }))
             //squash same state or unknown with previous state
             .reduce(this.squashSameState, [])
-            .filter(x => !this.hiddenStateRegexp.some(regexp => regexp.test(addSlashes(x.state))))
+            .filter(entry => this.filterEntry(entry))
             .map(x => ({
               ...x,
               duration: this.getDuration(x.duration),
@@ -440,7 +476,7 @@ export class LogbookCard extends LitElement {
       }
       return html`
         <div class="item-icon">
-          <state-badge stateObj=${item.stateObj} stateColor="${true}"></state-badge>
+          <state-badge .stateObj=${item.stateObj} stateColor="${true}"></state-badge>
         </div>
       `;
     }

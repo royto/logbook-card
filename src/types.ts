@@ -13,7 +13,7 @@ export interface LogbookCardConfig extends LovelaceCardConfig {
   attributes?: Array<AttributeConfig>;
   state_map?: Array<StateMap>;
   duration?: DurationConfig;
-  hidden_state?: Array<string>;
+  hidden_state?: Array<string | HiddenConfig>;
   show?: ShowConfiguration;
   date_format?: string;
   separator_style?: SeparatorStyleConfig;
@@ -22,6 +22,28 @@ export interface LogbookCardConfig extends LovelaceCardConfig {
   tap_action?: ActionConfig;
   hold_action?: ActionConfig;
   double_tap_action?: ActionConfig;
+}
+
+export interface HiddenConfig {
+  state?: string;
+  attribute?: AttributeHiddenConfig;
+}
+
+interface AttributeHiddenConfig {
+  name: string;
+  value: string;
+  hideIfMissing?: boolean;
+}
+
+export interface HiddenRegExp {
+  state?: RegExp;
+  attribute?: AttributeHiddenRegExp;
+}
+
+interface AttributeHiddenRegExp {
+  name: string;
+  value: RegExp;
+  hideIfMissing: boolean;
 }
 
 export interface DurationConfig {

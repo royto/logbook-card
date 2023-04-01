@@ -40,7 +40,7 @@ resources:
 | title             | string                                            | optional     | v0.1  | |_friendly_name_ History  | Card title                                                                                                      |
 | history           | integer                                           | optional     | v0.1  | | 5                        | Numbers of days of history of the logbook                                                                       |
 | hiddenState       | string[]                                          | optional     | v0.1  | v1.6.0 | []                       | **Deprecated: use hidden_state instead**                                                       |
-| hidden_state      | string[]                                          | optional     | v1.6.0  | | []                       | States to hide. wildcards are supported.                                                                        |
+| hidden_state      | string[] or [hidden config object](#hidden-config-object) | optional     | v1.6.0  | |[]                       | Hide logbook entry based on state and/or attribute. string value represent the state (wildcards are supported)                                                                        |
 | desc              | bool                                              | optional     | v0.1  | | True                     | is logbook ordered descending                                                                                   |
 | no_event          | string                                            | optional     | v0.1  | | No event on the period   | message displayed if no event to display                                                                        |
 | max_items         | integer                                           | optional     | v0.2  | | -1                       | Number of items to display. Ignored if < 0                                                                      |
@@ -130,6 +130,25 @@ Allows to have custom labels for duration.
 | week    | string | `w`         | label for week.    |
 | month   | string | `m`         | label for month.   |
 
+#### Hidden config object
+
+Introduce in 1.10.0
+
+| Name      |  Type                                                             |   Default   | Description        |
+| -------   | :---------------------------------------------------------------: | :---------: | ------------------ |
+| state     | string                                                            |             | state to hide.     |
+| attribute | [Attribute hidden config object](#attribute-hidden-config-object) |             | label for minute.  |
+
+#### Attribute hidden config object
+
+Introduce in 1.10.0
+
+| Name                   |  Type    |   Default   | Description                                       |
+| ---------------------- | :------: | :---------: | ------------------------------------------------- |
+| name **_(required)_**  | string   |             | the name of the attribute                         |
+| value **_(required)_** | string   |             | the value of the attribute. wildcard is supported |
+| hideIfMissing          | boolean  | false       | hidden if attribute is not set.                   |
+
 #### Separator style object
 
 | Name  |  Type  |        Default         | Description                                                                              |
@@ -149,7 +168,6 @@ Allows to have custom labels for duration.
 | service_data    | object | **Optional** | Service data to include (e.g. entity_id: media_player.bedroom) when action defined as call-service                                     | `none`      |
 | haptic          | string | **Optional** | Haptic feedback _success, warning, failure, light, medium, heavy, selection_ | `none`      |
 | repeat          | number | **Optional** | How often to repeat the `hold_action` in milliseconds.                                                                                 | `none`       |
-
 
 ### Example usage
 
