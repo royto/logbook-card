@@ -528,8 +528,10 @@ export class LogbookCard extends LitElement {
         flex: 1;
       }
       .item-icon {
-        flex: 0 0 50px;
+        flex: 0 0 4rem;
         color: var(--paper-item-icon-color, #44739e);
+        display: flex;
+        justify-content: center;
       }
       state-badge {
         line-height: 1.5rem;
