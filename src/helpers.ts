@@ -24,7 +24,7 @@ function regExpEscape(s: string): string {
  * and escaping all other characters.
  */
 export function wildcardToRegExp(s: string | undefined): RegExp | undefined {
-  if (!s) {
+  if (s === undefined) {
     return undefined;
   }
   return new RegExp(
