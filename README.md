@@ -56,6 +56,7 @@ resources:
 | tap_action        | [action object](#action-options)                 | optional     | v1.7.0 | | Action to take on tap  | action: more-info |
 | hold_action       | [action object](#action-options)                 | optional     | v1.7.0 | | Action to take on hold | none |
 | double_tap_action | [action object](#action-options)                 | optional     | v1.7.0 | | Action to take on double tap | none |
+| minimal_duration  | number (in seconds)                              | optional     | v1.11.0 | | Filter entry if duration is less than `minimal_duration` (entry will be squash if previous and next entry has same state) |
 
 #### State map object
 

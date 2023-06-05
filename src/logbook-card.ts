@@ -100,6 +100,9 @@ export class LogbookCard extends LitElement {
     if (config.duration?.largest && !Number.isInteger(config.duration.largest) && config.duration.largest !== 'full') {
       throw new Error('duration.largest should be a number or `full`');
     }
+    if (config.minimalDuration && !Number.isInteger(config.minimalDuration) && config.minimalDuration <= 0) {
+      throw new Error('minimalDuration should be a positive number');
+    }
 
     this.config = {
       history: 5,
@@ -259,6 +262,13 @@ export class LogbookCard extends LitElement {
     return formatDateTime(date, this.hass.locale!);
   }
 
+  filterIfDurationIsLessThanMinimal(entry: History): boolean {
+    if (!this.config.minimalDuration) {
+      return true;
+    }
+    return entry.duration >= this.config.minimalDuration * 1000;
+  }
+
   filterEntry(entry: History): boolean {
     if (this.hiddenStateRegexp.length === 0) {
       return true;
@@ -328,6 +338,7 @@ export class LogbookCard extends LitElement {
               ...x,
               duration: x.end - x.start,
             }))
+            .filter(entry => this.filterIfDurationIsLessThanMinimal(entry))
             //squash same state or unknown with previous state
             .reduce(this.squashSameState, [])
             .filter(entry => this.filterEntry(entry))
