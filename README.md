@@ -226,13 +226,14 @@ type: 'custom:logbook-card'
 desc: true
 entity: binary_sensor.garage_opening_sensor
 title: 'Garage'
-duration_labels:
-  second: 's'
-  minute: 'm'
-  hour: 'h'
-  day: 'j'
-  week: 'w'
-  month: 'm'
+duration:
+  labels:
+    second: 's'
+    minute: 'm'
+    hour: 'h'
+    day: 'j'
+    week: 'w'
+    month: 'm'
 ```
 
 Example with custom separator style:
