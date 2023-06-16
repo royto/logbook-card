@@ -100,8 +100,8 @@ export class LogbookCard extends LitElement {
     if (config.duration?.largest && !Number.isInteger(config.duration.largest) && config.duration.largest !== 'full') {
       throw new Error('duration.largest should be a number or `full`');
     }
-    if (config.minimalDuration && !Number.isInteger(config.minimalDuration) && config.minimalDuration <= 0) {
-      throw new Error('minimalDuration should be a positive number');
+    if (config.minimal_duration && !Number.isInteger(config.minimal_duration) && config.minimal_duration <= 0) {
+      throw new Error('minimal_duration should be a positive number');
     }
 
     this.config = {
@@ -263,10 +263,10 @@ export class LogbookCard extends LitElement {
   }
 
   filterIfDurationIsLessThanMinimal(entry: History): boolean {
-    if (!this.config.minimalDuration) {
+    if (!this.config.minimal_duration) {
       return true;
     }
-    return entry.duration >= this.config.minimalDuration * 1000;
+    return entry.duration >= this.config.minimal_duration * 1000;
   }
 
   filterEntry(entry: History): boolean {
