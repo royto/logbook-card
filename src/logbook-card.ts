@@ -341,11 +341,7 @@ export class LogbookCard extends LitElement {
             .filter(entry => this.filterIfDurationIsLessThanMinimal(entry))
             //squash same state or unknown with previous state
             .reduce(this.squashSameState, [])
-            .filter(entry => this.filterEntry(entry))
-            .map(x => ({
-              ...x,
-              duration: this.getDuration(x.duration),
-            }));
+            .filter(entry => this.filterEntry(entry));
 
           if (historyTemp && this.config?.desc) {
             historyTemp = historyTemp.reverse();
@@ -454,7 +450,7 @@ export class LogbookCard extends LitElement {
             : html``}
           ${this.config?.show?.duration
             ? html`
-                <span class="duration">${item.duration}</span>
+                <span class="duration">${this.getDuration(item.duration)}</span>
               `
             : html``}
           ${this.renderHistoryDate(item)}${item.attributes?.map(this.renderAttributes)}
