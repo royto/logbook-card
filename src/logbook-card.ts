@@ -274,7 +274,7 @@ export class LogbookCard extends LitElement {
       return true;
     }
     return !this.hiddenStateRegexp.some(regexp => {
-      if (!!regexp.attribute && !entry.attributes.some(a => a.name === regexp.attribute?.name)) {
+      if (!!regexp.attribute && !Object.keys(entry.stateObj.attributes).some(a => a === regexp.attribute?.name)) {
         return regexp.attribute.hideIfMissing;
       }
 
