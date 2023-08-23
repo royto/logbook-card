@@ -48,15 +48,15 @@ resources:
 | show              | list                                              | optional     | v0.2  |  |                         | List of UI elements to display/hide, for available items see available [show options](#available-show-options). |
 | attributes        | [attributes object](#attribute-object)            | optional     | v0.4  |                          | List of attributes to display.                                                                                  |
 | duration_labels   | [duration_labels object](#until-v141) | optional     | v0.5  | v1.5.0 |                         | labels for duration.                                                                                            |
-| date_format       | string                                            | optional     | v1.0  |  | default date time format | see [fecha formatting token](https://github.com/taylorhakes/fecha#formatting-tokens)                            |
+| date_format       | string or `relative`                              | optional     | v1.0  |  | default date time format | see [fecha formatting token](https://github.com/taylorhakes/fecha#formatting-tokens). Use `relative` to have relative time like `2 days ago` |
 | separator_style   | [separator_style object](#separator-style-object) | optional     | v1.0  |  |                         | see style for separator (if activated)                                                                          |
 | collapse          | number                                            | optional     | v1.2  | |                          | Number of entities to show. Rest will be available in expandable section                                        |
-| duration          | [duration object](#duration-object)              | optional     | v1.5.0 | | duration configuration |
-| scroll            | boolean                                          | optional     | v1.9.0 | | true                   | set a max height for card and use scrollbar |
-| tap_action        | [action object](#action-options)                 | optional     | v1.7.0 | | Action to take on tap  | action: more-info |
-| hold_action       | [action object](#action-options)                 | optional     | v1.7.0 | | Action to take on hold | none |
-| double_tap_action | [action object](#action-options)                 | optional     | v1.7.0 | | Action to take on double tap | none |
-| minimal_duration  | number (in seconds)                              | optional     | v1.11.0 | | Filter entry if duration is less than `minimal_duration` (entry will be squash if previous and next entry has same state) |
+| duration          | [duration object](#duration-object)               | optional     | v1.5.0 | | duration configuration |
+| scroll            | boolean                                           | optional     | v1.9.0 | | true                   | set a max height for card and use scrollbar |
+| tap_action        | [action object](#action-options)                  | optional     | v1.7.0 | | Action to take on tap  | action: more-info |
+| hold_action       | [action object](#action-options)                  | optional     | v1.7.0 | | Action to take on hold | none |
+| double_tap_action | [action object](#action-options)                  | optional     | v1.7.0 | | Action to take on double tap | none |
+| minimal_duration  | number (in seconds)                               | optional     | v1.11.0 | | Filter entry if duration is less than `minimal_duration` (entry will be squash if previous and next entry has same state) |
 
 #### State map object
 

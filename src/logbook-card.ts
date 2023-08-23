@@ -248,14 +248,19 @@ export class LogbookCard extends LitElement {
     return humanizeDuration.humanize(durationInMs, humanizeDurationOptions);
   }
 
-  formatAttributeValue(value: any, type: string | undefined): string {
+  formatAttributeValue(value: any, type: string | undefined): string | TemplateResult {
     if (type === 'date') {
       return this._displayDate(new Date(value));
     }
     return value;
   }
 
-  _displayDate(date: Date): string {
+  _displayDate(date: Date): string | TemplateResult {
+    if (this.config.date_format === 'relative') {
+      return html`
+        <ha-relative-time .hass=${this.hass} .datetime=${date}></ha-relative-time>
+      `;
+    }
     if (this.config?.date_format) {
       return format(date, this.config?.date_format ?? undefined);
     }

@@ -1,6 +1,7 @@
 import { HassEntity } from 'home-assistant-js-websocket/dist/types';
 import { ActionConfig, LovelaceCardConfig } from 'custom-card-helpers';
 import { UnitName } from 'humanize-duration-ts';
+import { TemplateResult } from 'lit';
 
 export interface LogbookCardConfig extends LovelaceCardConfig {
   type: string;
@@ -16,7 +17,7 @@ export interface LogbookCardConfig extends LovelaceCardConfig {
   minimal_duration?: number;
   hidden_state?: Array<string | HiddenConfig>;
   show?: ShowConfiguration;
-  date_format?: string;
+  date_format?: string | 'relative';
   separator_style?: SeparatorStyleConfig;
   collapse?: number;
   scroll?: boolean;
@@ -103,7 +104,7 @@ export interface History {
 }
 
 export interface Attribute {
-  value: string;
+  value: string | TemplateResult;
   name: string;
 }
 
