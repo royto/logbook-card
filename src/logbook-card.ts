@@ -5,7 +5,6 @@ import { LitElement, html, TemplateResult, css, PropertyValues, CSSResultGroup }
 import { customElement, property, state } from 'lit/decorators';
 import { styleMap, StyleInfo } from 'lit-html/directives/style-map';
 import {
-  HomeAssistant,
   hasConfigOrEntityChanged,
   stateIcon,
   formatDateTime,
@@ -22,7 +21,15 @@ import { HumanizeDurationLanguage, HumanizeDuration, HumanizeDurationOptions } f
 
 import { format } from 'fecha';
 
-import { LogbookCardConfig, History, Attribute, AttributeConfig, IconState, HiddenConfig, HiddenRegExp } from './types';
+import {
+  LogbookCardConfig,
+  History,
+  Attribute,
+  AttributeConfig,
+  IconState,
+  HiddenRegExp,
+  ExtendedHomeAssistant,
+} from './types';
 import { CARD_VERSION, DEFAULT_SHOW, DEFAULT_SEPARATOR_STYLE, DEFAULT_DURATION } from './const';
 import { localize } from './localize/localize';
 import { HassEntity } from 'home-assistant-js-websocket/dist/types';
@@ -51,14 +58,14 @@ export class LogbookCard extends LitElement {
     return document.createElement('logbook-card-editor') as LogbookCardEditor;
   }
 
-  public static getStubConfig(_hass: HomeAssistant, entities: Array<any>): Record<string, unknown> {
+  public static getStubConfig(_hass: ExtendedHomeAssistant, entities: Array<any>): Record<string, unknown> {
     return {
       entity: entities[0],
     };
   }
 
   // Add any properties that should cause your element to re-render here
-  @property() public hass!: HomeAssistant;
+  @property() public hass!: ExtendedHomeAssistant;
   @state() private config!: LogbookCardConfig;
   @property() private history?: Array<History>;
 
@@ -145,11 +152,18 @@ export class LogbookCard extends LitElement {
 
   mapState(entity: HassEntity): string {
     const s = this.config?.state_map?.find(s => s.regexp?.test(entity.state));
-    return s !== undefined && s.label
-      ? s.label
-      : this.hass
-      ? computeStateDisplay(this.hass.localize, entity, this.hass.locale!)
-      : entity.state;
+    if (s !== undefined && s.label) {
+      return s.label;
+    }
+
+    if (this.hass) {
+      if (this.hass.formatEntityState) {
+        return this.hass.formatEntityState(entity);
+      }
+      return computeStateDisplay(this.hass.localize, entity, this.hass.locale!);
+    }
+
+    return entity.state;
   }
 
   mapIcon(item: HassEntity): IconState | null {
@@ -174,7 +188,7 @@ export class LogbookCard extends LitElement {
     return array;
   }
 
-  extractAttributes(item: any): Array<Attribute> {
+  extractAttributes(item: HassEntity): Array<Attribute> {
     if (this.config?.attributes == null) {
       return [];
     }
@@ -196,9 +210,12 @@ export class LogbookCard extends LitElement {
             value: this.formatAttributeValue(attribute.join(','), undefined),
           });
         } else {
+          const attributeName = this.hass.formatEntityAttributeName
+            ? this.hass.formatEntityAttributeName(item, c.value)
+            : c.value;
           p.push({
-            name: c.label ? c.label : c.value,
-            value: this.formatAttributeValue(attribute, c.type),
+            name: c.label ? c.label : attributeName,
+            value: this.formatEntityAttributeValue(item, c.value, attribute, c.type),
           });
         }
       }
@@ -251,6 +268,21 @@ export class LogbookCard extends LitElement {
   formatAttributeValue(value: any, type: string | undefined): string | TemplateResult {
     if (type === 'date') {
       return this._displayDate(new Date(value));
+    }
+    return value;
+  }
+
+  formatEntityAttributeValue(
+    entity: HassEntity,
+    attribute: string,
+    value: any,
+    type: string | undefined,
+  ): string | TemplateResult {
+    if (type === 'date') {
+      return this._displayDate(new Date(value));
+    }
+    if (this.hass.formatEntityAttributeValue) {
+      return this.hass.formatEntityAttributeValue(entity, attribute);
     }
     return value;
   }

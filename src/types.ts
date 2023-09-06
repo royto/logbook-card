@@ -1,7 +1,13 @@
 import { HassEntity } from 'home-assistant-js-websocket/dist/types';
-import { ActionConfig, LovelaceCardConfig } from 'custom-card-helpers';
+import { ActionConfig, LovelaceCardConfig, HomeAssistant } from 'custom-card-helpers';
 import { UnitName } from 'humanize-duration-ts';
 import { TemplateResult } from 'lit';
+
+export interface ExtendedHomeAssistant extends HomeAssistant {
+  formatEntityState(stateObj: HassEntity, state?: string): string;
+  formatEntityAttributeValue(stateObj: HassEntity, attribute: string, value?: string): string;
+  formatEntityAttributeName(stateObj: HassEntity, attribute: string): string;
+}
 
 export interface LogbookCardConfig extends LovelaceCardConfig {
   type: string;
