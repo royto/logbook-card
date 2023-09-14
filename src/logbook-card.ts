@@ -29,6 +29,8 @@ import {
   IconState,
   HiddenRegExp,
   ExtendedHomeAssistant,
+  HistoryOrCustomLogEvent,
+  CustomLogEvent,
 } from './types';
 import { CARD_VERSION, DEFAULT_SHOW, DEFAULT_SEPARATOR_STYLE, DEFAULT_DURATION } from './const';
 import { localize } from './localize/localize';
@@ -65,9 +67,9 @@ export class LogbookCard extends LitElement {
   }
 
   // Add any properties that should cause your element to re-render here
-  @property() public hass!: ExtendedHomeAssistant;
+  @property({ type: Object }) public hass!: ExtendedHomeAssistant;
   @state() private config!: LogbookCardConfig;
-  @property() private history?: Array<History>;
+  @property({ type: Array }) private history: Array<HistoryOrCustomLogEvent> = [];
 
   private lastHistoryChanged?: Date;
   private MAX_UPDATE_DURATION = 5000;
@@ -119,6 +121,7 @@ export class LogbookCard extends LitElement {
       no_event: 'No event on the period',
       attributes: [],
       scroll: true,
+      custom_logs: false,
       ...config,
       state_map:
         config.state_map?.map(state => {
@@ -160,7 +163,7 @@ export class LogbookCard extends LitElement {
       if (this.hass.formatEntityState) {
         return this.hass.formatEntityState(entity);
       }
-      return computeStateDisplay(this.hass.localize, entity, this.hass.locale!);
+      return computeStateDisplay(this.hass.localize, entity, this.hass.locale);
     }
 
     return entity.state;
@@ -296,7 +299,7 @@ export class LogbookCard extends LitElement {
     if (this.config?.date_format) {
       return format(date, this.config?.date_format ?? undefined);
     }
-    return formatDateTime(date, this.hass.locale!);
+    return formatDateTime(date, this.hass.locale);
   }
 
   filterIfDurationIsLessThanMinimal(entry: History): boolean {
@@ -349,49 +352,68 @@ export class LogbookCard extends LitElement {
           '&end_time=' +
           new Date().toISOString();
 
-        let historyTemp: Array<History> = [];
+        const historyPromise = hass.callApi('GET', uri).then((history: any) => {
+          return (
+            (history[0] || []) //empty if no history
+              .map(h => ({
+                type: 'history',
+                stateObj: h,
+                state: h.state,
+                label: this.mapState(h),
+                start: new Date(h.last_changed),
+                attributes: this.extractAttributes(h),
+                icon: this.mapIcon(h),
+              }))
+              .map((x, i, arr) => {
+                if (i < arr.length - 1) {
+                  return {
+                    ...x,
+                    end: arr[i + 1].start,
+                  };
+                }
+                return { ...x, end: new Date() };
+              })
+              .map(x => ({
+                ...x,
+                duration: x.end - x.start,
+              }))
+              .filter(entry => this.filterIfDurationIsLessThanMinimal(entry))
+              //squash same state or unknown with previous state
+              .reduce(this.squashSameState, [])
+              .filter(entry => this.filterEntry(entry))
+          );
+        });
+        const customLogsPromise = this.getCustomLogsPromise(startDate);
 
-        //TODO Convert to async await ?
-        hass.callApi('GET', uri).then((history: any) => {
-          historyTemp = (history[0] || []) //empty if no history
-            .map(h => ({
-              stateObj: h,
-              state: h.state,
-              label: this.mapState(h),
-              start: new Date(h.last_changed),
-              attributes: this.extractAttributes(h),
-              icon: this.mapIcon(h),
-            }))
-            .map((x, i, arr) => {
-              if (i < arr.length - 1) {
-                return {
-                  ...x,
-                  end: arr[i + 1].start,
-                };
-              }
-              return { ...x, end: new Date() };
-            })
-            .map(x => ({
-              ...x,
-              duration: x.end - x.start,
-            }))
-            .filter(entry => this.filterIfDurationIsLessThanMinimal(entry))
-            //squash same state or unknown with previous state
-            .reduce(this.squashSameState, [])
-            .filter(entry => this.filterEntry(entry));
+        Promise.all([historyPromise, customLogsPromise]).then(([history, customLogs]) => {
+          let historyAndCustomLogs = [...history, ...customLogs].sort((a, b) => a.start.valueOf() - b.start.valueOf());
 
-          if (historyTemp && this.config?.desc) {
-            historyTemp = historyTemp.reverse();
+          if (this.config?.desc) {
+            historyAndCustomLogs = historyAndCustomLogs.reverse();
           }
-          if (historyTemp && this.config && this.config.max_items && this.config.max_items > 0) {
-            historyTemp = historyTemp.splice(0, this.config?.max_items);
+          if (this.config && this.config.max_items && this.config.max_items > 0) {
+            historyAndCustomLogs = historyAndCustomLogs.splice(0, this.config?.max_items);
           }
-          this.history = historyTemp;
+
+          this.history = historyAndCustomLogs;
         });
       }
 
       this.lastHistoryChanged = new Date();
     }
+  }
+
+  private getCustomLogsPromise(startDate: Date): Promise<CustomLogEvent[]> {
+    if (this.config.custom_logs) {
+      return this.hass
+        .callApi('GET', `logbook/${startDate.toISOString()}?entity=${this.config.entity}`)
+        .then((response: any) => {
+          return response
+            .filter(e => e.context_service === 'log')
+            .map(e => ({ start: new Date(e.when), name: e.name, message: e.message }));
+        });
+    }
+    return Promise.resolve([]);
   }
 
   protected shouldUpdate(changedProps: PropertyValues): boolean {
@@ -417,7 +439,7 @@ export class LogbookCard extends LitElement {
   }
 
   protected render(): TemplateResult | void {
-    if (!this.config || !this.hass) {
+    if (!this.config || !this.hass || !this.lastHistoryChanged) {
       return html``;
     }
 
@@ -443,7 +465,8 @@ export class LogbookCard extends LitElement {
     `;
   }
 
-  renderHistory(items: History[] | undefined, config: LogbookCardConfig): TemplateResult {
+  renderHistory(items: HistoryOrCustomLogEvent[] | undefined, config: LogbookCardConfig): TemplateResult {
+    //TODO: first render ...
     if (!items || items?.length === 0) {
       return html`
         <p>
@@ -469,9 +492,28 @@ export class LogbookCard extends LitElement {
     }
   }
 
-  renderHistoryItems(items: History[]): TemplateResult {
+  renderHistoryItems(items: HistoryOrCustomLogEvent[]): TemplateResult {
     return html`
-      ${items?.map((item, index, array) => this.renderHistoryItem(item, index + 1 === array.length))}
+      ${items?.map((item, index, array) => {
+        const isLast = index + 1 === array.length;
+        if (item.type === 'history') {
+          return this.renderHistoryItem(item, isLast);
+        }
+        return this.renderCustomLogEvent(item, isLast);
+      })}
+    `;
+  }
+
+  renderCustomLogEvent(customLogEvent: CustomLogEvent, isLast: boolean): TemplateResult {
+    return html`
+      <div class="item">
+        ${this.renderCustomLogIcon()}
+        <div class="item-content">
+          ${customLogEvent.name} - ${customLogEvent.message}
+          <div class="date">${this._displayDate(customLogEvent.start)}</div>
+        </div>
+      </div>
+      ${!isLast ? this.renderSeparator() : ``}
     `;
   }
 
@@ -509,6 +551,17 @@ export class LogbookCard extends LitElement {
     }
   }
 
+  renderCustomLogIcon(): TemplateResult | void {
+    if (this.config?.show?.icon && this.config.entity) {
+      const state = this.hass.states[this.config.entity];
+      return html`
+        <div class="item-icon">
+          <state-badge .stateObj=${state} stateColor="false"></state-badge>
+        </div>
+      `;
+    }
+  }
+
   renderIcon(item: History): TemplateResult | void {
     if (this.config?.show?.icon) {
       if (item.icon !== null) {
@@ -520,7 +573,7 @@ export class LogbookCard extends LitElement {
       }
       return html`
         <div class="item-icon">
-          <state-badge .stateObj=${item.stateObj} stateColor="${true}"></state-badge>
+          <state-badge .stateObj=${item.stateObj} stateColor="true"></state-badge>
         </div>
       `;
     }

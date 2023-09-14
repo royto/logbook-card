@@ -23,6 +23,7 @@ export interface LogbookCardConfig extends LovelaceCardConfig {
   minimal_duration?: number;
   hidden_state?: Array<string | HiddenConfig>;
   show?: ShowConfiguration;
+  custom_logs?: boolean;
   date_format?: string | 'relative';
   separator_style?: SeparatorStyleConfig;
   collapse?: number;
@@ -99,6 +100,7 @@ export interface AttributeConfig {
 }
 
 export interface History {
+  type: 'history';
   stateObj: HassEntity;
   state: string;
   label: string;
@@ -109,6 +111,14 @@ export interface History {
   icon: IconState;
 }
 
+export interface CustomLogEvent {
+  type: 'customLog';
+  start: Date;
+  name: string;
+  message: string;
+}
+
+export type HistoryOrCustomLogEvent = History | CustomLogEvent;
 export interface Attribute {
   value: string | TemplateResult;
   name: string;
