@@ -2,8 +2,8 @@ import { LogbookCardEditor } from './editor';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { LitElement, html, TemplateResult, css, PropertyValues, CSSResultGroup } from 'lit';
-import { customElement, property, state } from 'lit/decorators';
-import { styleMap, StyleInfo } from 'lit-html/directives/style-map';
+import { customElement, property, state } from 'lit/decorators.js';
+import { styleMap, StyleInfo } from 'lit-html/directives/style-map.js';
 import {
   hasConfigOrEntityChanged,
   stateIcon,
@@ -163,7 +163,7 @@ export class LogbookCard extends LitElement {
       if (this.hass.formatEntityState) {
         return this.hass.formatEntityState(entity);
       }
-      return computeStateDisplay(this.hass.localize, entity, this.hass.locale);
+      return computeStateDisplay(this.hass.localize, entity, this.hass.locale!);
     }
 
     return entity.state;
@@ -299,7 +299,7 @@ export class LogbookCard extends LitElement {
     if (this.config?.date_format) {
       return format(date, this.config?.date_format ?? undefined);
     }
-    return formatDateTime(date, this.hass.locale);
+    return formatDateTime(date, this.hass.locale!);
   }
 
   filterIfDurationIsLessThanMinimal(entry: History): boolean {

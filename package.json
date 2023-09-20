@@ -15,10 +15,10 @@
   "author": "Julien Roy <royto81+github@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "custom-card-helpers": "1.7.1",
-    "home-assistant-js-websocket": "^6.0.1",
+    "custom-card-helpers": "1.8.0",
+    "home-assistant-js-websocket": "8.2.0",
     "humanize-duration-ts": "2.1.1",
-    "lit": "2.4.1",
+    "lit": "2.7.6",
     "fecha": "4.2.1",
     "@material/mwc-ripple": "^0.25.3",
     "@material/mwc-select": "^0.25.3",
@@ -27,10 +27,8 @@
     "@material/mwc-switch": "^0.25.3"
   },
   "devDependencies": {
-    "@babel/core": "^7.15.0",
-    "@babel/plugin-proposal-class-properties": "^7.14.5",
+    "@babel/core": "^7.22.8",
     "@babel/plugin-proposal-decorators": "^7.14.5",
-    "@rollup/plugin-json": "^4.1.0",
     "@typescript-eslint/eslint-plugin": "^2.34.0",
     "@typescript-eslint/parser": "^2.34.0",
     "eslint": "^6.8.0",
@@ -39,20 +37,21 @@
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-prettier": "^3.1.4",
     "prettier": "^1.19.1",
-    "rollup": "^1.32.1",
-    "rollup-plugin-babel": "^4.4.0",
-    "rollup-plugin-commonjs": "^10.1.0",
-    "rollup-plugin-node-resolve": "^5.2.0",
-    "rollup-plugin-serve": "^1.1.0",
-    "rollup-plugin-terser": "^5.3.1",
-    "rollup-plugin-typescript2": "^0.24.3",
-    "rollup-plugin-uglify": "^6.0.4",
-    "typescript": "^3.9.7"
+    "@rollup/plugin-babel": "^6.0.3",
+    "@rollup/plugin-commonjs": "^25.0.4",
+    "@rollup/plugin-json": "^6.0.0",
+    "@rollup/plugin-node-resolve": "^15.1.0",
+    "@rollup/plugin-terser": "^0.4.3",
+    "@rollup/plugin-typescript": "^11.1.2",
+    "@types/color": "^3.0.3",
+    "rollup": "^3.26.2",
+    "rollup-plugin-serve": "2.0.2",
+    "typescript": "5.1.6"
   },
   "scripts": {
     "start": "rollup -c --watch",
     "build": "npm run lint && npm run rollup",
     "lint": "eslint src/*.ts",
-    "rollup": "rollup -c"
+    "rollup": "rollup -c --bundleConfigAsCjs"
   }
 }
