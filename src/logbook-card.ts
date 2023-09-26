@@ -6,9 +6,6 @@ import { customElement, property, state } from 'lit/decorators.js';
 import { styleMap, StyleInfo } from 'lit-html/directives/style-map.js';
 import {
   hasConfigOrEntityChanged,
-  stateIcon,
-  formatDateTime,
-  computeStateDisplay,
   LovelaceCardEditor,
   handleAction,
   ActionHandlerEvent,
@@ -19,14 +16,10 @@ import './editor';
 
 import { HumanizeDurationLanguage, HumanizeDuration, HumanizeDurationOptions } from 'humanize-duration-ts';
 
-import { format } from 'fecha';
-
 import {
   LogbookCardConfig,
   History,
   Attribute,
-  AttributeConfig,
-  IconState,
   HiddenRegExp,
   ExtendedHomeAssistant,
   HistoryOrCustomLogEvent,
@@ -34,9 +27,10 @@ import {
 } from './types';
 import { CARD_VERSION, DEFAULT_SHOW, DEFAULT_SEPARATOR_STYLE, DEFAULT_DURATION } from './const';
 import { localize } from './localize/localize';
-import { HassEntity } from 'home-assistant-js-websocket/dist/types';
 import { actionHandler } from './action-handler-directive';
 import { addSlashes, wildcardToRegExp } from './helpers';
+import { displayDate } from './formatter';
+import { extractAttributes, mapIcon, mapState } from './entity-helper';
 
 /* eslint no-console: 0 */
 console.info(
@@ -153,33 +147,6 @@ export class LogbookCard extends LitElement {
     }
   }
 
-  mapState(entity: HassEntity): string {
-    const s = this.config?.state_map?.find(s => s.regexp?.test(entity.state));
-    if (s !== undefined && s.label) {
-      return s.label;
-    }
-
-    if (this.hass) {
-      if (this.hass.formatEntityState) {
-        return this.hass.formatEntityState(entity);
-      }
-      return computeStateDisplay(this.hass.localize, entity, this.hass.locale!);
-    }
-
-    return entity.state;
-  }
-
-  mapIcon(item: HassEntity): IconState | null {
-    const s = this.config?.state_map?.find(s => s.regexp?.test(addSlashes(item.state)));
-    if (s === undefined || (s.icon === undefined && s.icon_color === undefined)) {
-      return null;
-    }
-
-    const iconSvg = s !== undefined && s.icon ? s.icon : stateIcon(item);
-
-    return { icon: iconSvg, color: s?.icon_color || null };
-  }
-
   squashSameState(array: Array<History>, val: History): Array<History> {
     const prev = array[array.length - 1];
     if (!prev || (prev.state !== val.state && val.state !== 'unknown')) {
@@ -189,41 +156,6 @@ export class LogbookCard extends LitElement {
       prev.duration += val.duration;
     }
     return array;
-  }
-
-  extractAttributes(item: HassEntity): Array<Attribute> {
-    if (this.config?.attributes == null) {
-      return [];
-    }
-
-    return this.config?.attributes.reduce((p: Array<Attribute>, c: AttributeConfig): Array<Attribute> => {
-      if (item.attributes[c.value]) {
-        const attribute = item.attributes[c.value];
-        if (typeof attribute === 'object' && !Array.isArray(attribute)) {
-          const keys = Object.keys(attribute);
-          keys.forEach(key => {
-            p.push({
-              name: key,
-              value: this.formatAttributeValue(attribute[key], undefined),
-            });
-          });
-        } else if (Array.isArray(attribute)) {
-          p.push({
-            name: c.label ? c.label : c.value,
-            value: this.formatAttributeValue(attribute.join(','), undefined),
-          });
-        } else {
-          const attributeName = this.hass.formatEntityAttributeName
-            ? this.hass.formatEntityAttributeName(item, c.value)
-            : c.value;
-          p.push({
-            name: c.label ? c.label : attributeName,
-            value: this.formatEntityAttributeValue(item, c.value, attribute, c.type),
-          });
-        }
-      }
-      return p;
-    }, []);
   }
 
   getDuration(durationInMs: number): string {
@@ -266,40 +198,6 @@ export class LogbookCard extends LitElement {
     }
 
     return humanizeDuration.humanize(durationInMs, humanizeDurationOptions);
-  }
-
-  formatAttributeValue(value: any, type: string | undefined): string | TemplateResult {
-    if (type === 'date') {
-      return this._displayDate(new Date(value));
-    }
-    return value;
-  }
-
-  formatEntityAttributeValue(
-    entity: HassEntity,
-    attribute: string,
-    value: any,
-    type: string | undefined,
-  ): string | TemplateResult {
-    if (type === 'date') {
-      return this._displayDate(new Date(value));
-    }
-    if (this.hass.formatEntityAttributeValue) {
-      return this.hass.formatEntityAttributeValue(entity, attribute);
-    }
-    return value;
-  }
-
-  _displayDate(date: Date): string | TemplateResult {
-    if (this.config.date_format === 'relative') {
-      return html`
-        <ha-relative-time .hass=${this.hass} .datetime=${date}></ha-relative-time>
-      `;
-    }
-    if (this.config?.date_format) {
-      return format(date, this.config?.date_format ?? undefined);
-    }
-    return formatDateTime(date, this.hass.locale!);
   }
 
   filterIfDurationIsLessThanMinimal(entry: History): boolean {
@@ -359,10 +257,10 @@ export class LogbookCard extends LitElement {
                 type: 'history',
                 stateObj: h,
                 state: h.state,
-                label: this.mapState(h),
+                label: mapState(this.hass, h, this.config.state_map || []),
                 start: new Date(h.last_changed),
-                attributes: this.extractAttributes(h),
-                icon: this.mapIcon(h),
+                attributes: extractAttributes(h, this.config, this.hass),
+                icon: mapIcon(h, this.config.state_map || []),
               }))
               .map((x, i, arr) => {
                 if (i < arr.length - 1) {
@@ -510,7 +408,7 @@ export class LogbookCard extends LitElement {
         ${this.renderCustomLogIcon()}
         <div class="item-content">
           ${customLogEvent.name} - ${customLogEvent.message}
-          <div class="date">${this._displayDate(customLogEvent.start)}</div>
+          <div class="date">${displayDate(this.hass, customLogEvent.start, this.config.date_format)}</div>
         </div>
       </div>
       ${!isLast ? this.renderSeparator() : ``}
@@ -580,19 +478,22 @@ export class LogbookCard extends LitElement {
   }
 
   renderHistoryDate(item: History): TemplateResult {
+    const dateFormat = this.config.date_format;
     if (this.config?.show?.start_date && this.config?.show?.end_date) {
       return html`
-        <div class="date">${this._displayDate(item.start)} - ${this._displayDate(item.end)}</div>
+        <div class="date">
+          ${displayDate(this.hass, item.start, dateFormat)} - ${displayDate(this.hass, item.end, dateFormat)}
+        </div>
       `;
     }
     if (this.config?.show?.end_date) {
       return html`
-        <div class="date">${this._displayDate(item.end)}</div>
+        <div class="date">${displayDate(this.hass, item.end, dateFormat)}</div>
       `;
     }
     if (this.config?.show?.start_date) {
       return html`
-        <div class="date">${this._displayDate(item.start)}</div>
+        <div class="date">${displayDate(this.hass, item.start, dateFormat)}</div>
       `;
     }
     return html``;

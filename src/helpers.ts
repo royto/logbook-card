@@ -1,4 +1,4 @@
-export function addSlashes(myString: string | number): string {
+export const addSlashes = (myString: string | number): string => {
   return myString
     .toString()
     .replace(/\\/g, '\\\\')
@@ -9,21 +9,21 @@ export function addSlashes(myString: string | number): string {
     .replace(/\r/g, '\\r')
     .replace(/'/g, "\\'")
     .replace(/"/g, '\\"');
-}
+};
 
 /**
  * RegExp-escapes all characters in the given string.
  */
-function regExpEscape(s: string): string {
+const regExpEscape = (s: string): string => {
   return s.replace(/[|\\{}()[\]^$+*?.]/g, '\\$&');
-}
+};
 
 // From https://gist.github.com/donmccurdy/6d073ce2c6f3951312dfa45da14a420f by donmccurdy
 /**
  * Creates a RegExp from the given string, converting asterisks to .* expressions,
  * and escaping all other characters.
  */
-export function wildcardToRegExp(s: string | undefined): RegExp | undefined {
+export const wildcardToRegExp = (s: string | undefined): RegExp | undefined => {
   if (s === undefined) {
     return undefined;
   }
@@ -35,4 +35,4 @@ export function wildcardToRegExp(s: string | undefined): RegExp | undefined {
         .join('.*') +
       '$',
   );
-}
+};
