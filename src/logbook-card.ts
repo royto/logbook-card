@@ -13,6 +13,7 @@ import {
 } from 'custom-card-helpers';
 
 import './editor';
+import './logbook-date';
 
 import { HumanizeDurationLanguage, HumanizeDuration, HumanizeDurationOptions } from 'humanize-duration-ts';
 
@@ -29,7 +30,6 @@ import { CARD_VERSION, DEFAULT_SHOW, DEFAULT_SEPARATOR_STYLE, DEFAULT_DURATION }
 import { localize } from './localize/localize';
 import { actionHandler } from './action-handler-directive';
 import { addSlashes, wildcardToRegExp } from './helpers';
-import { displayDate } from './formatter';
 import { extractAttributes, mapIcon, mapState } from './entity-helper';
 
 /* eslint no-console: 0 */
@@ -408,7 +408,9 @@ export class LogbookCard extends LitElement {
         ${this.renderCustomLogIcon()}
         <div class="item-content">
           ${customLogEvent.name} - ${customLogEvent.message}
-          <div class="date">${displayDate(this.hass, customLogEvent.start, this.config.date_format)}</div>
+          <div class="date">
+            <logbook-date .hass=${this.hass} .date=${customLogEvent.start} .config=${this.config}></logbook-date>
+          </div>
         </div>
       </div>
       ${!isLast ? this.renderSeparator() : ``}
@@ -478,22 +480,26 @@ export class LogbookCard extends LitElement {
   }
 
   renderHistoryDate(item: History): TemplateResult {
-    const dateFormat = this.config.date_format;
     if (this.config?.show?.start_date && this.config?.show?.end_date) {
       return html`
         <div class="date">
-          ${displayDate(this.hass, item.start, dateFormat)} - ${displayDate(this.hass, item.end, dateFormat)}
+          <logbook-date .hass=${this.hass} .date=${item.start} .config=${this.config}></logbook-date> -
+          <logbook-date .hass=${this.hass} .date=${item.end} .config=${this.config}></logbook-date>
         </div>
       `;
     }
     if (this.config?.show?.end_date) {
       return html`
-        <div class="date">${displayDate(this.hass, item.end, dateFormat)}</div>
+        <div class="date">
+          <logbook-date .hass=${this.hass} .date=${item.end} .config=${this.config}></logbook-date>
+        </div>
       `;
     }
     if (this.config?.show?.start_date) {
       return html`
-        <div class="date">${displayDate(this.hass, item.start, dateFormat)}</div>
+        <div class="date">
+          <logbook-date .hass=${this.hass} .date=${item.start} .config=${this.config}></logbook-date>
+        </div>
       `;
     }
     return html``;
