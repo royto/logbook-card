@@ -27,9 +27,9 @@ import {
 import { CARD_VERSION, DEFAULT_SHOW, DEFAULT_SEPARATOR_STYLE, DEFAULT_DURATION } from './const';
 import { localize } from './localize/localize';
 import { actionHandler } from './action-handler-directive';
-import { addSlashes, wildcardToRegExp } from './helpers';
-import { extractAttributes, mapIcon, mapState } from './entity-helper';
+import { wildcardToRegExp } from './helpers';
 import { getCustomLogsPromise } from './custom-logs';
+import { getHistory } from './history';
 
 /* eslint no-console: 0 */
 console.info(
@@ -146,50 +146,6 @@ export class LogbookCard extends LitElement {
     }
   }
 
-  squashSameState(array: Array<History>, val: History): Array<History> {
-    const prev = array[array.length - 1];
-    if (!prev || (prev.state !== val.state && val.state !== 'unknown')) {
-      array.push(val);
-    } else {
-      prev.end = val.end;
-      prev.duration += val.duration;
-    }
-    return array;
-  }
-
-
-  filterIfDurationIsLessThanMinimal(entry: History): boolean {
-    if (!this.config.minimal_duration) {
-      return true;
-    }
-    return entry.duration >= this.config.minimal_duration * 1000;
-  }
-
-  filterEntry(entry: History): boolean {
-    if (this.hiddenStateRegexp.length === 0) {
-      return true;
-    }
-    return !this.hiddenStateRegexp.some(regexp => {
-      if (!!regexp.attribute && !Object.keys(entry.stateObj.attributes).some(a => a === regexp.attribute?.name)) {
-        return regexp.attribute.hideIfMissing;
-      }
-
-      if (!!regexp.state && !!regexp.attribute) {
-        return (
-          regexp.state.test(addSlashes(entry.state)) &&
-          regexp.attribute.value.test(addSlashes(entry.stateObj.attributes[regexp.attribute.name]))
-        );
-      }
-
-      if (!!regexp.attribute) {
-        return regexp.attribute.value.test(addSlashes(entry.stateObj.attributes[regexp.attribute.name]));
-      }
-
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      return regexp.state!.test(addSlashes(entry.state));
-    });
-  }
-
   updateHistory(): void {
     const hass = this.hass;
     if (hass && this.config && this.config.entity) {
@@ -200,45 +156,8 @@ export class LogbookCard extends LitElement {
 
         const startDate = new Date(new Date().setDate(new Date().getDate() - (this.config.history ?? 5)));
 
-        const uri =
-          'history/period/' +
-          startDate.toISOString() +
-          '?filter_entity_id=' +
-          this.config.entity +
-          '&end_time=' +
-          new Date().toISOString();
+        const historyPromise = getHistory(this.hass, this.config, startDate);
 
-        const historyPromise = hass.callApi('GET', uri).then((history: any) => {
-          return (
-            (history[0] || []) //empty if no history
-              .map(h => ({
-                type: 'history',
-                stateObj: h,
-                state: h.state,
-                label: mapState(this.hass, h, this.config.state_map || []),
-                start: new Date(h.last_changed),
-                attributes: extractAttributes(h, this.config, this.hass),
-                icon: mapIcon(h, this.config.state_map || []),
-              }))
-              .map((x, i, arr) => {
-                if (i < arr.length - 1) {
-                  return {
-                    ...x,
-                    end: arr[i + 1].start,
-                  };
-                }
-                return { ...x, end: new Date() };
-              })
-              .map(x => ({
-                ...x,
-                duration: x.end - x.start,
-              }))
-              .filter(entry => this.filterIfDurationIsLessThanMinimal(entry))
-              //squash same state or unknown with previous state
-              .reduce(this.squashSameState, [])
-              .filter(entry => this.filterEntry(entry))
-          );
-        });
         const customLogsPromise = getCustomLogsPromise(this.hass, this.config, startDate);
 
         Promise.all([historyPromise, customLogsPromise]).then(([history, customLogs]) => {

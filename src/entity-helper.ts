@@ -1,5 +1,13 @@
 import { HassEntity } from 'home-assistant-js-websocket/dist/types';
-import { Attribute, AttributeConfig, ExtendedHomeAssistant, IconState, LogbookCardConfig, StateMap } from './types';
+import {
+  Attribute,
+  AttributeConfig,
+  ExtendedHomeAssistant,
+  History,
+  IconState,
+  LogbookCardConfig,
+  StateMap,
+} from './types';
 import { computeStateDisplay, stateIcon } from 'custom-card-helpers';
 import { formatAttributeValue, formatEntityAttributeValue } from './formatter';
 import { addSlashes } from './helpers';
@@ -66,4 +74,47 @@ export const extractAttributes = (
     }
     return p;
   }, []);
+};
+
+export const squashSameState = (array: Array<History>, val: History): Array<History> => {
+  const prev = array[array.length - 1];
+  if (!prev || (prev.state !== val.state && val.state !== 'unknown')) {
+    array.push(val);
+  } else {
+    prev.end = val.end;
+    prev.duration += val.duration;
+  }
+  return array;
+};
+
+export const filterIfDurationIsLessThanMinimal = (config: LogbookCardConfig, entry: History): boolean => {
+  if (!config.minimal_duration) {
+    return true;
+  }
+  return entry.duration >= config.minimal_duration * 1000;
+};
+
+export const filterEntry = (config: LogbookCardConfig, entry: History): boolean => {
+  if (config.hiddenStateRegexp.length === 0) {
+    return true;
+  }
+  return !config.hiddenStateRegexp.some(regexp => {
+    if (!!regexp.attribute && !Object.keys(entry.stateObj.attributes).some(a => a === regexp.attribute?.name)) {
+      return regexp.attribute.hideIfMissing;
+    }
+
+    if (!!regexp.state && !!regexp.attribute) {
+      return (
+        regexp.state.test(addSlashes(entry.state)) &&
+        regexp.attribute.value.test(addSlashes(entry.stateObj.attributes[regexp.attribute.name]))
+      );
+    }
+
+    if (!!regexp.attribute) {
+      return regexp.attribute.value.test(addSlashes(entry.stateObj.attributes[regexp.attribute.name]));
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    return regexp.state!.test(addSlashes(entry.state));
+  });
 };
