@@ -29,6 +29,7 @@ import { localize } from './localize/localize';
 import { actionHandler } from './action-handler-directive';
 import { addSlashes, wildcardToRegExp } from './helpers';
 import { extractAttributes, mapIcon, mapState } from './entity-helper';
+import { getCustomLogsPromise } from './custom-logs';
 
 /* eslint no-console: 0 */
 console.info(
@@ -238,7 +239,7 @@ export class LogbookCard extends LitElement {
               .filter(entry => this.filterEntry(entry))
           );
         });
-        const customLogsPromise = this.getCustomLogsPromise(startDate);
+        const customLogsPromise = getCustomLogsPromise(this.hass, this.config, startDate);
 
         Promise.all([historyPromise, customLogsPromise]).then(([history, customLogs]) => {
           let historyAndCustomLogs = [...history, ...customLogs].sort((a, b) => a.start.valueOf() - b.start.valueOf());
@@ -256,19 +257,6 @@ export class LogbookCard extends LitElement {
 
       this.lastHistoryChanged = new Date();
     }
-  }
-
-  private getCustomLogsPromise(startDate: Date): Promise<CustomLogEvent[]> {
-    if (this.config.custom_logs) {
-      return this.hass
-        .callApi('GET', `logbook/${startDate.toISOString()}?entity=${this.config.entity}`)
-        .then((response: any) => {
-          return response
-            .filter(e => e.context_service === 'log')
-            .map(e => ({ start: new Date(e.when), name: e.name, message: e.message }));
-        });
-    }
-    return Promise.resolve([]);
   }
 
   protected shouldUpdate(changedProps: PropertyValues): boolean {
