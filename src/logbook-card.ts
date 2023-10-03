@@ -23,6 +23,7 @@ import {
   ExtendedHomeAssistant,
   HistoryOrCustomLogEvent,
   CustomLogEvent,
+  ValidatedLogbookCardConfig,
 } from './types';
 import { CARD_VERSION, DEFAULT_SHOW, DEFAULT_SEPARATOR_STYLE, DEFAULT_DURATION } from './const';
 import { localize } from './localize/localize';
@@ -61,12 +62,11 @@ export class LogbookCard extends LitElement {
 
   // Add any properties that should cause your element to re-render here
   @property({ type: Object }) public hass!: ExtendedHomeAssistant;
-  @state() private config!: LogbookCardConfig;
+  @state() private config!: ValidatedLogbookCardConfig;
   @property({ type: Array }) private history: Array<HistoryOrCustomLogEvent> = [];
 
   private lastHistoryChanged?: Date;
   private MAX_UPDATE_DURATION = 5000;
-  private hiddenStateRegexp: Array<HiddenRegExp> = new Array<HiddenRegExp>();
 
   public setConfig(config: LogbookCardConfig): void {
     if (!config) {
@@ -109,6 +109,7 @@ export class LogbookCard extends LitElement {
     this.config = {
       history: 5,
       hidden_state: [],
+      hidden_state_regexp: [],
       desc: true,
       max_items: -1,
       no_event: 'No event on the period',
@@ -130,7 +131,7 @@ export class LogbookCard extends LitElement {
     };
 
     if (this.config.hidden_state) {
-      this.hiddenStateRegexp = this.config.hidden_state
+      this.config.hidden_state_regexp = this.config.hidden_state
         .map(h => (typeof h === 'string' ? { state: h } : h))
         .map(hs => ({
           state: wildcardToRegExp(hs.state),

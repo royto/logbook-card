@@ -1,4 +1,4 @@
-import { History, ExtendedHomeAssistant, LogbookCardConfig } from './types';
+import { History, ExtendedHomeAssistant, LogbookCardConfig, ValidatedLogbookCardConfig } from './types';
 
 import {
   extractAttributes,
@@ -12,7 +12,7 @@ import { HassEntity } from 'home-assistant-js-websocket';
 
 export const getHistory = (
   hass: ExtendedHomeAssistant,
-  config: LogbookCardConfig,
+  config: ValidatedLogbookCardConfig,
   startDate: Date,
 ): Promise<History[]> => {
   const uri =

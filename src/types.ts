@@ -33,6 +33,10 @@ export interface LogbookCardConfig extends LovelaceCardConfig {
   double_tap_action?: ActionConfig;
 }
 
+export interface ValidatedLogbookCardConfig extends LogbookCardConfig {
+  hidden_state_regexp: Array<HiddenRegExp>;
+}
+
 export interface HiddenConfig {
   state?: string;
   attribute?: AttributeHiddenConfig;

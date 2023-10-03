@@ -5,6 +5,7 @@ import {
   ExtendedHomeAssistant,
   History,
   IconState,
+  ValidatedLogbookCardConfig,
   LogbookCardConfig,
   StateMap,
 } from './types';
@@ -94,11 +95,11 @@ export const filterIfDurationIsLessThanMinimal = (config: LogbookCardConfig, ent
   return entry.duration >= config.minimal_duration * 1000;
 };
 
-export const filterEntry = (config: LogbookCardConfig, entry: History): boolean => {
-  if (config.hiddenStateRegexp.length === 0) {
+export const filterEntry = (config: ValidatedLogbookCardConfig, entry: History): boolean => {
+  if (config.hidden_state_regexp.length === 0) {
     return true;
   }
-  return !config.hiddenStateRegexp.some(regexp => {
+  return !config.hidden_state_regexp.some(regexp => {
     if (!!regexp.attribute && !Object.keys(entry.stateObj.attributes).some(a => a === regexp.attribute?.name)) {
       return regexp.attribute.hideIfMissing;
     }
