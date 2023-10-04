@@ -2,17 +2,48 @@ import { CustomLogEvent, ExtendedHomeAssistant, LogbookCardConfig } from './type
 
 const logbookLogContext = 'log';
 
+interface LogbookEntry {
+  // Base data
+  when: number; // Python timestamp. Do *1000 to get JS timestamp.
+  name: string;
+  message?: string;
+  entity_id?: string;
+  icon?: string;
+  source?: string; // The trigger source
+  domain?: string;
+  state?: string; // The state of the entity
+  // Context data
+  context_id?: string;
+  context_user_id?: string;
+  context_event_type?: string;
+  context_domain?: string;
+  context_service?: string; // Service calls only
+  context_entity_id?: string;
+  context_entity_id_name?: string; // Legacy, not longer sent
+  context_name?: string;
+  context_state?: string; // The state of the entity
+  context_source?: string; // The trigger source
+  context_message?: string;
+}
+
 export const getCustomLogsPromise = (
   hass: ExtendedHomeAssistant,
   config: LogbookCardConfig,
   startDate: Date,
 ): Promise<CustomLogEvent[]> => {
   if (config.custom_logs) {
-    return hass.callApi('GET', `logbook/${startDate.toISOString()}?entity=${config.entity}`).then((response: any) => {
-      return response
-        .filter(e => e.context_service === logbookLogContext)
-        .map(e => ({ start: new Date(e.when), name: e.name, message: e.message }));
-    });
+    return hass
+      .callApi<LogbookEntry[]>('GET', `logbook/${startDate.toISOString()}?entity=${config.entity}`)
+      .then(response => {
+        return response
+          .filter(e => e.context_service === logbookLogContext)
+          .map(e => ({
+            type: 'customLog',
+            start: new Date(e.when),
+            name: e.name,
+            message: e.message || '',
+          }));
+      });
   }
   return Promise.resolve([]);
 };
