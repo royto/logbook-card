@@ -51,6 +51,7 @@ resources:
 | date_format       | string or `relative`                              | optional     | v1.0  |  | default date time format | see [fecha formatting token](https://github.com/taylorhakes/fecha#formatting-tokens). Use `relative` to have relative time like `2 days ago` |
 | separator_style   | [separator_style object](#separator-style-object) | optional     | v1.0  |  |                         | see style for separator (if activated)                                                                          |
 | collapse          | number                                            | optional     | v1.2  | |                          | Number of entities to show. Rest will be available in expandable section                                        |
+| custom_logs       | boolean                                           | optional     | v1.13.0 | | false | display custom logs sent by `logbook.log` service |
 | duration          | [duration object](#duration-object)               | optional     | v1.5.0 | | duration configuration |
 | scroll            | boolean                                           | optional     | v1.9.0 | | true                   | set a max height for card and use scrollbar |
 | tap_action        | [action object](#action-options)                  | optional     | v1.7.0 | | Action to take on tap  | action: more-info |
