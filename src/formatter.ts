@@ -1,8 +1,7 @@
 import { format } from 'fecha';
 import { html, TemplateResult } from 'lit';
-import { HomeAssistant, formatDateTime } from 'custom-card-helpers';
-import { HumanizeDuration, HumanizeDurationLanguage, HumanizeDurationOptions } from 'humanize-duration-ts';
-import { DurationConfig, ExtendedHomeAssistant } from './types';
+import { formatDateTime } from 'custom-card-helpers';
+import { ExtendedHomeAssistant } from './types';
 import { HassEntity } from 'home-assistant-js-websocket/dist/types';
 
 export const displayDate = (
