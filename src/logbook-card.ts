@@ -229,7 +229,6 @@ export class LogbookCard extends LitElement {
   }
 
   renderHistory(items: HistoryOrCustomLogEvent[] | undefined, config: LogbookCardConfig): TemplateResult {
-    //TODO: first render ...
     if (!items || items?.length === 0) {
       return html`
         <p>
@@ -324,7 +323,7 @@ export class LogbookCard extends LitElement {
       const state = this.hass.states[this.config.entity];
       return html`
         <div class="item-icon">
-          <state-badge .stateObj=${state} stateColor="false"></state-badge>
+          <state-badge .stateObj=${state} .stateColor=${false}></state-badge>
         </div>
       `;
     }
@@ -341,7 +340,7 @@ export class LogbookCard extends LitElement {
       }
       return html`
         <div class="item-icon">
-          <state-badge .stateObj=${item.stateObj} stateColor="true"></state-badge>
+          <state-badge .stateObj=${item.stateObj} .stateColor=${true}></state-badge>
         </div>
       `;
     }
