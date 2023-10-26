@@ -32,7 +32,6 @@ export class LogbookCardEditor extends LitElement implements LovelaceCardEditor 
   @state() private _config?: Partial<LogbookCardConfig>;
   @state() private _toggle?: boolean;
   @state() private _helpers?: any;
-  private _initialized = false;
 
   public setConfig(config: LogbookCardConfig): void {
     this._config = config;
@@ -152,6 +151,10 @@ export class LogbookCardEditor extends LitElement implements LovelaceCardEditor 
     return false;
   }
 
+  get _custom_logs(): boolean {
+    return this._config?.custom_logs || false;
+  }
+
   protected render(): TemplateResult | void {
     if (!this.hass) {
       return html``;
@@ -244,7 +247,7 @@ export class LogbookCardEditor extends LitElement implements LovelaceCardEditor 
                       .checked=${this._desc !== false}
                       .configValue=${'desc'}
                       @change=${this._valueChanged}
-                    ></mwv-switch>
+                    ></ha-switch>
                   </ha-formfield>
                 </p>
               </div>
@@ -306,6 +309,14 @@ export class LogbookCardEditor extends LitElement implements LovelaceCardEditor 
                     @change=${this._showOptionChanged}
                   ></ha-switch>
                 </ha-formfield>
+                <ha-formfield .label=${`Display custom logs`}>
+                  <ha-switch
+                    aria-label=${`Toggle display of custom logs ${this._custom_logs ? 'off' : 'on'}`}
+                    .checked=${this._custom_logs !== false}
+                    .configValue=${'custom_logs'}
+                    @change=${this._valueChanged}
+                  ></ha-switch>
+                </ha-formfield>
               </div>
             `
           : ''}
@@ -316,13 +327,6 @@ export class LogbookCardEditor extends LitElement implements LovelaceCardEditor 
         using Code Editor.
       </p>
     `;
-  }
-
-  private _initialize(): void {
-    if (this.hass === undefined) return;
-    if (this._config === undefined) return;
-    if (this._helpers === undefined) return;
-    this._initialized = true;
   }
 
   private async loadCardHelpers(): Promise<void> {
