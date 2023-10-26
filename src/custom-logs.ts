@@ -2,7 +2,7 @@ import { CustomLogEvent, ExtendedHomeAssistant, LogbookCardConfig } from './type
 
 const logbookLogContext = 'log';
 
-interface LogbookEntry {
+export interface LogbookEntry {
   // Base data
   when: number; // Python timestamp. Do *1000 to get JS timestamp.
   name: string;
@@ -26,6 +26,17 @@ interface LogbookEntry {
   context_message?: string;
 }
 
+export const toCustomLogs = (entries: LogbookEntry[]): CustomLogEvent[] => {
+  return entries
+    .filter(e => e.context_service === logbookLogContext)
+    .map(e => ({
+      type: 'customLog',
+      start: new Date(e.when),
+      name: e.name,
+      message: e.message || '',
+    }));
+};
+
 export const getCustomLogsPromise = (
   hass: ExtendedHomeAssistant,
   config: LogbookCardConfig,
@@ -34,16 +45,7 @@ export const getCustomLogsPromise = (
   if (config.custom_logs) {
     return hass
       .callApi<LogbookEntry[]>('GET', `logbook/${startDate.toISOString()}?entity=${config.entity}`)
-      .then(response => {
-        return response
-          .filter(e => e.context_service === logbookLogContext)
-          .map(e => ({
-            type: 'customLog',
-            start: new Date(e.when),
-            name: e.name,
-            message: e.message || '',
-          }));
-      });
+      .then(response => toCustomLogs(response));
   }
   return Promise.resolve([]);
 };

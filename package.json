@@ -46,12 +46,14 @@
     "@types/color": "^3.0.3",
     "rollup": "^3.26.2",
     "rollup-plugin-serve": "2.0.2",
-    "typescript": "5.1.6"
+    "typescript": "5.1.6",
+    "vitest": "^0.34.4"
   },
   "scripts": {
     "start": "rollup -c --watch",
     "build": "npm run lint && npm run rollup",
     "lint": "eslint src/*.ts",
-    "rollup": "rollup -c --bundleConfigAsCjs"
+    "rollup": "rollup -c --bundleConfigAsCjs",
+    "test": "vitest"
   }
 }

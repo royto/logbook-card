@@ -1,4 +1,5 @@
-import { History, ExtendedHomeAssistant, LogbookCardConfig, ValidatedLogbookCardConfig } from './types';
+import { HassEntity } from 'home-assistant-js-websocket/dist/types';
+import { History, ExtendedHomeAssistant, ValidatedLogbookCardConfig } from './types';
 
 import {
   extractAttributes,
@@ -8,7 +9,45 @@ import {
   mapState,
   squashSameState,
 } from './entity-helper';
-import { HassEntity } from 'home-assistant-js-websocket';
+
+export const toHistory = (
+  entityHistory: HassEntity[],
+  hass: ExtendedHomeAssistant,
+  config: ValidatedLogbookCardConfig,
+): History[] => {
+  return (
+    entityHistory //empty if no history
+      .map(h => ({
+        type: 'history',
+        stateObj: h,
+        state: h.state,
+        label: mapState(hass, h, config.state_map || []),
+        start: new Date(h.last_changed),
+        attributes: extractAttributes(h, config, hass),
+        icon: mapIcon(h, config.state_map || []),
+      }))
+      .map((x, i, arr) => {
+        if (i < arr.length - 1) {
+          return {
+            ...x,
+            end: arr[i + 1].start,
+          };
+        }
+        return { ...x, end: new Date() };
+      })
+      .map(
+        x =>
+          ({
+            ...x,
+            duration: x.end.valueOf() - x.start.valueOf(),
+          } as History),
+      )
+      .filter(entry => filterIfDurationIsLessThanMinimal(config, entry))
+      //squash same state or unknown with previous state
+      .reduce(squashSameState, [])
+      .filter(entry => filterEntry(config, entry))
+  );
+};
 
 export const getHistory = (
   hass: ExtendedHomeAssistant,
@@ -23,38 +62,7 @@ export const getHistory = (
     '&end_time=' +
     new Date().toISOString();
 
-  return hass.callApi<Array<HassEntity[]>>('GET', uri).then(history => {
-    return (
-      (history[0] || []) //empty if no history
-        .map(h => ({
-          type: 'history',
-          stateObj: h,
-          state: h.state,
-          label: mapState(hass, h, config.state_map || []),
-          start: new Date(h.last_changed),
-          attributes: extractAttributes(h, config, hass),
-          icon: mapIcon(h, config.state_map || []),
-        }))
-        .map((x, i, arr) => {
-          if (i < arr.length - 1) {
-            return {
-              ...x,
-              end: arr[i + 1].start,
-            };
-          }
-          return { ...x, end: new Date() };
-        })
-        .map(
-          x =>
-            ({
-              ...x,
-              duration: x.end.valueOf() - x.start.valueOf(),
-            } as History),
-        )
-        .filter(entry => filterIfDurationIsLessThanMinimal(config, entry))
-        //squash same state or unknown with previous state
-        .reduce(squashSameState, [])
-        .filter(entry => filterEntry(config, entry))
-    );
-  });
+  return hass
+    .callApi<Array<HassEntity[]>>('GET', uri)
+    .then(hassEntityHistory => toHistory(hassEntityHistory[0] || [], hass, config));
 };
