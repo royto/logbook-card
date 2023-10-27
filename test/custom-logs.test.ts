@@ -1,12 +1,8 @@
-import { ExtendedHomeAssistant, ValidatedLogbookCardConfig } from '../src/types';
-import { toHistory } from '../src/history';
-import { wildcardToRegExp } from '../src/helpers';
-import { LogbookCardConfig, History } from '../src/types';
-import { expect, test, describe } from 'vitest';
+import { expect, test } from 'vitest';
 import { LogbookEntry, toCustomLogs } from '../src/custom-logs';
 
 test('should return empty if no entries', () => {
-  expect(toCustomLogs([])).toHaveLength(0);
+  expect(toCustomLogs('my_entity', [])).toHaveLength(0);
 });
 
 test('should return only log', () => {
@@ -24,7 +20,7 @@ test('should return only log', () => {
     },
   ];
 
-  const customLogs = toCustomLogs(entries);
+  const customLogs = toCustomLogs('my_entity', entries);
   expect(customLogs).toHaveLength(1);
 
   expect(customLogs[0].type).toBe('customLog');

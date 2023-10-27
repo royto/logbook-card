@@ -9,32 +9,36 @@ export interface ExtendedHomeAssistant extends HomeAssistant {
   formatEntityAttributeName(stateObj: HassEntity, attribute: string): string;
 }
 
-export interface LogbookCardConfig extends LovelaceCardConfig {
-  type: string;
+export interface LogbookCardConfigBase extends LovelaceCardConfig {
   title?: string;
   history?: number;
   desc?: boolean;
-  entity?: string;
   no_event?: string;
   max_items?: number;
-  attributes?: Array<AttributeConfig>;
-  state_map?: Array<StateMap>;
+  show?: ShowConfiguration;
+  date_format?: string | 'relative';
+  collapse?: number;
   duration?: DurationConfig;
   minimal_duration?: number;
-  hidden_state?: Array<string | HiddenConfig>;
-  show?: ShowConfiguration;
-  custom_logs?: boolean;
-  date_format?: string | 'relative';
-  separator_style?: SeparatorStyleConfig;
-  collapse?: number;
   scroll?: boolean;
+  separator_style?: SeparatorStyleConfig;
   tap_action?: ActionConfig;
   hold_action?: ActionConfig;
   double_tap_action?: ActionConfig;
 }
 
-export interface ValidatedLogbookCardConfig extends LogbookCardConfig {
-  hidden_state_regexp: Array<HiddenRegExp>;
+export interface EntityCardConfig {
+  entity?: string;
+  attributes?: Array<AttributeConfig>;
+  state_map?: Array<StateMap>;
+  hidden_state?: Array<string | HiddenConfig>;
+  custom_logs?: boolean;
+}
+
+export interface LogbookCardConfig extends LogbookCardConfigBase, EntityCardConfig {}
+
+export interface MultipleLogbookCardConfig extends LogbookCardConfigBase {
+  entities?: EntityCardConfig[];
 }
 
 export interface HiddenConfig {
@@ -117,6 +121,7 @@ export interface History {
 
 export interface CustomLogEvent {
   type: 'customLog';
+  entity: string;
   start: Date;
   name: string;
   message: string;

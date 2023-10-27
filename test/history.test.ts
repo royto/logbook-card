@@ -1,9 +1,10 @@
-import { ExtendedHomeAssistant, ValidatedLogbookCardConfig } from './../src/types';
-import { toHistory } from '../src/history';
+import { ExtendedHomeAssistant, HiddenConfig } from './../src/types';
+import { EntityHistoryConfig, toHistory } from '../src/history';
 import { wildcardToRegExp } from '../src/helpers';
-import { LogbookCardConfig, History } from '../src/types';
+import { History } from '../src/types';
 import { expect, test, describe } from 'vitest';
 import { Context } from 'home-assistant-js-websocket';
+import { toHiddenRegex } from '../src/config-helpers';
 
 const hass = {
   locale: {
@@ -12,20 +13,13 @@ const hass = {
   localize: key => key,
 } as ExtendedHomeAssistant;
 
-const buildConfig = (config: Omit<LogbookCardConfig, 'type'>): ValidatedLogbookCardConfig => {
+type partialEntityConfig = Partial<EntityHistoryConfig> & { hidden_state?: HiddenConfig[] };
+
+const buildConfig = (config: partialEntityConfig): EntityHistoryConfig => {
   return {
-    type: 'custom:logbook-card',
-    hidden_state_regexp: config.hidden_state
-      ? config.hidden_state.map(hs => ({
-          state: wildcardToRegExp(hs.state),
-          attribute: hs.attribute
-            ? {
-                ...hs.attribute,
-                value: wildcardToRegExp(hs.attribute.value),
-              }
-            : undefined,
-        }))
-      : [],
+    entity: 'default',
+    hidden_state: [],
+    hidden_state_regexp: toHiddenRegex(config.hidden_state),
     ...config,
   };
 };
@@ -83,12 +77,12 @@ describe('map_state', () => {
     const configuration = buildConfig({
       state_map: [
         {
-          state: 'on',
+          value: 'on',
           label: 'Marche',
           regexp: wildcardToRegExp('on'),
         },
         {
-          state: 'off',
+          value: 'off',
           label: 'Arrêt',
           regexp: wildcardToRegExp('off'),
         },
@@ -104,12 +98,12 @@ describe('map_state', () => {
     const configuration = buildConfig({
       state_map: [
         {
-          state: 'on',
+          value: 'on',
           icon: 'mdi:lightbulb-on',
           regexp: wildcardToRegExp('on'),
         },
         {
-          state: 'off',
+          value: 'off',
           icon: 'mdi:lightbulb',
           icon_color: '#211081',
           regexp: wildcardToRegExp('off'),

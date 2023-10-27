@@ -1,5 +1,5 @@
 import { HassEntity } from 'home-assistant-js-websocket/dist/types';
-import { History, ExtendedHomeAssistant, ValidatedLogbookCardConfig } from './types';
+import { History, ExtendedHomeAssistant, StateMap, AttributeConfig, HiddenRegExp, HiddenConfig } from './types';
 
 import {
   extractAttributes,
@@ -10,10 +10,19 @@ import {
   squashSameState,
 } from './entity-helper';
 
+export interface EntityHistoryConfig {
+  attributes?: AttributeConfig[];
+  date_format?: string | 'relative';
+  entity: string;
+  hidden_state_regexp: Array<HiddenRegExp>;
+  minimal_duration?: number;
+  state_map?: StateMap[];
+}
+
 export const toHistory = (
   entityHistory: HassEntity[],
   hass: ExtendedHomeAssistant,
-  config: ValidatedLogbookCardConfig,
+  config: EntityHistoryConfig,
 ): History[] => {
   return (
     entityHistory //empty if no history
@@ -51,7 +60,7 @@ export const toHistory = (
 
 export const getHistory = (
   hass: ExtendedHomeAssistant,
-  config: ValidatedLogbookCardConfig,
+  config: EntityHistoryConfig,
   startDate: Date,
 ): Promise<History[]> => {
   const uri =

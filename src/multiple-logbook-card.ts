@@ -1,63 +1,64 @@
-import { LogbookCardEditor } from './editor';
+/*TODO
+ - entity name: is it ok ? option to hide it ?
+*/
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { html, TemplateResult, PropertyValues } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
-import { hasConfigOrEntityChanged, LovelaceCardEditor, hasAction } from 'custom-card-helpers';
+import { hasConfigOrEntityChanged } from 'custom-card-helpers';
 
-import './editor';
 import './logbook-date';
 import './logbook-duration';
-import { LogbookCardConfig, History, ExtendedHomeAssistant, HistoryOrCustomLogEvent, CustomLogEvent } from './types';
+import {
+  LogbookCardConfig,
+  History,
+  ExtendedHomeAssistant,
+  HistoryOrCustomLogEvent,
+  CustomLogEvent,
+  MultipleLogbookCardConfig,
+} from './types';
 import { DEFAULT_SHOW, DEFAULT_SEPARATOR_STYLE, DEFAULT_DURATION } from './const';
-import { localize } from './localize/localize';
-import { actionHandler } from './action-handler-directive';
 import { EntityCustomLogConfig, getCustomLogsPromise } from './custom-logs';
 import { EntityHistoryConfig, getHistory } from './history';
-import { toHiddenRegex, toStateMapRegex } from './config-helpers';
+import { toStateMapRegex, toHiddenRegex } from './config-helpers';
 import { LogbookBaseCard } from './logbook-base-card';
 import { checkBaseConfig } from './config-validator';
 import { addCustomCard } from './ha/custom-card';
 
-addCustomCard('logbook-card', 'Logbook Card', 'A custom card to display entity history');
+addCustomCard(
+  'multiple-logbook-card',
+  'Multiple entity Logbook Card',
+  'A custom card to display history for multiple entities',
+);
 
-@customElement('logbook-card')
-export class LogbookCard extends LogbookBaseCard {
-  public static async getConfigElement(): Promise<LovelaceCardEditor> {
-    return document.createElement('logbook-card-editor') as LogbookCardEditor;
-  }
+console.log('MULTIPLE 1.0.7');
 
-  public static getStubConfig(_hass: ExtendedHomeAssistant, entities: Array<any>): Record<string, unknown> {
-    return {
-      entity: entities[0],
-    };
-  }
-
-  @state() private config!: LogbookCardConfig;
+@customElement('multiple-logbook-card')
+export class MultipleLogbookCard extends LogbookBaseCard {
+  // Add any properties that should cause your element to re-render here
+  @property({ type: Object }) public hass!: ExtendedHomeAssistant;
+  @state() private config!: MultipleLogbookCardConfig;
   @property({ type: Array }) private history: Array<HistoryOrCustomLogEvent> = [];
 
   private lastHistoryChanged?: Date;
   private MAX_UPDATE_DURATION = 5000;
 
-  public setConfig(config: LogbookCardConfig): void {
+  public setConfig(config: MultipleLogbookCardConfig): void {
     checkBaseConfig(config);
 
-    if (!config.entity) {
-      throw new Error(localize('logbook-card.missing_entity'));
+    if (!config.entities && !Array.isArray(config.entities)) {
+      throw new Error('Please define at least an entity.');
     }
-    if (config.hidden_state && !Array.isArray(config.hidden_state)) {
-      throw new Error('hidden_state must be an array');
+
+    if (config.entities.length === 0) {
+      throw new Error('Please define at least an entity.');
     }
-    if (config.state_map && !Array.isArray(config.state_map)) {
-      throw new Error('state_map must be an array');
-    }
-    if (config.attributes && !Array.isArray(config.attributes)) {
-      throw new Error('attributes must be an array');
-    }
+
+    //Check for attributes / states / hidden_state
 
     this.config = {
       history: 5,
-      hidden_state: [],
       desc: true,
       max_items: -1,
       no_event: 'No event on the period',
@@ -65,8 +66,13 @@ export class LogbookCard extends LogbookBaseCard {
       scroll: true,
       custom_logs: false,
       ...config,
-      state_map: toStateMapRegex(config.state_map),
-      hidden_state_regexp: toHiddenRegex(config.hidden_state),
+      entities: config.entities?.map(e => ({
+        attributes: e.attributes ?? [],
+        entity: e.entity,
+        state_map: toStateMapRegex(e.state_map),
+        hidden_state: e.hidden_state,
+        custom_logs: e.custom_logs,
+      })),
       show: { ...DEFAULT_SHOW, ...config.show },
       duration: { ...DEFAULT_DURATION, ...config.duration },
       duration_labels: { ...config.duration_labels },
@@ -76,40 +82,48 @@ export class LogbookCard extends LogbookBaseCard {
 
   updateHistory(): void {
     const hass = this.hass;
-    if (hass && this.config && this.config.entity) {
-      const stateObj = this.config.entity in hass.states ? hass.states[this.config.entity] : null;
 
-      if (stateObj) {
-        this.config.title = this.config?.title ?? stateObj.attributes.friendly_name + ' History';
+    if (hass && this.config && this.config.entities) {
+      const existingEntities = this.config.entities.filter(
+        entity => !!entity.entity && !!this.hass.states[entity.entity],
+      );
 
+      if (existingEntities.length > 0) {
         const startDate = new Date(new Date().setDate(new Date().getDate() - (this.config.history ?? 5)));
-        const entityConfig: EntityHistoryConfig = {
-          attributes: this.config.attributes,
-          entity: this.config.entity,
-          state_map: this.config.StateMap,
-          hidden_state_regexp: this.config.hidden_state_regexp,
-          date_format: this.config.date_format,
-          minimal_duration: this.config.minimal_duration,
-        };
-        const historyPromise = getHistory(this.hass, entityConfig, startDate);
 
-        const customLogConfig: EntityCustomLogConfig = {
-          entity: this.config.entity!,
-          custom_logs: this.config.custom_logs || false,
-        };
-        const customLogsPromise = getCustomLogsPromise(this.hass, customLogConfig, startDate);
+        const historyPromises = new Array<Promise<History[]>>();
+        const customLogsPromises = new Array<Promise<CustomLogEvent[]>>();
+        for (const entity of existingEntities) {
+          const entityConfig: EntityHistoryConfig = {
+            attributes: entity.attributes,
+            entity: entity.entity!,
+            hidden_state_regexp: toHiddenRegex(entity.hidden_state),
+            state_map: entity.state_map,
+            date_format: this.config.date_format,
+            minimal_duration: this.config.minimal_duration,
+          };
+          const promise = getHistory(this.hass, entityConfig, startDate);
+          historyPromises.push(promise);
 
-        Promise.all([historyPromise, customLogsPromise]).then(([history, customLogs]) => {
-          let historyAndCustomLogs = [...history, ...customLogs].sort((a, b) => a.start.valueOf() - b.start.valueOf());
+          const customLogConfig: EntityCustomLogConfig = {
+            entity: entity.entity!,
+            custom_logs: entity.custom_logs || false,
+          };
+          const customLogsPromise = getCustomLogsPromise(this.hass, customLogConfig, startDate);
+          customLogsPromises.push(customLogsPromise);
+        }
+
+        Promise.all([...historyPromises, ...customLogsPromises]).then(history => {
+          let allHistory = history.flat().sort((a, b) => a.start.valueOf() - b.start.valueOf());
 
           if (this.config?.desc) {
-            historyAndCustomLogs = historyAndCustomLogs.reverse();
+            allHistory = allHistory.reverse();
           }
           if (this.config && this.config.max_items && this.config.max_items > 0) {
-            historyAndCustomLogs = historyAndCustomLogs.splice(0, this.config?.max_items);
+            allHistory = allHistory.splice(0, this.config?.max_items);
           }
 
-          this.history = historyAndCustomLogs;
+          this.history = allHistory;
         });
       }
 
@@ -134,6 +148,8 @@ export class LogbookCard extends LogbookBaseCard {
   }
 
   protected render(): TemplateResult | void {
+    //TODO Render errors
+    // Missing entities ...
     if (!this.config || !this.hass || !this.lastHistoryChanged) {
       return html``;
     }
@@ -142,15 +158,7 @@ export class LogbookCard extends LogbookBaseCard {
 
     return html`
       <ha-card tabindex="0">
-        <h1
-          aria-label=${`${this.config.title}`}
-          class="card-header"
-          @action=${this._handleAction}
-          .actionHandler=${actionHandler({
-            hasHold: hasAction(this.config.hold_action),
-            hasDoubleClick: hasAction(this.config.double_tap_action),
-          })}
-        >
+        <h1 aria-label=${`${this.config.title}`} class="card-header">
           ${this.config.title}
         </h1>
         <div class="card-content ${contentCardClass} grid" style="[[contentStyle]]">
@@ -203,7 +211,7 @@ export class LogbookCard extends LogbookBaseCard {
       <div class="item">
         ${this.renderCustomLogIcon(customLogEvent.entity, this.config)}
         <div class="item-content">
-          ${customLogEvent.name} - ${customLogEvent.message}
+          ${this.renderEntity(customLogEvent.entity, this.config)} - ${customLogEvent.name} - ${customLogEvent.message}
           <div class="date">
             <logbook-date .hass=${this.hass} .date=${customLogEvent.start} .config=${this.config}></logbook-date>
           </div>
@@ -220,6 +228,7 @@ export class LogbookCard extends LogbookBaseCard {
         <div class="item-content">
           ${this.config?.show?.state
             ? html`
+                ${this.renderEntity(item.stateObj.entity_id, this.config)} -
                 <span class="state">${item.label}</span>
               `
             : html``}

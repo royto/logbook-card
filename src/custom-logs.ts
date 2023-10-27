@@ -26,27 +26,34 @@ export interface LogbookEntry {
   context_message?: string;
 }
 
-export const toCustomLogs = (entries: LogbookEntry[]): CustomLogEvent[] => {
+const customLogType = 'customLog';
+export const toCustomLogs = (entity: string, entries: LogbookEntry[]): CustomLogEvent[] => {
   return entries
     .filter(e => e.context_service === logbookLogContext)
     .map(e => ({
-      type: 'customLog',
+      type: customLogType,
       start: new Date(e.when),
       name: e.name,
       message: e.message || '',
+      entity,
     }));
 };
 
+export interface EntityCustomLogConfig {
+  entity: string;
+  custom_logs: boolean;
+}
+
 export const getCustomLogsPromise = (
   hass: ExtendedHomeAssistant,
-  config: LogbookCardConfig,
+  config: EntityCustomLogConfig,
   startDate: Date,
 ): Promise<CustomLogEvent[]> => {
   if (config.custom_logs) {
     const endTime = new Date().toISOString();
     return hass
       .callApi<LogbookEntry[]>('GET', `logbook/${startDate.toISOString()}?entity=${config.entity}&end_time=${endTime}`)
-      .then(response => toCustomLogs(response));
+      .then(response => toCustomLogs(config.entity, response));
   }
   return Promise.resolve([]);
 };

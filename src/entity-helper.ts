@@ -1,17 +1,9 @@
 import { HassEntity } from 'home-assistant-js-websocket/dist/types';
-import {
-  Attribute,
-  AttributeConfig,
-  ExtendedHomeAssistant,
-  History,
-  IconState,
-  ValidatedLogbookCardConfig,
-  LogbookCardConfig,
-  StateMap,
-} from './types';
+import { Attribute, AttributeConfig, ExtendedHomeAssistant, History, IconState, StateMap } from './types';
 import { computeStateDisplay, stateIcon } from 'custom-card-helpers';
 import { formatAttributeValue, formatEntityAttributeValue } from './formatter';
 import { addSlashes } from './helpers';
+import { EntityHistoryConfig } from './history';
 
 export const mapState = (hass: ExtendedHomeAssistant, entity: HassEntity, states: StateMap[]): string => {
   const s = states.find(s => s.regexp?.test(entity.state));
@@ -42,7 +34,7 @@ export const mapIcon = (item: HassEntity, states: StateMap[]): IconState | null 
 
 export const extractAttributes = (
   item: HassEntity,
-  config: LogbookCardConfig,
+  config: EntityHistoryConfig,
   hass: ExtendedHomeAssistant,
 ): Array<Attribute> => {
   if (config?.attributes == null) {
@@ -88,14 +80,14 @@ export const squashSameState = (array: Array<History>, val: History): Array<Hist
   return array;
 };
 
-export const filterIfDurationIsLessThanMinimal = (config: LogbookCardConfig, entry: History): boolean => {
+export const filterIfDurationIsLessThanMinimal = (config: EntityHistoryConfig, entry: History): boolean => {
   if (!config.minimal_duration) {
     return true;
   }
   return entry.duration >= config.minimal_duration * 1000;
 };
 
-export const filterEntry = (config: ValidatedLogbookCardConfig, entry: History): boolean => {
+export const filterEntry = (config: EntityHistoryConfig, entry: History): boolean => {
   if (config.hidden_state_regexp.length === 0) {
     return true;
   }

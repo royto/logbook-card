@@ -35,10 +35,12 @@ const plugins = [
 
 export default [
   {
-    input: 'src/logbook-card.ts',
+    input: 'src/index.ts',
     output: {
-      dir: 'dist',
+      //dir: 'dist',
       format: 'es',
+      file: 'dist/logbook-card.js',
+      inlineDynamicImports: true,
     },
     plugins: [...plugins],
   },
