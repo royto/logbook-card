@@ -43,8 +43,9 @@ export const getCustomLogsPromise = (
   startDate: Date,
 ): Promise<CustomLogEvent[]> => {
   if (config.custom_logs) {
+    const endTime = new Date().toISOString();
     return hass
-      .callApi<LogbookEntry[]>('GET', `logbook/${startDate.toISOString()}?entity=${config.entity}`)
+      .callApi<LogbookEntry[]>('GET', `logbook/${startDate.toISOString()}?entity=${config.entity}&end_time=${endTime}`)
       .then(response => toCustomLogs(response));
   }
   return Promise.resolve([]);
