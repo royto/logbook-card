@@ -1,5 +1,11 @@
 # Logbook card
 
+[![hacs][hacs-badge]][hacs-url]
+[![release][release-badge]][release-url]
+![downloads][downloads-badge]
+
+<a href="https://www.buymeacoffee.com/royto" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/white_img.png" alt="Buy Me A Coffee" style="height: auto !important;width: auto !important;" ></a>
+
 A custom [Lovelace](https://www.home-assistant.io/lovelace/) component for displaying history of an entity for [Home Assistant](https://www.home-assistant.io/).
 
 ![logbook card example](images/screenshot.png)
@@ -288,3 +294,11 @@ type: 'custom:logbook-card'
 ```
 
 ![custom icon](images/collapse.png)
+
+<!-- Badges -->
+
+[hacs-url]: https://github.com/hacs/integration
+[hacs-badge]: https://img.shields.io/badge/hacs-default-orange.svg?style=flat-square
+[release-badge]: https://img.shields.io/github/v/release/royto/logbook-card?style=flat-square
+[downloads-badge]: https://img.shields.io/github/downloads/royto/logbook-card/total?style=flat-square
+[release-url]: https://github.com/royto/logbook-card/releases
