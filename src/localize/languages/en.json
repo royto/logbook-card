@@ -1,7 +1,49 @@
 {
   "common": {
     "version": "Version",
+    "default_no_event": "no event on the period",
     "invalid_configuration": "Invalid configuration",
-    "show_warning": "Show Warning"
+    "show_warning": "Show Warning",
+    "invalid_max_items": "max_items must be an integer",
+    "invalid_desc": "desc must be a boolean",
+    "invalid_collapse": "collapse must be a positive integer",
+    "invalid_minimal_duration": "minimal_duration must be a positive integer",
+    "invalid_duration_units": "duration.units must be an array",
+    "invalid_duration_largest": "duration.largest must be an integer or `full`",
+    "collapse_greater_than_max_items": "collapse must be lower than max-items"
+  },
+  "logbook_card": {
+    "default_title": "{entity} History",
+    "missing_entity": "Please define an entity.",
+    "invalid_hidden_date": "hidden_state must be an array",
+    "invalid_state_map": "state_map must be an array",
+    "invalid_attributes": "attributes must be an array"
+  },
+  "multiple_logbook_card": {
+    "missing_entities" : "Please define at least one entity in entities"
+  },
+  "editor": {
+    "required_option_name": "Required",
+    "required_option_description": "Required options for this card",
+    "show_option_name": "Show",
+    "show_option_description": "Customize what to display",
+    "appearance_option_name": "Appearance",
+    "appearance_option_description": "Customize the title, number of events to display, etc ...",
+    "entity_label": "Entity (Required)",
+    "title_label": "Title (Optional)",
+    "history_label": "History: Numbers of days of history of the logbook",
+    "max_items_label": "Max Items: Maximum of events to display (-1 to display all events)",
+    "no_event_label": "Text when no event",
+    "collapse_label": "Collapse: Number of entities to show. Rest will be available in expandable section",
+    "date_format_label": "Date format",
+    "desc_label": "Display events by date descending",
+    "display_state_label": "Display state",
+    "display_duration_label": "Display duration",
+    "display_start_date_label": "Display start date",
+    "display_end_date_label": "Display end date",
+    "display_icon_label": "Display icon",
+    "display_separator_label": "Display separator",
+    "display_custom_logs_label": "Display custom logs",
+    "note": "Note: Setting hidden_state, duration_labels, attributes, separator_style, state_map are available exclusively using Code Editor."
   }
 }

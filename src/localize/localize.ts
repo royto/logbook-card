@@ -8,21 +8,30 @@ const languages = {
   nb: nb,
 };
 
+const fallbackLanguage = 'en';
+
+const isLanguageSupported = (language: string): boolean => {
+  return Object.keys(languages).includes(language);
+};
+
+const translationExistsForLanguage = (section: string, key: string, language: string): boolean => {
+  return languages[language][section] && languages[language][section][key];
+};
+
 export function localize(string: string, search = '', replace = ''): string {
   const section = string.split('.')[0];
   const key = string.split('.')[1];
 
-  const lang = (localStorage.getItem('selectedLanguage') || 'en').replace(/['"]+/g, '').replace('-', '_');
-
-  let translated: string;
-
-  try {
-    translated = languages[lang][section][key];
-  } catch (e) {
-    translated = languages['en'][section][key];
+  let language = (localStorage.getItem('selectedLanguage') || 'en').replace(/['"]+/g, '').replace('-', '_');
+  if (!isLanguageSupported(language) || !translationExistsForLanguage(section, key, language)) {
+    language = fallbackLanguage;
   }
 
-  if (translated === undefined) translated = languages['en'][section][key];
+  if (!translationExistsForLanguage(section, key, language)) {
+    return string;
+  }
+
+  let translated = languages[language][section][key];
 
   if (search !== '' && replace !== '') {
     translated = translated.replace(search, replace);

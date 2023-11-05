@@ -1,4 +1,3 @@
-import { isSameDay } from './date-helpers';
 import { LogbookCardEditor } from './editor';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -42,18 +41,17 @@ export class LogbookCard extends LogbookBaseCard {
 
   public setConfig(config: LogbookCardConfig): void {
     checkBaseConfig(config);
-
     if (!config.entity) {
-      throw new Error(localize('logbook-card.missing_entity'));
+      throw new Error(localize('logbook_card.missing_entity'));
     }
     if (config.hidden_state && !Array.isArray(config.hidden_state)) {
-      throw new Error('hidden_state must be an array');
+      throw new Error(localize('logbook_card.invalid_hidden_state'));
     }
     if (config.state_map && !Array.isArray(config.state_map)) {
-      throw new Error('state_map must be an array');
+      throw new Error(localize('logbook_card.invalid_state_map'));
     }
     if (config.attributes && !Array.isArray(config.attributes)) {
-      throw new Error('attributes must be an array');
+      throw new Error(localize('logbook_card.invalid_attributes'));
     }
 
     this.config = {
@@ -61,7 +59,7 @@ export class LogbookCard extends LogbookBaseCard {
       hidden_state: [],
       desc: true,
       max_items: -1,
-      no_event: 'No event on the period',
+      no_event: localize('common.default_no_event'),
       attributes: [],
       scroll: true,
       custom_logs: false,
@@ -81,7 +79,8 @@ export class LogbookCard extends LogbookBaseCard {
       const stateObj = this.config.entity in hass.states ? hass.states[this.config.entity] : null;
 
       if (stateObj) {
-        this.config.title = this.config?.title ?? stateObj.attributes.friendly_name + ' History';
+        this.config.title =
+          this.config?.title ?? localize('logbook_card.default_title', '{entity}', stateObj.attributes.friendly_name);
 
         const startDate = new Date(new Date().setDate(new Date().getDate() - (this.config.history ?? 5)));
         const entityConfig: EntityHistoryConfig = {

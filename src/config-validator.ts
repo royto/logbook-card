@@ -6,24 +6,24 @@ export const checkBaseConfig = (config: LogbookCardConfigBase): void => {
     throw new Error(localize('common.invalid_configuration'));
   }
   if (config.max_items !== undefined && !Number.isInteger(config.max_items)) {
-    throw new Error('max_items must be an Integer.');
+    throw new Error(localize('common.invalid_max_items'));
   }
   if (config.desc && typeof config.desc !== 'boolean') {
-    throw new Error('desc must be a boolean');
+    throw new Error(localize('common.invalid_desc'));
   }
   if (config.collapse && !Number.isInteger(config.collapse)) {
-    throw new Error('collapse must be a number');
+    throw new Error(localize('common.invalid_collapse'));
   }
   if (config.collapse && config.max_items && config.max_items > 0 && config.collapse > config.max_items) {
-    throw new Error('collapse must be lower than max-items');
+    throw new Error(localize('common.collapse_greater_than_max_items'));
   }
   if (config.duration?.units && !Array.isArray(config.duration.units)) {
-    throw new Error('duration.units must be an array');
+    throw new Error(localize('common.invalid_duration_units'));
   }
   if (config.duration?.largest && !Number.isInteger(config.duration.largest) && config.duration.largest !== 'full') {
-    throw new Error('duration.largest should be a number or `full`');
+    throw new Error(localize('common.invalid_duration_largest'));
   }
   if (config.minimal_duration && !Number.isInteger(config.minimal_duration) && config.minimal_duration <= 0) {
-    throw new Error('minimal_duration should be a positive number');
+    throw new Error(localize('common.invalid_minimal_duration'));
   }
 };

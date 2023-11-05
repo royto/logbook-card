@@ -1,7 +1,49 @@
 {
   "common": {
     "version": "Version",
+    "default_no_event": "aucun événement sur la période",
     "invalid_configuration": "Configuration invalide",
-    "show_warning": "Afficher les warning"
+    "show_warning": "Afficher les warning",
+    "invalid_max_items": "max_items doit être un entier",
+    "invalid_desc": "desc doit être un booléen",
+    "invalid_collapse": "collapse doit être un entier positif",
+    "invalid_minimal_duration": "minimal_duration doit être un entier positif",
+    "invalid_duration_units": "duration.units doit être un tableau",
+    "invalid_duration_largest": "duration.largest doit être un entier ou `full`",
+    "collapse_greater_than_max_items": "collapse doit être supérieur à max-items"
+  },
+  "logbook_card": {
+    "default_title": "Historique de {entity}",
+    "missing_entity": "Merci de définir une entité",
+    "invalid_hidden_date": "hidden_state doit être un tableau",
+    "invalid_state_map": "state_map doit être un tableau",
+    "invalid_attributes": "attributes doit être un tableau"
+  },
+  "multiple_logbook_card": {
+    "missing_entities" : "Merci de définir au moins une entité"
+  },
+  "editor": {
+    "required_option_name": "Requis",
+    "required_option_description": "Options requises pour la carte",
+    "show_option_name": "Affichage",
+    "show_option_description": "Configurer les éléments à afficher",
+    "appearance_option_name": "Appareance",
+    "appearance_option_description": "Configurer le titre, nombre d'entrée à afficher, etc ...",
+    "entity_label": "Entité (Requis)",
+    "title_label": "Titre (Optionel)",
+    "history_label": "History: Numbres de jour d'historique du journal",
+    "max_items_label": "Max Items: Maximum d'entrée à afficher (-1 pour les afficher tous)",
+    "no_event_label": "Texte si aucune entrée",
+    "collapse_label": "Collapse: Nombre des entrées à afficher. Les entrées suivantes seront affichés dans une section retractable",
+    "date_format_label": "Format d'affichage des dates",
+    "desc_label": "Afficher les entrées par date décroissante",
+    "display_state_label": "Afficher l'état",
+    "display_duration_label": "Afficher la durée",
+    "display_start_date_label": "Afficher la date de début",
+    "display_end_date_label": "Afficher la date de fin",
+    "display_icon_label": "Afficher l'icône",
+    "display_separator_label": "Afficher le séparateur",
+    "display_custom_logs_label": "Afficher les entrées personnalisées du journal",
+    "note": "Note: Les paramètres hidden_state, duration_labels, attributes, separator_style, state_map ne sont configurable qu'avec l'éditeur de code."
   }
 }

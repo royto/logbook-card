@@ -4,24 +4,25 @@ import { customElement, property, state } from 'lit/decorators.js';
 import { HomeAssistant, fireEvent, LovelaceCardEditor } from 'custom-card-helpers';
 
 import { LogbookCardConfig } from './types';
+import { localize } from './localize/localize';
 
 const options = {
   required: {
     icon: 'tune',
-    name: 'Required',
-    secondary: 'Required options for this card to function',
+    name: localize('editor.required_option_name'),
+    secondary: localize('editor.required_option_name'),
     show: true,
   },
   showOptions: {
     icon: 'toggle-switch',
-    name: 'Show',
-    secondary: 'Customize what to display',
+    name: localize('editor.show_option_name'),
+    secondary: localize('editor.show_option_description'),
     show: false,
   },
   appearance: {
     icon: 'palette',
-    name: 'Appearance',
-    secondary: 'Customize the title, number of events to display, etc',
+    name: localize('editor.appearance_option_name'),
+    secondary: localize('editor.appearance_option_description'),
     show: false,
   },
 };
@@ -176,7 +177,7 @@ export class LogbookCardEditor extends LitElement implements LovelaceCardEditor 
                 <ha-select
                   naturalMenuWidth
                   fixedMenuPosition
-                  label="Entity (Required)"
+                  .label=${localize('editor.entity_label')}
                   .configValue=${'entity'}
                   .value=${this._entity}
                   @selected=${this._valueChanged}
@@ -200,14 +201,14 @@ export class LogbookCardEditor extends LitElement implements LovelaceCardEditor 
           ? html`
               <div class="values">
                 <ha-textfield
-                  label="Title (Optional)"
+                  .label=${localize('editor.title_label')}
                   .value=${this._title}
                   .configValue=${'title'}
                   @input=${this._valueChanged}
                 ></ha-textfield>
                 <ha-textfield
                   type="number"
-                  label="History: Numbers of days of history of the logbook"
+                  .label=${localize('editor.history_label')}
                   min="1"
                   .value=${this._history}
                   .configValue=${'history'}
@@ -216,32 +217,32 @@ export class LogbookCardEditor extends LitElement implements LovelaceCardEditor 
                 <ha-textfield
                   type="number"
                   min="-1"
-                  label="Max Items: Maximum of events to display (-1 to display all events)"
+                  .label=${localize('editor.max_items_label')}
                   .value=${this._max_items}
                   .configValue=${'max_items'}
                   @input=${this._valueChanged}
                 ></ha-textfield>
                 <ha-textfield
-                  label="Text when no event"
+                  .label=${localize('editor.no_event_label')}
                   .value=${this._no_event}
                   .configValue=${'no_event'}
                   @input=${this._valueChanged}
                 ></ha-textfield>
                 <ha-textfield
                   type="number"
-                  label="Collapse: Number of entities to show. Rest will be available in expandable section"
+                  .label=${localize('editor.collapse_label')}
                   .value=${this._collapse}
                   .configValue=${'collapse'}
                   @input=${this._valueChanged}
                 ></ha-textfield>
                 <ha-textfield
-                  label="Date format"
+                  .label=${localize('editor.date_format_label')}
                   .value=${this._date_format}
                   .configValue=${'date_format'}
                   @input=${this._valueChanged}
                 ></ha-textfield>
                 <p>
-                  <ha-formfield .label=${`Display events descending ${this._desc ? 'on' : 'off'}`}>
+                  <ha-formfield .label=${localize('editor.desc_label')}>
                     <ha-switch
                       aria-label=${`Toggle desc ${this._desc ? 'on' : 'off'}`}
                       .checked=${this._desc !== false}
@@ -261,7 +262,7 @@ export class LogbookCardEditor extends LitElement implements LovelaceCardEditor 
         ${options.showOptions.show
           ? html`
               <div class="values">
-                <ha-formfield .label=${`Display state`}>
+                <ha-formfield .label=${localize(`editor.display_state_label`)}>
                   <ha-switch
                     aria-label=${`Toggle display of state ${this._show_state ? 'off' : 'on'}`}
                     .checked=${this._show_state !== false}
@@ -269,7 +270,7 @@ export class LogbookCardEditor extends LitElement implements LovelaceCardEditor 
                     @change=${this._showOptionChanged}
                   ></ha-switch>
                 </ha-formfield>
-                <ha-formfield .label=${`Display duration`}>
+                <ha-formfield .label=${localize(`editor.display_duration_label`)}>
                   <ha-switch
                     aria-label=${`Toggle display of duration ${this._show_state ? 'off' : 'on'}`}
                     .checked=${this._show_duration !== false}
@@ -277,7 +278,7 @@ export class LogbookCardEditor extends LitElement implements LovelaceCardEditor 
                     @change=${this._showOptionChanged}
                   ></ha-switch>
                 </ha-formfield>
-                <ha-formfield .label=${`Display start date`}>
+                <ha-formfield .label=${localize(`editor.display_start_date_label`)}>
                   <ha-switch
                     aria-label=${`Toggle display of start date ${this._show_start_date ? 'off' : 'on'}`}
                     .checked=${this._show_start_date !== false}
@@ -285,7 +286,7 @@ export class LogbookCardEditor extends LitElement implements LovelaceCardEditor 
                     @change=${this._showOptionChanged}
                   ></ha-switch>
                 </ha-formfield>
-                <ha-formfield .label=${`Display end date`}>
+                <ha-formfield .label=${localize(`editor.display_end_date_label`)}>
                   <ha-switch
                     aria-label=${`Toggle display of end date ${this._show_end_date ? 'off' : 'on'}`}
                     .checked=${this._show_end_date !== false}
@@ -293,7 +294,7 @@ export class LogbookCardEditor extends LitElement implements LovelaceCardEditor 
                     @change=${this._showOptionChanged}
                   ></ha-switch>
                 </ha-formfield>
-                <ha-formfield .label=${`Display icon`}>
+                <ha-formfield .label=${localize(`editor.display_icon_label`)}>
                   <ha-switch
                     aria-label=${`Toggle display of icon ${this._show_icon ? 'off' : 'on'}`}
                     .checked=${this._show_icon === true}
@@ -301,7 +302,7 @@ export class LogbookCardEditor extends LitElement implements LovelaceCardEditor 
                     @change=${this._showOptionChanged}
                   ></ha-switch>
                 </ha-formfield>
-                <ha-formfield .label=${`Display separator`}>
+                <ha-formfield .label=${localize(`editor.display_separator_label`)}>
                   <ha-switch
                     aria-label=${`Toggle display of event separator ${this._show_separator ? 'off' : 'on'}`}
                     .checked=${this._show_separator !== false}
@@ -309,7 +310,7 @@ export class LogbookCardEditor extends LitElement implements LovelaceCardEditor 
                     @change=${this._showOptionChanged}
                   ></ha-switch>
                 </ha-formfield>
-                <ha-formfield .label=${`Display custom logs`}>
+                <ha-formfield .label=${localize(`editor.display_custom_logs_label`)}>
                   <ha-switch
                     aria-label=${`Toggle display of custom logs ${this._custom_logs ? 'off' : 'on'}`}
                     .checked=${this._custom_logs !== false}
@@ -323,8 +324,7 @@ export class LogbookCardEditor extends LitElement implements LovelaceCardEditor 
       </div>
 
       <p class="note">
-        Note: Setting hidden_state, duration_labels, attributes, separator_style, state_map are available exclusively
-        using Code Editor.
+        ${localize('editor.note')}
       </p>
     `;
   }

@@ -24,6 +24,7 @@ import { toStateMapRegex, toHiddenRegex } from './config-helpers';
 import { LogbookBaseCard } from './logbook-base-card';
 import { checkBaseConfig } from './config-validator';
 import { addCustomCard } from './ha/custom-card';
+import { localize } from './localize/localize';
 
 addCustomCard(
   'multiple-logbook-card',
@@ -50,11 +51,11 @@ export class MultipleLogbookCard extends LogbookBaseCard {
     checkBaseConfig(config);
 
     if (!config.entities && !Array.isArray(config.entities)) {
-      throw new Error('Please define at least an entity.');
+      throw new Error(localize('multiple_logbook_card.missing_entities'));
     }
 
     if (config.entities.length === 0) {
-      throw new Error('Please define at least an entity.');
+      throw new Error(localize('multiple_logbook_card.missing_entities'));
     }
 
     //Check for attributes / states / hidden_state
@@ -63,7 +64,7 @@ export class MultipleLogbookCard extends LogbookBaseCard {
       history: 5,
       desc: true,
       max_items: -1,
-      no_event: 'No event on the period',
+      no_event: localize('common.default_no_event'),
       attributes: [],
       scroll: true,
       custom_logs: false,
