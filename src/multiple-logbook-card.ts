@@ -148,8 +148,6 @@ export class MultipleLogbookCard extends LogbookBaseCard {
   }
 
   protected render(): TemplateResult | void {
-    //TODO Render errors
-    // Missing entities ...
     if (!this.config || !this.hass || !this.lastHistoryChanged) {
       return html``;
     }
@@ -208,10 +206,12 @@ export class MultipleLogbookCard extends LogbookBaseCard {
 
   renderCustomLogEvent(customLogEvent: CustomLogEvent, isLast: boolean): TemplateResult {
     return html`
-      <div class="item">
+      <div class="item custom-log">
         ${this.renderCustomLogIcon(customLogEvent.entity, this.config)}
         <div class="item-content">
-          ${this.renderEntity(customLogEvent.entity, this.config)} - ${customLogEvent.name} - ${customLogEvent.message}
+          ${this.renderEntity(customLogEvent.entity, this.config)}
+          <span class="custom-log__name">${customLogEvent.name}</span> -
+          <span class="custom-log__message">${customLogEvent.message}</span>
           <div class="date">
             <logbook-date .hass=${this.hass} .date=${customLogEvent.start} .config=${this.config}></logbook-date>
           </div>
@@ -223,12 +223,12 @@ export class MultipleLogbookCard extends LogbookBaseCard {
 
   renderHistoryItem(item: History, isLast: boolean): TemplateResult {
     return html`
-      <div class="item">
+      <div class="item history">
         ${this.renderIcon(item, this.config)}
         <div class="item-content">
           ${this.config?.show?.state
             ? html`
-                ${this.renderEntity(item.stateObj.entity_id, this.config)} -
+                ${this.renderEntity(item.stateObj.entity_id, this.config)}
                 <span class="state">${item.label}</span>
               `
             : html``}
