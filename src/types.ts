@@ -12,14 +12,15 @@ export interface ExtendedHomeAssistant extends HomeAssistant {
 export interface LogbookCardConfigBase extends LovelaceCardConfig {
   title?: string;
   history?: number;
-  desc?: boolean;
-  no_event?: string;
-  max_items?: number;
-  show?: ShowConfiguration;
-  date_format?: string | 'relative';
   collapse?: number;
+  date_format?: string | 'relative';
+  desc?: boolean;
   duration?: DurationConfig;
+  group_by_day?: boolean;
+  max_items?: number;
   minimal_duration?: number;
+  no_event?: string;
+  show?: ShowConfiguration;
   scroll?: boolean;
   separator_style?: SeparatorStyleConfig;
   tap_action?: ActionConfig;

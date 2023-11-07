@@ -1,3 +1,4 @@
+import { isSameDay } from './date-helpers';
 import { LogbookCardEditor } from './editor';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -8,7 +9,7 @@ import { hasConfigOrEntityChanged, LovelaceCardEditor, hasAction } from 'custom-
 import './editor';
 import './logbook-date';
 import './logbook-duration';
-import { LogbookCardConfig, History, ExtendedHomeAssistant, HistoryOrCustomLogEvent, CustomLogEvent } from './types';
+import { LogbookCardConfig, ExtendedHomeAssistant, HistoryOrCustomLogEvent } from './types';
 import { DEFAULT_SHOW, DEFAULT_SEPARATOR_STYLE, DEFAULT_DURATION } from './const';
 import { localize } from './localize/localize';
 import { actionHandler } from './action-handler-directive';
@@ -105,6 +106,7 @@ export class LogbookCard extends LogbookBaseCard {
           if (this.config?.desc) {
             historyAndCustomLogs = historyAndCustomLogs.reverse();
           }
+
           if (this.config && this.config.max_items && this.config.max_items > 0) {
             historyAndCustomLogs = historyAndCustomLogs.splice(0, this.config?.max_items);
           }
@@ -157,85 +159,6 @@ export class LogbookCard extends LogbookBaseCard {
           ${this.renderHistory(this.history, this.config)}
         </div>
       </ha-card>
-    `;
-  }
-
-  renderHistory(items: HistoryOrCustomLogEvent[] | undefined, config: LogbookCardConfig): TemplateResult {
-    if (!items || items?.length === 0) {
-      return html`
-        <p>
-          ${config.no_event}
-        </p>
-      `;
-    }
-
-    if (config.collapse && items.length > config.collapse) {
-      const elemId = `expander${Math.random()
-        .toString(10)
-        .substring(2)}`;
-      return html`
-        ${this.renderHistoryItems(items.slice(0, config.collapse))}
-        <input type="checkbox" class="expand" id="${elemId}" />
-        <label for="${elemId}"><div>&lsaquo;</div></label>
-        <div>
-          ${this.renderHistoryItems(items.slice(config.collapse))}
-        </div>
-      `;
-    } else {
-      return this.renderHistoryItems(items);
-    }
-  }
-
-  renderHistoryItems(items: HistoryOrCustomLogEvent[]): TemplateResult {
-    return html`
-      ${items?.map((item, index, array) => {
-        const isLast = index + 1 === array.length;
-        if (item.type === 'history') {
-          return this.renderHistoryItem(item, isLast);
-        }
-        return this.renderCustomLogEvent(item, isLast);
-      })}
-    `;
-  }
-
-  renderCustomLogEvent(customLogEvent: CustomLogEvent, isLast: boolean): TemplateResult {
-    return html`
-      <div class="item custom-log">
-        ${this.renderCustomLogIcon(customLogEvent.entity, this.config)}
-        <div class="item-content">
-          <span class="custom-log__name">${customLogEvent.name}</span> -
-          <span class="custom-log__message">${customLogEvent.message}</span>
-          <div class="date">
-            <logbook-date .hass=${this.hass} .date=${customLogEvent.start} .config=${this.config}></logbook-date>
-          </div>
-        </div>
-      </div>
-      ${!isLast ? this.renderSeparator(this.config) : ``}
-    `;
-  }
-
-  renderHistoryItem(item: History, isLast: boolean): TemplateResult {
-    return html`
-      <div class="item history">
-        ${this.renderIcon(item, this.config)}
-        <div class="item-content">
-          ${this.config?.show?.state
-            ? html`
-                <span class="state">${item.label}</span>
-              `
-            : html``}
-          ${this.config?.show?.duration
-            ? html`
-                <span class="duration">
-                  <logbook-duration .hass="${this.hass}" .config="${this.config}" .duration="${item.duration}">
-                  </logbook-duration>
-                </span>
-              `
-            : html``}
-          ${this.renderHistoryDate(item, this.config)}${item.attributes?.map(this.renderAttributes)}
-        </div>
-      </div>
-      ${!isLast ? this.renderSeparator(this.config) : ``}
     `;
   }
 }

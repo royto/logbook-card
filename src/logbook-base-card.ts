@@ -1,17 +1,115 @@
 import { CSSResultGroup, LitElement, TemplateResult, css, html } from 'lit';
-import { CustomLogEvent, ExtendedHomeAssistant, LogbookCardConfigBase, Attribute, History } from './types';
+import {
+  CustomLogEvent,
+  ExtendedHomeAssistant,
+  LogbookCardConfigBase,
+  Attribute,
+  History,
+  HistoryOrCustomLogEvent,
+} from './types';
 import { property } from 'lit/decorators.js';
 import { handleAction, ActionHandlerEvent, hasAction } from 'custom-card-helpers';
 import { actionHandler } from './action-handler-directive';
 import { styleMap, StyleInfo } from 'lit-html/directives/style-map.js';
+import { isSameDay } from './date-helpers';
 
 export class LogbookBaseCard extends LitElement {
   @property({ attribute: false }) public hass!: ExtendedHomeAssistant;
+
+  protected mode: 'multiple' | 'single' = 'single';
 
   protected _handleAction(ev: ActionHandlerEvent): void {
     if (this.hass && ev.detail.action && !!ev.target && ev.target['entity']) {
       handleAction(this, this.hass, { entity: ev.target['entity'] }, ev.detail.action);
     }
+  }
+
+  renderHistory(items: HistoryOrCustomLogEvent[] | undefined, config: LogbookCardConfigBase): TemplateResult {
+    if (!items || items?.length === 0) {
+      return html`
+        <p>
+          ${config.no_event}
+        </p>
+      `;
+    }
+
+    if (config.collapse && items.length > config.collapse) {
+      const elemId = `expander${Math.random()
+        .toString(10)
+        .substring(2)}`;
+      return html`
+        ${this.renderHistoryItems(items.slice(0, config.collapse), undefined, config)}
+        <input type="checkbox" class="expand" id="${elemId}" />
+        <label for="${elemId}"><div>&lsaquo;</div></label>
+        <div>
+          ${this.renderHistoryItems(items.slice(config.collapse), items[config.collapse], config)}
+        </div>
+      `;
+    } else {
+      return this.renderHistoryItems(items, undefined, config);
+    }
+  }
+
+  protected renderHistoryItems(
+    items: HistoryOrCustomLogEvent[],
+    previousItem: HistoryOrCustomLogEvent | undefined,
+    config: LogbookCardConfigBase,
+  ): TemplateResult {
+    return html`
+      ${items?.map((item, index, array) => {
+        const isLast = index + 1 === array.length;
+        const shouldRenderDaySeparator = this.shouldRenderDaySeparator(items, previousItem, index);
+        if (item.type === 'history') {
+          return html`
+            ${shouldRenderDaySeparator ? this.renderDaySeparator(item, config) : ``}
+            ${this.renderHistoryItem(item, isLast, config)}
+          `;
+        }
+        return html`
+          ${shouldRenderDaySeparator ? this.renderDaySeparator(item, config) : ``}
+          ${this.renderCustomLogEvent(item, isLast, config)}
+        `;
+      })}
+    `;
+  }
+
+  protected shouldRenderDaySeparator(
+    items: HistoryOrCustomLogEvent[],
+    previousItem: HistoryOrCustomLogEvent | undefined,
+    index: number,
+  ): boolean {
+    const item = items[index];
+    return (
+      (previousItem === undefined && index === 0) ||
+      (previousItem !== undefined && index === 0 && !isSameDay(item.start, previousItem.start)) ||
+      (index > 0 && !isSameDay(item.start, items[index - 1].start))
+    );
+  }
+
+  protected renderHistoryItem(item: History, isLast: boolean, config: LogbookCardConfigBase): TemplateResult {
+    return html`
+      <div class="item history">
+        ${this.renderIcon(item, config)}
+        <div class="item-content">
+          ${this.mode === 'multiple' ? this.renderEntity(item.stateObj.entity_id, config) : ''}
+          ${config?.show?.state
+            ? html`
+                <span class="state">${item.label}</span>
+              `
+            : html``}
+          ${config?.show?.duration
+            ? html`
+                <span class="duration">
+                  <logbook-duration .hass="${this.hass}" .config="${config}" .duration="${item.duration}">
+                  </logbook-duration>
+                </span>
+              `
+            : html``}
+          ${this.renderHistoryDate(item, config)}${item.attributes?.map(this.renderAttributes)}
+        </div>
+      </div>
+      ${!isLast ? this.renderSeparator(config) : ``}
+    `;
   }
 
   protected renderCustomLogEvent(
@@ -20,10 +118,12 @@ export class LogbookBaseCard extends LitElement {
     config: LogbookCardConfigBase,
   ): TemplateResult {
     return html`
-      <div class="item">
+      <div class="item custom-log">
         ${this.renderCustomLogIcon(customLogEvent.entity, config)}
         <div class="item-content">
-          ${this.renderEntity(customLogEvent.entity, config)} - ${customLogEvent.name} - ${customLogEvent.message}
+          ${this.mode === 'multiple' ? this.renderEntity(customLogEvent.entity, config) : ''}
+          <span class="custom-log__name">${customLogEvent.name}</span> -
+          <span class="custom-log__message">${customLogEvent.message}</span>
           <div class="date">
             <logbook-date .hass=${this.hass} .date=${customLogEvent.start} .config=${config}></logbook-date>
           </div>
@@ -42,6 +142,21 @@ export class LogbookBaseCard extends LitElement {
         </div>
       `;
     }
+  }
+
+  protected renderDaySeparator(item: CustomLogEvent | History, config: LogbookCardConfigBase): TemplateResult {
+    if (!config.group_by_day) {
+      return html``;
+    }
+    return html`
+      <div class="date-separator">
+        ${new Intl.DateTimeFormat(this.hass.locale?.language ?? 'en', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+        }).format(item.start)}
+      </div>
+    `;
   }
 
   protected renderSeparator(config: LogbookCardConfigBase): TemplateResult | void {
@@ -199,6 +314,13 @@ export class LogbookBaseCard extends LitElement {
       }
       .expand:checked + label + div {
         display: block;
+      }
+      .date-separator {
+        display: block;
+        border-block-end: 1px solid var(--divider-color);
+        padding: 0.5rem 1rem;
+        font-weight: bold;
+        margin-block-end: 1rem;
       }
     `;
   }

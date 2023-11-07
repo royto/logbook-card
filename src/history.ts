@@ -1,5 +1,5 @@
 import { HassEntity } from 'home-assistant-js-websocket/dist/types';
-import { History, ExtendedHomeAssistant, StateMap, AttributeConfig, HiddenRegExp, HiddenConfig } from './types';
+import { History, ExtendedHomeAssistant, StateMap, AttributeConfig, HiddenRegExp } from './types';
 
 import {
   extractAttributes,
