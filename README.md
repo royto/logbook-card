@@ -12,6 +12,35 @@
 
 **WARNING**: Since 1.0.0, the resource type of the card is `JavaScript Module` and not `JavaScript File` anymore. In case of loading error, check if the resource type is `JavaScript module`.
 
+- [Installation](#installation)
+  - [HACS](#hacs)
+  - [Manual](#manual)
+- [Using the card](#using-the-card)
+  - [Options](#options)
+    - [Logbook Card options](#logbook-card-options)
+    - [Multiple entities Logbook Card options](#multiple-entities-logbook-card-options)
+    - [Entity object](#entity-object)
+    - [State map object](#state-map-object)
+    - [Available show options](#available-show-options)
+    - [Attribute object](#attribute-object)
+    - [Duration object](#duration-object)
+    - [Duration labels object](#duration-labels-object)
+      - [Until v1.4.1](#until-v141)
+      - [FROM v1.5.0](#from-v150)
+    - [Hidden config object](#hidden-config-object)
+    - [Attribute hidden config object](#attribute-hidden-config-object)
+    - [Separator style object](#separator-style-object)
+    - [Action Options](#action-options)
+- [Custom Styling](#custom-styling)
+- [Example usage](#example-usage)
+  - [Hidden states](#hidden-states)
+  - [Multiple entities](#multiple-entities)
+  - [State label](#state-label)
+  - [Attributes and custom date format](#attributes-and-custom-date-format)
+  - [Duration labels](#duration-labels)
+  - [Custom separator style](#custom-separator-style)
+  - [Custom icons](#custom-icons)
+
 ## Installation
 
 ### HACS
@@ -195,7 +224,7 @@ Introduce in 1.10.0
 | style | string |        `solid`         | [Style](https://developer.mozilla.org/en-US/docs/Web/CSS/border-style) of the separator. |
 | color | string | `var(--divider-color)` | Color of the separator.                                                                  |
 
-## Action Options
+#### Action Options
 
 | Name            | Type   | Requirement  | Description                                                                                                                            | Default     |
 | --------------- | ------ | ------------ | -------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
@@ -207,9 +236,48 @@ Introduce in 1.10.0
 | haptic          | string | **Optional** | Haptic feedback _success, warning, failure, light, medium, heavy, selection_ | `none`      |
 | repeat          | number | **Optional** | How often to repeat the `hold_action` in milliseconds.                                                                                 | `none`       |
 
-### Example usage
+## Custom Styling
 
-Example with hidden states
+The card style can be customize using [lovelace card mod](https://github.com/thomasloven/lovelace-card-mod)  
+
+After installation, you just have to add a  card_mod properties with your custom styles
+
+Here an example to make state in bold.
+
+```yaml
+type: custom:logbook-card
+entity: light.living_room
+card_mod:
+  style: |
+    .state {
+      font-weight: bold;
+    }
+```
+
+![card with custom style to put state in bold](images/custom_styles.png)
+
+Here is the list of style you can override:
+
+| Class                | Target                           |
+|----------------------|----------------------------------|
+| .item                | container for an entry           |
+| .history             | if entry is entity history       |
+| .custom-log          | if entry is custom log           |
+| .item-content        | container for                    |
+| .item-icon           | item icon                        |
+| .entity              | name of the entity when multiple |
+| .custom-log__name    | custom log name                  |
+| .custom-log__message | custom log message               |
+| .state               | entity state                     |
+| .duration            | duration                         |
+| .date                | date                             |
+| .attribute           | attribute                        |
+| .expand              | expander when collapsed item     |
+| .date-separator      | date separator                   |
+
+## Example usage
+
+### Hidden states
 
 ```yaml
 type: 'custom:logbook-card'
@@ -220,7 +288,7 @@ hidden_state:
 title: Day history
 ```
 
-Example with multiple entities
+### Multiple entities
 
 ```yaml
 type: 'custom:multiple-logbook-card'
@@ -235,7 +303,7 @@ title: Sun And Moon
 
 ![logbook card with multiple entities](images/multiple_entities.png)
 
-Example with state label
+### State label
 
 ```yaml
 entity: binary_sensor.garage_opening_sensor
@@ -254,7 +322,7 @@ show:
 
 ![Custom labels](images/custom-labels.png)
 
-Example with attributes and custom date format
+### Attributes and custom date format
 
 ```yaml
 type: 'custom:logbook-card'
@@ -271,7 +339,7 @@ date_format: dd/MM/YYYY hh:mm
 
 ![Attributes and custom date format](images/attributes.png)
 
-Example with short duration labels:
+### Duration labels
 
 ```yaml
 type: 'custom:logbook-card'
@@ -288,7 +356,7 @@ duration:
     month: 'm'
 ```
 
-Example with custom separator style:
+### Custom separator style
 
 ```yaml
 type: 'custom:logbook-card'
@@ -304,7 +372,7 @@ separator_style:
 
 ![Custom Separator](images/custom-separator.png)
 
-Example with custom icons:
+### Custom icons
 
 ```yaml
 entity: sensor.vacuum
