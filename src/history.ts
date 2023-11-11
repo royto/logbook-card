@@ -17,6 +17,7 @@ export interface EntityHistoryConfig {
   hidden_state_regexp: Array<HiddenRegExp>;
   minimal_duration?: number;
   state_map?: StateMap[];
+  show_history: boolean;
 }
 
 export const toHistory = (
@@ -63,6 +64,10 @@ export const getHistory = (
   config: EntityHistoryConfig,
   startDate: Date,
 ): Promise<History[]> => {
+  if (!config.show_history) {
+    return Promise.resolve([]);
+  }
+
   const uri =
     'history/period/' +
     startDate.toISOString() +

@@ -21,6 +21,7 @@ const buildConfig = (config: partialEntityConfig): EntityHistoryConfig => {
     hidden_state: [],
     hidden_state_regexp: toHiddenRegex(config.hidden_state),
     ...config,
+    show_history: false,
   };
 };
 

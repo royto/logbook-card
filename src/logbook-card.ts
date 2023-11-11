@@ -63,6 +63,7 @@ export class LogbookCard extends LogbookBaseCard {
       attributes: [],
       scroll: true,
       custom_logs: false,
+      show_history: true,
       ...config,
       state_map: toStateMapRegex(config.state_map),
       hidden_state_regexp: toHiddenRegex(config.hidden_state),
@@ -90,12 +91,13 @@ export class LogbookCard extends LogbookBaseCard {
           hidden_state_regexp: this.config.hidden_state_regexp,
           date_format: this.config.date_format,
           minimal_duration: this.config.minimal_duration,
+          show_history: this.config.show_history || true,
         };
         const historyPromise = getHistory(this.hass, entityConfig, startDate);
 
         const customLogConfig: EntityCustomLogConfig = {
           entity: this.config.entity!,
-          custom_logs: this.config.custom_logs || false,
+          custom_logs: this.config.custom_logs === true || false,
         };
         const customLogsPromise = getCustomLogsPromise(this.hass, customLogConfig, startDate);
 

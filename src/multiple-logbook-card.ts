@@ -1,7 +1,3 @@
-/*TODO
- - entity name: is it ok ? option to hide it ?
-*/
-
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { html, TemplateResult, PropertyValues } from 'lit';
@@ -68,6 +64,7 @@ export class MultipleLogbookCard extends LogbookBaseCard {
       attributes: [],
       scroll: true,
       custom_logs: false,
+      show_history: true,
       ...config,
       entities: config.entities?.map(e => ({
         attributes: e.attributes ?? [],
@@ -104,13 +101,14 @@ export class MultipleLogbookCard extends LogbookBaseCard {
             state_map: entity.state_map,
             date_format: this.config.date_format,
             minimal_duration: this.config.minimal_duration,
+            show_history: this.config.show_history || true,
           };
           const promise = getHistory(this.hass, entityConfig, startDate);
           historyPromises.push(promise);
 
           const customLogConfig: EntityCustomLogConfig = {
             entity: entity.entity!,
-            custom_logs: entity.custom_logs || false,
+            custom_logs: entity.custom_logs === true || false,
           };
           const customLogsPromise = getCustomLogsPromise(this.hass, customLogConfig, startDate);
           customLogsPromises.push(customLogsPromise);

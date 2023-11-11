@@ -34,6 +34,7 @@ export interface EntityCardConfig {
   state_map?: Array<StateMap>;
   hidden_state?: Array<string | HiddenConfig>;
   custom_logs?: boolean;
+  show_history?: boolean;
 }
 
 export interface LogbookCardConfig extends LogbookCardConfigBase, EntityCardConfig {}
