@@ -34,7 +34,7 @@ export class LogbookCard extends LogbookBaseCard {
   }
 
   @state() private config!: LogbookCardConfig;
-  @property({ type: Array }) private history: Array<HistoryOrCustomLogEvent> = [];
+  @state() private history: Array<HistoryOrCustomLogEvent> = [];
 
   private lastHistoryChanged?: Date;
   private MAX_UPDATE_DURATION = 5000;

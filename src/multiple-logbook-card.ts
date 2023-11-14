@@ -33,7 +33,7 @@ export class MultipleLogbookCard extends LogbookBaseCard {
   // Add any properties that should cause your element to re-render here
   @property({ type: Object }) public hass!: ExtendedHomeAssistant;
   @state() private config!: MultipleLogbookCardConfig;
-  @property({ type: Array }) private history: Array<HistoryOrCustomLogEvent> = [];
+  @state() private history: Array<HistoryOrCustomLogEvent> = [];
 
   constructor() {
     super();
