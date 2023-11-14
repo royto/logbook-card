@@ -166,7 +166,7 @@ export class LogbookBaseCard extends LitElement {
     };
     if (config?.show?.separator) {
       return html`
-        <hr style=${styleMap(style)} aria-hidden="true" />
+        <hr class="separator" style=${styleMap(style)} aria-hidden="true" />
       `;
     }
   }
