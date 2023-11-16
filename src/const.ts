@@ -8,6 +8,7 @@ export const DEFAULT_SHOW: ShowConfiguration = {
   end_date: true,
   icon: true,
   separator: false,
+  entity_name: true,
 };
 
 export const DEFAULT_DURATION: DurationConfig = {

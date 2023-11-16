@@ -109,7 +109,7 @@ export class LogbookCardEditor extends LitElement implements LovelaceCardEditor 
       return this._config.show?.state;
     }
 
-    return true;
+    return DEFAULT_SHOW.state;
   }
 
   get _show_duration(): boolean {
@@ -117,7 +117,7 @@ export class LogbookCardEditor extends LitElement implements LovelaceCardEditor 
       return this._config.show?.duration;
     }
 
-    return true;
+    return DEFAULT_SHOW.duration;
   }
 
   get _show_start_date(): boolean {
@@ -125,7 +125,7 @@ export class LogbookCardEditor extends LitElement implements LovelaceCardEditor 
       return this._config.show?.start_date;
     }
 
-    return true;
+    return DEFAULT_SHOW.start_date;
   }
 
   get _show_end_date(): boolean {
@@ -133,7 +133,7 @@ export class LogbookCardEditor extends LitElement implements LovelaceCardEditor 
       return this._config.show?.end_date;
     }
 
-    return true;
+    return DEFAULT_SHOW.end_date;
   }
 
   get _show_icon(): boolean {
@@ -141,7 +141,7 @@ export class LogbookCardEditor extends LitElement implements LovelaceCardEditor 
       return this._config.show?.icon;
     }
 
-    return true;
+    return DEFAULT_SHOW.icon;
   }
 
   get _show_separator(): boolean {
@@ -149,7 +149,7 @@ export class LogbookCardEditor extends LitElement implements LovelaceCardEditor 
       return this._config.show?.separator;
     }
 
-    return false;
+    return DEFAULT_SHOW.separator;
   }
 
   get _custom_logs(): boolean {

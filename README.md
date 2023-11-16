@@ -143,14 +143,15 @@ If you use wildcard, make sure to put the more specific states first.
 
 All properties are optional.
 
-| Name       | Default |     Options      | Description        |
-| ---------- | :-----: | :--------------: | ------------------ |
-| state      | `true`  | `true` / `false` | Display state      |
-| duration   | `true`  | `true` / `false` | Display duration   |
-| start_date | `true`  | `true` / `false` | Display start date |
-| end_date   | `true`  | `true` / `false` | Display end date   |
-| icon       | `true`  | `true` / `false` | Display icon       |
-| separator  | `false` | `true` / `false` | Display separator  |
+| Name        | Default |     Options      | Description                                 |
+| ----------- | :-----: | :--------------: | ------------------------------------------- |
+| state       | `true`  | `true` / `false` | Display state                               |
+| duration    | `true`  | `true` / `false` | Display duration                            |
+| start_date  | `true`  | `true` / `false` | Display start date                          |
+| end_date    | `true`  | `true` / `false` | Display end date                            |
+| icon        | `true`  | `true` / `false` | Display icon                                |
+| separator   | `false` | `true` / `false` | Display separator                           |
+| entity_name | `true`  | `true` / `false` | Display entity name (for multiple entities) |
 
 #### Attribute object
 

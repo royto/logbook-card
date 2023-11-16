@@ -101,6 +101,7 @@ export interface ShowConfiguration {
   end_date: boolean;
   icon: boolean;
   separator: boolean;
+  entity_name: true;
 }
 
 export interface AttributeConfig {

@@ -12,6 +12,7 @@ import { handleAction, ActionHandlerEvent, hasAction } from 'custom-card-helpers
 import { actionHandler } from './action-handler-directive';
 import { styleMap, StyleInfo } from 'lit-html/directives/style-map.js';
 import { isSameDay } from './date-helpers';
+import { configDefaults } from 'vitest/dist/config';
 
 export class LogbookBaseCard extends LitElement {
   @property({ attribute: false }) public hass!: ExtendedHomeAssistant;
@@ -91,7 +92,9 @@ export class LogbookBaseCard extends LitElement {
       <div class="item history">
         ${this.renderIcon(item, config)}
         <div class="item-content">
-          ${this.mode === 'multiple' ? this.renderEntity(item.stateObj.entity_id, config) : ''}
+          ${this.mode === 'multiple' && config.show?.entity_name
+            ? this.renderEntity(item.stateObj.entity_id, config)
+            : ''}
           ${config?.show?.state
             ? html`
                 <span class="state">${item.label}</span>
@@ -121,7 +124,9 @@ export class LogbookBaseCard extends LitElement {
       <div class="item custom-log">
         ${this.renderCustomLogIcon(customLogEvent.entity, config)}
         <div class="item-content">
-          ${this.mode === 'multiple' ? this.renderEntity(customLogEvent.entity, config) : ''}
+          ${this.mode === 'multiple' && config.show?.entity_name
+            ? this.renderEntity(customLogEvent.entity, config)
+            : ''}
           <span class="custom-log__name">${customLogEvent.name}</span> -
           <span class="custom-log__message">${customLogEvent.message}</span>
           <div class="date">
