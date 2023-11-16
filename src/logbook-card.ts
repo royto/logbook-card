@@ -87,7 +87,7 @@ export class LogbookCard extends LogbookBaseCard {
         const entityConfig: EntityHistoryConfig = {
           attributes: this.config.attributes,
           entity: this.config.entity,
-          state_map: this.config.StateMap,
+          state_map: this.config.state_map,
           hidden_state_regexp: this.config.hidden_state_regexp,
           date_format: this.config.date_format,
           minimal_duration: this.config.minimal_duration,
