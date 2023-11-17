@@ -1,6 +1,6 @@
 {
   "name": "logbook-card",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Logbook card for Home Assistant UI Lovelace",
   "keywords": [
     "home-assistant",
