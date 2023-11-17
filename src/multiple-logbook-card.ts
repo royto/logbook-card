@@ -72,6 +72,7 @@ export class MultipleLogbookCard extends LogbookBaseCard {
         state_map: toStateMapRegex(e.state_map),
         hidden_state: e.hidden_state,
         custom_logs: e.custom_logs,
+        label: e.label,
       })),
       show: { ...DEFAULT_SHOW, ...config.show },
       duration: { ...DEFAULT_DURATION, ...config.duration },
@@ -97,6 +98,7 @@ export class MultipleLogbookCard extends LogbookBaseCard {
           const entityConfig: EntityHistoryConfig = {
             attributes: entity.attributes,
             entity: entity.entity!,
+            entity_name: entity.label,
             hidden_state_regexp: toHiddenRegex(entity.hidden_state),
             state_map: entity.state_map,
             date_format: this.config.date_format,
@@ -108,6 +110,7 @@ export class MultipleLogbookCard extends LogbookBaseCard {
 
           const customLogConfig: EntityCustomLogConfig = {
             entity: entity.entity!,
+            entity_name: entity.label ?? this.hass.states[entity.entity!].attributes.friendly_name,
             custom_logs: entity.custom_logs === true || false,
           };
           const customLogsPromise = getCustomLogsPromise(this.hass, customLogConfig, startDate);

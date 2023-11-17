@@ -14,6 +14,7 @@ export interface EntityHistoryConfig {
   attributes?: AttributeConfig[];
   date_format?: string | 'relative';
   entity: string;
+  entity_name?: string;
   hidden_state_regexp: Array<HiddenRegExp>;
   minimal_duration?: number;
   state_map?: StateMap[];
@@ -30,6 +31,7 @@ export const toHistory = (
       .map(h => ({
         type: 'history',
         stateObj: h,
+        entity_name: config.entity_name || h.attributes.friendly_name || config.entity,
         state: h.state,
         label: mapState(hass, h, config.state_map || []),
         start: new Date(h.last_changed),

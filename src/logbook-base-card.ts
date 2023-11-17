@@ -93,7 +93,7 @@ export class LogbookBaseCard extends LitElement {
         ${this.renderIcon(item, config)}
         <div class="item-content">
           ${this.mode === 'multiple' && config.show?.entity_name
-            ? this.renderEntity(item.stateObj.entity_id, config)
+            ? this.renderEntity(item.stateObj.entity_id, item.entity_name, config)
             : ''}
           ${config?.show?.state
             ? html`
@@ -125,7 +125,7 @@ export class LogbookBaseCard extends LitElement {
         ${this.renderCustomLogIcon(customLogEvent.entity, config)}
         <div class="item-content">
           ${this.mode === 'multiple' && config.show?.entity_name
-            ? this.renderEntity(customLogEvent.entity, config)
+            ? this.renderEntity(customLogEvent.entity, customLogEvent.entity_name, config)
             : ''}
           <span class="custom-log__name">${customLogEvent.name}</span> -
           <span class="custom-log__message">${customLogEvent.message}</span>
@@ -176,7 +176,7 @@ export class LogbookBaseCard extends LitElement {
     }
   }
 
-  protected renderEntity(entity: string, config: LogbookCardConfigBase): TemplateResult {
+  protected renderEntity(entity: string, name: string, config: LogbookCardConfigBase): TemplateResult {
     return html`
       <span
         class="entity"
@@ -186,7 +186,7 @@ export class LogbookBaseCard extends LitElement {
           hasHold: hasAction(config.hold_action),
           hasDoubleClick: hasAction(config.double_tap_action),
         })}
-        >${this.hass.states[entity].attributes.friendly_name}</span
+        >${name}</span
       >
     `;
   }

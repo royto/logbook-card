@@ -27,7 +27,7 @@ export interface LogbookEntry {
 }
 
 const customLogType = 'customLog';
-export const toCustomLogs = (entity: string, entries: LogbookEntry[]): CustomLogEvent[] => {
+export const toCustomLogs = (entityConfig: EntityCustomLogConfig, entries: LogbookEntry[]): CustomLogEvent[] => {
   return entries
     .filter(e => e.context_service === logbookLogContext)
     .map(e => ({
@@ -35,12 +35,14 @@ export const toCustomLogs = (entity: string, entries: LogbookEntry[]): CustomLog
       start: new Date(e.when),
       name: e.name,
       message: e.message || '',
-      entity,
+      entity: entityConfig.entity,
+      entity_name: entityConfig.entity_name || entityConfig.entity,
     }));
 };
 
 export interface EntityCustomLogConfig {
   entity: string;
+  entity_name?: string;
   custom_logs: boolean;
 }
 
@@ -53,7 +55,7 @@ export const getCustomLogsPromise = (
     const endTime = new Date().toISOString();
     return hass
       .callApi<LogbookEntry[]>('GET', `logbook/${startDate.toISOString()}?entity=${config.entity}&end_time=${endTime}`)
-      .then(response => toCustomLogs(config.entity, response));
+      .then(response => toCustomLogs(config, response));
   }
   return Promise.resolve([]);
 };

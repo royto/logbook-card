@@ -30,6 +30,7 @@ export interface LogbookCardConfigBase extends LovelaceCardConfig {
 
 export interface EntityCardConfig {
   entity?: string;
+  label?: string;
   attributes?: Array<AttributeConfig>;
   state_map?: Array<StateMap>;
   hidden_state?: Array<string | HiddenConfig>;
@@ -113,6 +114,7 @@ export interface AttributeConfig {
 export interface History {
   type: 'history';
   stateObj: HassEntity;
+  entity_name: string;
   state: string;
   label: string;
   start: Date;
@@ -124,6 +126,7 @@ export interface History {
 
 export interface CustomLogEvent {
   type: 'customLog';
+  entity_name: string;
   entity: string;
   start: Date;
   name: string;

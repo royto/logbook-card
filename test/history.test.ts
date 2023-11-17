@@ -412,3 +412,28 @@ describe('duration', () => {
     expect(history[3].duration).toBe(9000);
   });
 });
+
+describe('entity_name', () => {
+  const rawHistory = [
+    {
+      entity_id: 'light.escalier',
+      state: 'on',
+      attributes: { color_mode: 'onoff', battery_level: 80, friendly_name: 'Escalier' },
+      last_changed: '2023-05-29T17:27:30.199538+00:00',
+      last_updated: '2023-05-29T17:27:30.199538+00:00',
+      context: context,
+    },
+  ];
+
+  test('should returns friendly name by default', () => {
+    const history = toHistory(rawHistory, hass, defaultConfiguration);
+    expect(history[0].entity_name).toBe('Escalier');
+  });
+
+  test('should returns entity name defined in config', () => {
+    const configuration = buildConfig({ entity_name: 'Lumiere escalier' });
+
+    const history = toHistory(rawHistory, hass, configuration);
+    expect(history[0].entity_name).toBe('Lumiere escalier');
+  });
+});
