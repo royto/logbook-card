@@ -91,7 +91,7 @@ export class LogbookCard extends LogbookBaseCard {
           hidden_state_regexp: this.config.hidden_state_regexp,
           date_format: this.config.date_format,
           minimal_duration: this.config.minimal_duration,
-          show_history: this.config.show_history || true,
+          show_history: this.config.show_history || false,
         };
         const historyPromise = getHistory(this.hass, entityConfig, startDate);
 

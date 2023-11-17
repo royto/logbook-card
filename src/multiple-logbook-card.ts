@@ -101,7 +101,7 @@ export class MultipleLogbookCard extends LogbookBaseCard {
             state_map: entity.state_map,
             date_format: this.config.date_format,
             minimal_duration: this.config.minimal_duration,
-            show_history: this.config.show_history || true,
+            show_history: this.config.show_history,
           };
           const promise = getHistory(this.hass, entityConfig, startDate);
           historyPromises.push(promise);
