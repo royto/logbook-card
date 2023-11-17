@@ -119,14 +119,14 @@ the `custom:multiple-logbook-card` card has been introduce in v2.0.0.
 
 #### Entity object
 
-| Name         | Type                                                      | Required     | Since   | Deprecated | Default | Description                                                                                                    |
-|--------------|-----------------------------------------------------------|--------------|---------|------------|---------|----------------------------------------------------------------------------------------------------------------|
-| entity       | string                                                    | **required** | v2.0    |            |         | Name of the entity                                                                                             |
-| attributes   | [attributes object](#attribute-object)                    | optional     | v2.0    |            | []      | List of attributes to display.                                                                                 |
-| hidden_state | string[] or [hidden config object](#hidden-config-object) | optional     | v2.0    |            | []      | Hide logbook entry based on state and/or attribute. string value represent the state (wildcards are supported) |
-| custom_logs  | boolean                                                   | optional     | v2.0    |            | false   | Display custom logs sent by `logbook.log` service.                                                             |
-| show_history | boolean                                                   | optional     | v2.0    |            | true    | Display entity logbook event                                                                                   |
-| state_map    | [state map object](#state-map-object)                     | optional     | v2.0    |            | []      | List of entity states to convert                                                                               |
+| Name         | Type                                                      | Required     | Since   | Deprecated | Default | Description                                                                                                              |
+|--------------|-----------------------------------------------------------|--------------|---------|------------|---------|--------------------------------------------------------------------------------------------------------------------------|
+| entity       | string                                                    | **required** | v2.0    |            |         | Name of the entity                                                                                                       |
+| attributes   | [attributes object](#attribute-object)                    | optional     | v2.0    |            | []      | List of attributes to display.                                                                                           |
+| hidden_state | string[] or [hidden config object](#hidden-config-object) | optional     | v2.0    |            | []      | Hide logbook entry based on state and/or attribute. string value represent the state (wildcards are supported)           |
+| custom_logs  | boolean                                                   | optional     | v2.0    |            | false   | Display custom logs sent by `logbook.log` service. Set `show_history` to  `false` if you only want custom logs displayed |
+| show_history | boolean                                                   | optional     | v2.0    |            | true    | Display entity logbook event                                                                                             |
+| state_map    | [state map object](#state-map-object)                     | optional     | v2.0    |            | []      | List of entity states to convert                                                                                         |
 
 #### State map object
 
