@@ -17,6 +17,7 @@
     "missing_entity": "Please define an entity.",
     "invalid_hidden_date": "hidden_state must be an array",
     "invalid_state_map": "state_map must be an array",
+    "invalid_custom_log_map": "custom_log_map must be an array",
     "invalid_attributes": "attributes must be an array"
   },
   "multiple_logbook_card": {

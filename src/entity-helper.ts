@@ -29,7 +29,7 @@ export const mapIcon = (item: HassEntity, states: StateMap[]): IconState | null 
 
   const iconSvg = s !== undefined && s.icon ? s.icon : stateIcon(item);
 
-  return { icon: iconSvg, color: s?.icon_color || null };
+  return { icon: iconSvg, color: s?.icon_color || undefined };
 };
 
 export const extractAttributes = (

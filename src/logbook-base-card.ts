@@ -12,7 +12,7 @@ import { handleAction, ActionHandlerEvent, hasAction } from 'custom-card-helpers
 import { actionHandler } from './action-handler-directive';
 import { styleMap, StyleInfo } from 'lit-html/directives/style-map.js';
 import { isSameDay } from './date-helpers';
-import { configDefaults } from 'vitest/dist/config';
+import { HassEntity } from 'home-assistant-js-websocket/dist/types';
 
 export class LogbookBaseCard extends LitElement {
   @property({ attribute: false }) public hass!: ExtendedHomeAssistant;
@@ -90,7 +90,7 @@ export class LogbookBaseCard extends LitElement {
   protected renderHistoryItem(item: History, isLast: boolean, config: LogbookCardConfigBase): TemplateResult {
     return html`
       <div class="item history">
-        ${this.renderIcon(item, config)}
+        ${this.renderHistoryIcon(item, config)}
         <div class="item-content">
           ${this.mode === 'multiple' && config.show?.entity_name
             ? this.renderEntity(item.stateObj.entity_id, item.entity_name, config)
@@ -122,7 +122,7 @@ export class LogbookBaseCard extends LitElement {
   ): TemplateResult {
     return html`
       <div class="item custom-log">
-        ${this.renderCustomLogIcon(customLogEvent.entity, config)}
+        ${this.renderCustomLogIcon(customLogEvent, config)}
         <div class="item-content">
           ${this.mode === 'multiple' && config.show?.entity_name
             ? this.renderEntity(customLogEvent.entity, customLogEvent.entity_name, config)
@@ -138,15 +138,25 @@ export class LogbookBaseCard extends LitElement {
     `;
   }
 
-  protected renderCustomLogIcon(entity: string, config: LogbookCardConfigBase): TemplateResult | void {
+  protected renderCustomLogIcon(customLog: CustomLogEvent, config: LogbookCardConfigBase): TemplateResult | void {
     if (config?.show?.icon) {
-      const state = this.hass.states[entity];
-      return html`
-        <div class="item-icon">
-          <state-badge .stateObj=${state} .stateColor=${false}></state-badge>
-        </div>
-      `;
+      const state = this.hass.states[customLog.entity] as HassEntity;
+      return this.renderIcon(state, customLog.icon, customLog.icon_color);
     }
+  }
+
+  protected renderHistoryIcon(item: History, config: LogbookCardConfigBase): TemplateResult | void {
+    if (config?.show?.icon) {
+      return this.renderIcon(item.stateObj, item.icon?.icon, item.icon?.color);
+    }
+  }
+
+  private renderIcon(state: HassEntity, icon: string | undefined, color: string | undefined): TemplateResult {
+    return html`
+      <div class="item-icon">
+        <state-badge .stateObj=${state} .overrideIcon=${icon} .color=${color} .stateColor=${true}> </state-badge>
+      </div>
+    `;
   }
 
   protected renderDaySeparator(item: CustomLogEvent | History, config: LogbookCardConfigBase): TemplateResult {
@@ -198,23 +208,6 @@ export class LogbookBaseCard extends LitElement {
         <div class="value">${attribute.value}</div>
       </div>
     `;
-  }
-
-  protected renderIcon(item: History, config: LogbookCardConfigBase): TemplateResult | void {
-    if (config?.show?.icon) {
-      if (item.icon !== null) {
-        return html`
-          <div class="item-icon">
-            <ha-icon .icon=${item.icon.icon} style=${item.icon.color ? `color: ${item.icon.color}` : ``}></ha-icon>
-          </div>
-        `;
-      }
-      return html`
-        <div class="item-icon">
-          <state-badge .stateObj=${item.stateObj} .stateColor=${true}></state-badge>
-        </div>
-      `;
-    }
   }
 
   renderHistoryDate(item: History, config: LogbookCardConfigBase): TemplateResult {

@@ -35,6 +35,7 @@ export interface EntityCardConfig {
   state_map?: Array<StateMap>;
   hidden_state?: Array<string | HiddenConfig>;
   custom_logs?: boolean;
+  custom_log_map?: Array<CustomLogMapConfig>;
   show_history?: boolean;
 }
 
@@ -90,9 +91,16 @@ export interface StateMap {
   regexp?: RegExp;
 }
 
+export interface CustomLogMapConfig {
+  name?: string;
+  message?: string;
+  icon?: string;
+  icon_color?: string;
+}
+
 export interface IconState {
   icon: string;
-  color: string | null;
+  color?: string;
 }
 
 export interface ShowConfiguration {
@@ -131,6 +139,8 @@ export interface CustomLogEvent {
   start: Date;
   name: string;
   message: string;
+  icon?: string; // ?
+  icon_color?: string;
 }
 
 export type HistoryOrCustomLogEvent = History | CustomLogEvent;

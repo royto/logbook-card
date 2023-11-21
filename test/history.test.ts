@@ -113,10 +113,29 @@ describe('map_state', () => {
     });
 
     const history = toHistory(rawHistory, hass, configuration);
-    expect(history[0].icon.icon).toBe('mdi:lightbulb-on');
-    expect(history[0].icon.color).toBeNull();
-    expect(history[1].icon.icon).toBe('mdi:lightbulb');
-    expect(history[1].icon.color).toBe('#211081');
+    expect(history[0].icon).toMatchObject({ icon: 'mdi:lightbulb-on', color: undefined });
+    expect(history[1].icon).toMatchObject({ icon: 'mdi:lightbulb', color: '#211081' });
+  });
+
+  test('should use icon_color if specified and default icon ', () => {
+    const configuration = buildConfig({
+      state_map: [
+        {
+          value: 'on',
+          icon: 'mdi:lightbulb-on',
+          regexp: wildcardToRegExp('on'),
+        },
+        {
+          value: 'off',
+          icon_color: '#211081',
+          regexp: wildcardToRegExp('off'),
+        },
+      ],
+    });
+
+    const history = toHistory(rawHistory, hass, configuration);
+    expect(history[0].icon).toMatchObject({ icon: 'mdi:lightbulb-on', color: undefined });
+    expect(history[1].icon).toMatchObject({ icon: 'hass:lightbulb', color: '#211081' });
   });
 });
 

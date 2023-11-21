@@ -17,6 +17,7 @@
     "missing_entity": "Merci de définir une entité",
     "invalid_hidden_date": "hidden_state doit être un tableau",
     "invalid_state_map": "state_map doit être un tableau",
+    "invalid_custom_log_map": "custom_log_map doit être un tableau",
     "invalid_attributes": "attributes doit être un tableau"
   },
   "multiple_logbook_card": {

@@ -2,7 +2,7 @@ import { LogbookCardEditor } from './editor';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { html, TemplateResult, PropertyValues } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
+import { customElement, state } from 'lit/decorators.js';
 import { hasConfigOrEntityChanged, LovelaceCardEditor, hasAction } from 'custom-card-helpers';
 
 import './editor';
@@ -14,7 +14,7 @@ import { localize } from './localize/localize';
 import { actionHandler } from './action-handler-directive';
 import { EntityCustomLogConfig, getCustomLogsPromise } from './custom-logs';
 import { EntityHistoryConfig, getHistory } from './history';
-import { toHiddenRegex, toStateMapRegex } from './config-helpers';
+import { toCustomLogMapRegex, toHiddenRegex, toStateMapRegex } from './config-helpers';
 import { LogbookBaseCard } from './logbook-base-card';
 import { checkBaseConfig } from './config-validator';
 import { addCustomCard } from './ha/custom-card';
@@ -50,6 +50,9 @@ export class LogbookCard extends LogbookBaseCard {
     if (config.state_map && !Array.isArray(config.state_map)) {
       throw new Error(localize('logbook_card.invalid_state_map'));
     }
+    if (config.custom_log_map && !Array.isArray(config.custom_log_map)) {
+      throw new Error(localize('logbook_card.invalid_custom_log_map'));
+    }
     if (config.attributes && !Array.isArray(config.attributes)) {
       throw new Error(localize('logbook_card.invalid_attributes'));
     }
@@ -64,6 +67,7 @@ export class LogbookCard extends LogbookBaseCard {
       scroll: true,
       custom_logs: false,
       show_history: true,
+      custom_log_map: [],
       ...config,
       state_map: toStateMapRegex(config.state_map),
       hidden_state_regexp: toHiddenRegex(config.hidden_state),
@@ -98,6 +102,7 @@ export class LogbookCard extends LogbookBaseCard {
         const customLogConfig: EntityCustomLogConfig = {
           entity: this.config.entity!,
           custom_logs: this.config.custom_logs === true || false,
+          log_map: toCustomLogMapRegex(this.config.custom_log_map || []),
         };
         const customLogsPromise = getCustomLogsPromise(this.hass, customLogConfig, startDate);
 

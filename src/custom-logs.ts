@@ -1,4 +1,4 @@
-import { CustomLogEvent, ExtendedHomeAssistant, LogbookCardConfig } from './types';
+import { CustomLogEvent, ExtendedHomeAssistant } from './types';
 
 const logbookLogContext = 'log';
 
@@ -26,6 +26,28 @@ export interface LogbookEntry {
   context_message?: string;
 }
 
+const findMatchingLogMap = (entry: LogbookEntry, customLogMap: CustomLogMap[]): CustomLogMap | undefined => {
+  return customLogMap.find(m => {
+    if (m.message && m.name) {
+      return m.name.test(entry.name) && m.message.test(entry.message || '');
+    }
+
+    if (m.message) {
+      return m.message?.test(entry.message || '');
+    }
+
+    return m.name?.test(entry.name);
+  });
+};
+
+const mapIcon = (entry: LogbookEntry, customLogMap: CustomLogMap[]): string | undefined => {
+  return findMatchingLogMap(entry, customLogMap)?.icon;
+};
+
+const mapIconColor = (entry: LogbookEntry, customLogMap: CustomLogMap[]): string | undefined => {
+  return findMatchingLogMap(entry, customLogMap)?.icon_color;
+};
+
 const customLogType = 'customLog';
 export const toCustomLogs = (entityConfig: EntityCustomLogConfig, entries: LogbookEntry[]): CustomLogEvent[] => {
   return entries
@@ -37,6 +59,8 @@ export const toCustomLogs = (entityConfig: EntityCustomLogConfig, entries: Logbo
       message: e.message || '',
       entity: entityConfig.entity,
       entity_name: entityConfig.entity_name || entityConfig.entity,
+      icon: mapIcon(e, entityConfig.log_map),
+      icon_color: mapIconColor(e, entityConfig.log_map),
     }));
 };
 
@@ -44,6 +68,14 @@ export interface EntityCustomLogConfig {
   entity: string;
   entity_name?: string;
   custom_logs: boolean;
+  log_map: CustomLogMap[];
+}
+
+export interface CustomLogMap {
+  name?: RegExp;
+  message?: RegExp;
+  icon?: string;
+  icon_color?: string;
 }
 
 export const getCustomLogsPromise = (

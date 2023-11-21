@@ -21,6 +21,7 @@
     - [Multiple entities Logbook Card options](#multiple-entities-logbook-card-options)
     - [Entity object](#entity-object)
     - [State map object](#state-map-object)
+    - [Custom log map object](#custom-log-map-object)
     - [Available show options](#available-show-options)
     - [Attribute object](#attribute-object)
     - [Duration object](#duration-object)
@@ -40,6 +41,8 @@
   - [Duration labels](#duration-labels)
   - [Custom separator style](#custom-separator-style)
   - [Custom icons](#custom-icons)
+  - [Example with collapsed view](#example-with-collapsed-view)
+  - [Custom log](#custom-log)
 
 ## Installation
 
@@ -75,6 +78,7 @@ resources:
 | no_event          | string                                                    | optional     | v0.1    |            | No event on the period   | message displayed if no event to display                                                                                                     |
 | max_items         | integer                                                   | optional     | v0.2    |            | -1                       | Number of items to display. Ignored if < 0                                                                                                   |
 | state_map         | [state map object](#state-map-object)                     | optional     | v0.2    |            | []                       | List of entity states to convert                                                                                                             |
+| custom_log_map    | [custom log map object](#custom-log-map-object)           | optional     | v2.1    |            | []                       | List of custom log to convert                                                                                                                |
 | show              | list                                                      | optional     | v0.2    |            |                          | List of UI elements to display/hide, for available items see available [show options](#available-show-options).                              |
 | attributes        | [attributes object](#attribute-object)                    | optional     | v0.4    |            | []                       | List of attributes to display.                                                                                                               |
 | duration_labels   | [duration_labels object](#until-v141)                     | optional     | v0.5    | v1.5.0     |                          | labels for duration.                                                                                                                         |
@@ -119,15 +123,16 @@ the `custom:multiple-logbook-card` card has been introduce in v2.0.0.
 
 #### Entity object
 
-| Name         | Type                                                      | Required     | Since   | Deprecated | Default | Description                                                                                                              |
-|--------------|-----------------------------------------------------------|--------------|---------|------------|---------|--------------------------------------------------------------------------------------------------------------------------|
-| entity       | string                                                    | **required** | v2.0    |            |         | Name of the entity                                                                                                       |
-| label        | string                                                    | optional     | v2.1    |            |         | Entity label                                                                                              |
-| attributes   | [attributes object](#attribute-object)                    | optional     | v2.0    |            | []      | List of attributes to display.                                                                                           |
-| hidden_state | string[] or [hidden config object](#hidden-config-object) | optional     | v2.0    |            | []      | Hide logbook entry based on state and/or attribute. string value represent the state (wildcards are supported)           |
-| custom_logs  | boolean                                                   | optional     | v2.0    |            | false   | Display custom logs sent by `logbook.log` service. Set `show_history` to  `false` if you only want custom logs displayed |
-| show_history | boolean                                                   | optional     | v2.0    |            | true    | Display entity logbook event                                                                                             |
-| state_map    | [state map object](#state-map-object)                     | optional     | v2.0    |            | []      | List of entity states to convert                                                                                         |
+| Name              | Type                                                      | Required     | Since   | Deprecated | Default | Description                                                                                                              |
+|-------------------|-----------------------------------------------------------|--------------|---------|------------|---------|--------------------------------------------------------------------------------------------------------------------------|
+| entity            | string                                                    | **required** | v2.0    |            |         | Name of the entity                                                                                                       |
+| label             | string                                                    | optional     | v2.1    |            |         | Entity label                                                                                                             |
+| attributes        | [attributes object](#attribute-object)                    | optional     | v2.0    |            | []      | List of attributes to display.                                                                                           |
+| hidden_state      | string[] or [hidden config object](#hidden-config-object) | optional     | v2.0    |            | []      | Hide logbook entry based on state and/or attribute. string value represent the state (wildcards are supported)           |
+| custom_logs       | boolean                                                   | optional     | v2.0    |            | false   | Display custom logs sent by `logbook.log` service. Set `show_history` to  `false` if you only want custom logs displayed |
+| show_history      | boolean                                                   | optional     | v2.0    |            | true    | Display entity logbook event                                                                                             |
+| state_map         | [state map object](#state-map-object)                     | optional     | v2.0    |            | []      | List of entity states to convert                                                                                         |
+| custom_log_map    | [custom log map object](#custom-log-map-object)           | optional     | v2.1    |            | []      | List of custom log to convert                                                                                            |
 
 #### State map object
 
@@ -139,6 +144,17 @@ the `custom:multiple-logbook-card` card has been introduce in v2.0.0.
 | icon_color             | string |                    | icon color for this state.              | v1.6.0 |
 
 If you use wildcard, make sure to put the more specific states first.
+
+#### Custom log map object
+
+| Name       |  Type  |      Default       | Description                                      | Since  |
+| ---------- | :----: | :----------------: | ------------------------------------------------ | ------ |
+| name       | string |                    | name of the custom log. wildcard is supported    | v2.1.0 |
+| message    | string |                    | message of the custom log. wildcard is supported | v2.1.0 |
+| icon       | string | default state icon | Icon to use                                      | v2.1.0 |
+| icon_color | string |                    | icon color for this custom log                   | v2.1.0 |
+
+If you use wildcard, make sure to put the more specific custom log first.
 
 #### Available show options
 
@@ -402,7 +418,7 @@ type: 'custom:logbook-card'
 
 ![custom icon](images/custom-icon.png)
 
-Example with collapsed view:
+### Example with collapsed view
 
 ```yaml
 entity: sensor.vacuum
@@ -414,6 +430,27 @@ type: 'custom:logbook-card'
 ```
 
 ![custom icon](images/collapse.png)
+
+### Custom log
+
+```yaml
+entity: sensor.logger
+type: custom:logbook-card
+group_by_day: true
+scroll: true
+show_history: false
+date_format: relative
+custom_logs: true
+custom_log_map:
+  - name: Name test
+    icon: 'mdi:lightbulb-cfl'
+    icon_color: '#a772e9'
+  - name: from automation
+    icon: 'mdi:lightbulb-cfl-spiral'
+    icon_color: '#e9a772'
+```
+
+![Custom log with custom icon](./images/custom_log_map.png)
 
 <!-- Badges -->
 
