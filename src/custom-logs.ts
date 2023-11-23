@@ -49,9 +49,15 @@ const mapIconColor = (entry: LogbookEntry, customLogMap: CustomLogMap[]): string
 };
 
 const customLogType = 'customLog';
+const triggerByAutomation = 'automation_triggered';
+
+const isCustomLog = (entry: LogbookEntry): boolean => {
+  return entry.context_service === logbookLogContext || entry.context_event_type === triggerByAutomation;
+};
+
 export const toCustomLogs = (entityConfig: EntityCustomLogConfig, entries: LogbookEntry[]): CustomLogEvent[] => {
   return entries
-    .filter(e => e.context_service === logbookLogContext)
+    .filter(entry => isCustomLog(entry))
     .map(e => ({
       type: customLogType,
       start: new Date(e.when),

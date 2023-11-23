@@ -41,13 +41,28 @@ const entries: LogbookEntry[] = [
   },
 ];
 
+const customLogFromAutomation: LogbookEntry = {
+  when: 1696972551536,
+  name: 'from automation',
+  message: "I'm triggered from automation",
+  domain: 'light',
+  entity_id: 'light.living_room',
+  context_event_type: 'automation_triggered',
+  context_domain: 'automation',
+  context_name: 'DEV: Custom Log',
+  context_message: 'triggered by Home Assistant starting',
+  context_source: 'Home Assistant starting',
+  context_entity_id: 'automation.dev_custom_log',
+  context_entity_id_name: 'DEV: Custom Log',
+};
+
 test('should return empty if no entries', () => {
   expect(toCustomLogs(defaultConfiguration, [])).toHaveLength(0);
 });
 
 test('should return only log', () => {
-  const customLogs = toCustomLogs(defaultConfiguration, entries);
-  expect(customLogs).toHaveLength(3);
+  const customLogs = toCustomLogs(defaultConfiguration, [...entries, customLogFromAutomation]);
+  expect(customLogs).toHaveLength(4);
 
   expect(customLogs).toMatchObject([
     {
@@ -67,6 +82,12 @@ test('should return only log', () => {
       name: 'my name',
       start: new Date('2023-05-29T15:27:30.199Z'),
       message: 'my other message',
+    },
+    {
+      type: 'customLog',
+      name: 'from automation',
+      start: new Date('2023-10-10T21:15:51.536Z'),
+      message: "I'm triggered from automation",
     },
   ]);
 });
