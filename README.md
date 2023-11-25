@@ -278,25 +278,29 @@ card_mod:
 
 ![card with custom style to put state in bold](images/custom_styles.png)
 
+Here an example to put custom log name above message and style them.
+
+```css
+.custom-log .item-content {
+    display: flex;
+    flex-direction: column;
+}
+.custom-log .custom-log__separator {
+    display: none;
+}
+.custom-log .item-content .custom-log__name {
+    font-weight: bold;
+}
+.custom-log .item-content .custom-log__message {
+    font-style: italic;
+    text-indent: 0px;
+}
+```
+
+![custom log style](images/Custom_log_style.png)
+
 Here is the list of style you can override:
 
-| Class                | Target                             |
-|----------------------|------------------------------------|
-| .item                | container for an entry             |
-| .history             | if entry is entity history         |
-| .custom-log          | if entry is custom log             |
-| .item-content        | container for                      |
-| .item-icon           | item icon                          |
-| .entity              | name of the entity when multiple   |
-| .custom-log__name    | custom log name                    |
-| .custom-log__message | custom log message                 |
-| .state               | entity state                       |
-| .duration            | duration                           |
-| .date                | date                               |
-| .attribute           | attribute                          |
-| .expand              | expander when collapsed item       |
-| .separator           | entry separator (needs !important) |
-| .date-separator      | date separator                     |
 | Class                  | Target                             |
 |------------------------|------------------------------------|
 | .item                  | container for an entry             |
