@@ -280,21 +280,25 @@ card_mod:
 
 Here an example to put custom log name above message and style them.
 
-```css
-.custom-log .item-content {
-    display: flex;
-    flex-direction: column;
-}
-.custom-log .custom-log__separator {
-    display: none;
-}
-.custom-log .item-content .custom-log__name {
-    font-weight: bold;
-}
-.custom-log .item-content .custom-log__message {
-    font-style: italic;
-    text-indent: 0px;
-}
+```yaml
+type: custom:logbook-card
+entity: light.living_room
+card_mod:
+  style: |
+    .custom-log .item-content {
+      display: flex;
+      flex-direction: column;
+    }
+    .custom-log .custom-log__separator {
+        display: none;
+    }
+    .custom-log .item-content .custom-log__name {
+        font-weight: bold;
+    }
+    .custom-log .item-content .custom-log__message {
+       font-style: italic;
+       text-indent: 0px;
+    }
 ```
 
 ![custom log style](images/Custom_log_style.png)
