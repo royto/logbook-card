@@ -127,7 +127,8 @@ export class LogbookBaseCard extends LitElement {
           ${this.mode === 'multiple' && config.show?.entity_name
             ? this.renderEntity(customLogEvent.entity, customLogEvent.entity_name, config)
             : ''}
-          <span class="custom-log__name">${customLogEvent.name}</span> -
+          <span class="custom-log__name">${customLogEvent.name}</span>
+          <span class="custom-log__separator">-</span>
           <span class="custom-log__message">${customLogEvent.message}</span>
           <div class="date">
             <logbook-date .hass=${this.hass} .date=${customLogEvent.start} .config=${config}></logbook-date>

@@ -297,6 +297,24 @@ Here is the list of style you can override:
 | .expand              | expander when collapsed item       |
 | .separator           | entry separator (needs !important) |
 | .date-separator      | date separator                     |
+| Class                  | Target                             |
+|------------------------|------------------------------------|
+| .item                  | container for an entry             |
+| .history               | if entry is entity history         |
+| .custom-log            | if entry is custom log             |
+| .item-content          | container for                      |
+| .item-icon             | item icon                          |
+| .entity                | name of the entity when multiple   |
+| .custom-log__name      | custom log name                    |
+| .custom-log__separator | custom log separator               |
+| .custom-log__message   | custom log message                 |
+| .state                 | entity state                       |
+| .duration              | duration                           |
+| .date                  | date                               |
+| .attribute             | attribute                          |
+| .expand                | expander when collapsed item       |
+| .separator             | entry separator (needs !important) |
+| .date-separator        | date separator                     |
 
 ## Example usage
 
