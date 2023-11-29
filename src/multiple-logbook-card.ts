@@ -2,7 +2,6 @@
 
 import { html, TemplateResult, PropertyValues } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
-import { hasConfigOrEntityChanged } from 'custom-card-helpers';
 
 import './logbook-date';
 import './logbook-duration';
@@ -41,7 +40,6 @@ export class MultipleLogbookCard extends LogbookBaseCard {
   }
 
   private lastHistoryChanged?: Date;
-  private MAX_UPDATE_DURATION = 5000;
 
   public setConfig(config: MultipleLogbookCardConfig): void {
     checkBaseConfig(config);
@@ -130,10 +128,10 @@ export class MultipleLogbookCard extends LogbookBaseCard {
           }
 
           this.history = allHistory;
+
+          this.lastHistoryChanged = new Date();
         });
       }
-
-      this.lastHistoryChanged = new Date();
     }
   }
 
@@ -142,14 +140,6 @@ export class MultipleLogbookCard extends LogbookBaseCard {
       return true;
     }
     changedProps.delete('history');
-    if (
-      !this.lastHistoryChanged ||
-      hasConfigOrEntityChanged(this, changedProps, false) ||
-      //refresh only every 5s.
-      new Date().getTime() - this.lastHistoryChanged.getTime() > this.MAX_UPDATE_DURATION
-    ) {
-      this.updateHistory();
-    }
     return false;
   }
 

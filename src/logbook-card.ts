@@ -3,7 +3,7 @@ import { LogbookCardEditor } from './editor';
 
 import { html, TemplateResult, PropertyValues } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
-import { hasConfigOrEntityChanged, LovelaceCardEditor, hasAction } from 'custom-card-helpers';
+import { LovelaceCardEditor, hasAction } from 'custom-card-helpers';
 
 import './editor';
 import './logbook-date';
@@ -37,7 +37,6 @@ export class LogbookCard extends LogbookBaseCard {
   @state() private history: Array<HistoryOrCustomLogEvent> = [];
 
   private lastHistoryChanged?: Date;
-  private MAX_UPDATE_DURATION = 5000;
 
   public setConfig(config: LogbookCardConfig): void {
     checkBaseConfig(config);
@@ -118,10 +117,9 @@ export class LogbookCard extends LogbookBaseCard {
           }
 
           this.history = historyAndCustomLogs;
+          this.lastHistoryChanged = new Date();
         });
       }
-
-      this.lastHistoryChanged = new Date();
     }
   }
 
@@ -130,14 +128,6 @@ export class LogbookCard extends LogbookBaseCard {
       return true;
     }
     changedProps.delete('history');
-    if (
-      !this.lastHistoryChanged ||
-      hasConfigOrEntityChanged(this, changedProps, false) ||
-      //refresh only every 5s.
-      new Date().getTime() - this.lastHistoryChanged.getTime() > this.MAX_UPDATE_DURATION
-    ) {
-      this.updateHistory();
-    }
     return false;
   }
 

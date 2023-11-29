@@ -1,3 +1,4 @@
+import { getHistory } from './history';
 import { CSSResultGroup, LitElement, TemplateResult, css, html } from 'lit';
 import {
   CustomLogEvent,
@@ -14,16 +15,33 @@ import { styleMap, StyleInfo } from 'lit-html/directives/style-map.js';
 import { isSameDay } from './date-helpers';
 import { HassEntity } from 'home-assistant-js-websocket/dist/types';
 
-export class LogbookBaseCard extends LitElement {
+export abstract class LogbookBaseCard extends LitElement {
   @property({ attribute: false }) public hass!: ExtendedHomeAssistant;
 
   protected mode: 'multiple' | 'single' = 'single';
+  private updateHistoryIntervalId: NodeJS.Timeout | null = null;
+  private UPDATE_INTERVAL = 5000;
 
   protected _handleAction(ev: ActionHandlerEvent): void {
     if (this.hass && ev.detail.action && !!ev.target && ev.target['entity']) {
       handleAction(this, this.hass, { entity: ev.target['entity'] }, ev.detail.action);
     }
   }
+
+  connectedCallback(): void {
+    super.connectedCallback();
+    this.updateHistoryIntervalId = setInterval(() => this.updateHistory(), this.UPDATE_INTERVAL);
+    this.updateHistory();
+  }
+
+  disconnectedCallback(): void {
+    super.disconnectedCallback();
+    if (this.updateHistoryIntervalId !== null) {
+      clearInterval(this.updateHistoryIntervalId);
+    }
+  }
+
+  abstract updateHistory(): void;
 
   renderHistory(items: HistoryOrCustomLogEvent[] | undefined, config: LogbookCardConfigBase): TemplateResult {
     if (!items || items?.length === 0) {
