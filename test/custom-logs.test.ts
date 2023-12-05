@@ -92,6 +92,44 @@ test('should return only log', () => {
   ]);
 });
 
+test('should return triggered automation', () => {
+  const automationEntries: LogbookEntry[] = [
+    {
+      name: 'ALERT - My switch Off',
+      message: 'triggered by state of switch.my_switch',
+      source: 'state of switch.my_switch',
+      entity_id: 'automation.my_automation',
+      context_id: '01HGFYPAVBD68VFYH4CA4988HP',
+      when: 1701342554987,
+      domain: 'automation',
+    },
+    {
+      when: 1701344255298,
+      state: 'unavailable',
+      entity_id: 'automation.my_automation',
+      name: 'ALERT - My switch Off',
+    },
+    {
+      when: 1701344255313,
+      state: 'on',
+      entity_id: 'automation.my_automation',
+      name: 'ALERT - My switch Off',
+    },
+  ];
+
+  const customLogs = toCustomLogs(defaultConfiguration, [...automationEntries]);
+  expect(customLogs).toHaveLength(1);
+
+  expect(customLogs).toMatchObject([
+    {
+      type: 'customLog',
+      name: 'ALERT - My switch Off',
+      start: new Date('2023-11-30T11:09:14.987Z'),
+      message: 'triggered by state of switch.my_switch',
+    },
+  ]);
+});
+
 describe('entity_name', () => {
   test('should returns entity by default', () => {
     const customLogs = toCustomLogs(defaultConfiguration, entries);

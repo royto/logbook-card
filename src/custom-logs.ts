@@ -55,9 +55,13 @@ const isCustomLog = (entry: LogbookEntry): boolean => {
   return entry.context_service === logbookLogContext || entry.context_event_type === triggerByAutomation;
 };
 
+const isTriggeredAutomation = (entry: LogbookEntry): boolean => {
+  return entry.domain === 'automation';
+};
+
 export const toCustomLogs = (entityConfig: EntityCustomLogConfig, entries: LogbookEntry[]): CustomLogEvent[] => {
   return entries
-    .filter(entry => isCustomLog(entry))
+    .filter(entry => isCustomLog(entry) || isTriggeredAutomation(entry))
     .map(e => ({
       type: customLogType,
       start: new Date(e.when),
