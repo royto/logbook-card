@@ -61,7 +61,7 @@ export const extractAttributes = (
         const attributeName = hass.formatEntityAttributeName ? hass.formatEntityAttributeName(item, c.value) : c.value;
         p.push({
           name: c.label ? c.label : attributeName,
-          value: formatEntityAttributeValue(hass, item, c.value, attribute, c.type, config.date_format),
+          value: formatEntityAttributeValue(hass, item, c.value, attribute, c.type, config.date_format, c.link_label),
         });
       }
     }

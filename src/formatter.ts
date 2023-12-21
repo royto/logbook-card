@@ -37,11 +37,17 @@ export const formatEntityAttributeValue = (
   entity: HassEntity,
   attribute: string,
   value: any,
-  type: string | undefined,
+  type: 'date' | 'url' | undefined,
   dateFormat: string | 'relative' | undefined,
+  linkLabel: string | undefined,
 ): string | TemplateResult => {
   if (type === 'date') {
     return displayDate(hass, new Date(value), dateFormat);
+  }
+  if (type === 'url') {
+    return html`
+      <a .href="${value}" target="_blank">${linkLabel ? linkLabel : value}</a>
+    `;
   }
   if (hass.formatEntityAttributeValue) {
     return hass.formatEntityAttributeValue(entity, attribute);

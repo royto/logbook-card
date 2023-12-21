@@ -172,11 +172,12 @@ All properties are optional.
 
 #### Attribute object
 
-| Name                   |  Type  |    Default    | Description                                                             |
-| ---------------------- | :----: | :-----------: | ----------------------------------------------------------------------- |
-| value **_(required)_** | string |               | name of the attributes.                                                 |
-| label                  | string | same as value | String to show as label.                                                |
-| type                   | string |    string     | Type of the value used for formatting. Only date is currently supported |
+| Name                   |  Type  |    Default    | Description                                                          |
+| ---------------------- | :----: | :-----------: | -------------------------------------------------------------------- |
+| value **_(required)_** | string |               | name of the attributes.                                              |
+| label                  | string | same as value | String to show as label.                                             |
+| type                   | string |               | Type of the value used for formatting. `date` or `url` are supported |
+| link_label             | string |               | Link label to use when `type` is `url`.                              |
 
 #### Duration object
 

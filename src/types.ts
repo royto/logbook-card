@@ -116,7 +116,8 @@ export interface ShowConfiguration {
 export interface AttributeConfig {
   value: string;
   label?: string;
-  type?: string;
+  type?: 'date' | 'url';
+  link_label?: string;
 }
 
 export interface History {
