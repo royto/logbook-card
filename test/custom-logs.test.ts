@@ -56,13 +56,25 @@ const customLogFromAutomation: LogbookEntry = {
   context_entity_id_name: 'DEV: Custom Log',
 };
 
+const customLogFromScript: LogbookEntry = {
+  when: 1696972551536,
+  name: 'from script',
+  message: `I'm triggered from a script`,
+  domain: 'input_button',
+  entity_id: 'input_button.dummy_logbook_entity',
+  context_user_id: '240fb308210447b68ee94a719d7c7c77',
+  context_domain: 'script',
+  context_service: 'test_script',
+  context_event_type: 'call_service',
+};
+
 test('should return empty if no entries', () => {
   expect(toCustomLogs(defaultConfiguration, [])).toHaveLength(0);
 });
 
 test('should return only log', () => {
-  const customLogs = toCustomLogs(defaultConfiguration, [...entries, customLogFromAutomation]);
-  expect(customLogs).toHaveLength(4);
+  const customLogs = toCustomLogs(defaultConfiguration, [...entries, customLogFromAutomation, customLogFromScript]);
+  expect(customLogs).toHaveLength(5);
 
   expect(customLogs).toMatchObject([
     {
@@ -88,6 +100,12 @@ test('should return only log', () => {
       name: 'from automation',
       start: new Date('2023-10-10T21:15:51.536Z'),
       message: "I'm triggered from automation",
+    },
+    {
+      type: 'customLog',
+      name: 'from script',
+      start: new Date('2023-10-10T21:15:51.536Z'),
+      message: "I'm triggered from a script",
     },
   ]);
 });
