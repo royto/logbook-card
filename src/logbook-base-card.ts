@@ -1,4 +1,3 @@
-import { getHistory } from './history';
 import { CSSResultGroup, LitElement, TemplateResult, css, html } from 'lit';
 import {
   CustomLogEvent,
@@ -11,7 +10,7 @@ import {
 import { property } from 'lit/decorators.js';
 import { handleAction, ActionHandlerEvent, hasAction } from 'custom-card-helpers';
 import { actionHandler } from './action-handler-directive';
-import { styleMap, StyleInfo } from 'lit-html/directives/style-map.js';
+import { styleMap, StyleInfo } from 'lit/directives/style-map.js';
 import { isSameDay } from './date-helpers';
 import { HassEntity } from 'home-assistant-js-websocket/dist/types';
 
