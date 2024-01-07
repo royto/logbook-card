@@ -31,7 +31,7 @@ export abstract class LogbookBaseCard extends LitElement {
   connectedCallback(): void {
     super.connectedCallback();
     this.updateHistoryIntervalId = setInterval(() => this.updateHistory(), this.UPDATE_INTERVAL);
-    this.updateHistory();
+    setTimeout(() => this.updateHistory(), 1);
   }
 
   disconnectedCallback(): void {
