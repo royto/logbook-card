@@ -75,6 +75,8 @@ export class LogbookCard extends LogbookBaseCard {
       duration_labels: { ...config.duration_labels },
       separator_style: { ...DEFAULT_SEPARATOR_STYLE, ...config.separator_style },
     };
+
+    this.updateHistory();
   }
 
   updateHistory(): void {
