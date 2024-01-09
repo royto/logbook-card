@@ -96,6 +96,7 @@ export interface CustomLogMapConfig {
   message?: string;
   icon?: string;
   icon_color?: string;
+  hidden?: boolean;
 }
 
 export interface IconState {

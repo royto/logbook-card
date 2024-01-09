@@ -147,12 +147,13 @@ If you use wildcard, make sure to put the more specific states first.
 
 #### Custom log map object
 
-| Name       |  Type  |      Default       | Description                                      | Since  |
-| ---------- | :----: | :----------------: | ------------------------------------------------ | ------ |
-| name       | string |                    | name of the custom log. wildcard is supported    | v2.1.0 |
-| message    | string |                    | message of the custom log. wildcard is supported | v2.1.0 |
-| icon       | string | default state icon | Icon to use                                      | v2.1.0 |
-| icon_color | string |                    | icon color for this custom log                   | v2.1.0 |
+| Name       |  Type   |      Default       | Description                                      | Since  |
+| ---------- | :-----: | :----------------: | ------------------------------------------------ | ------ |
+| name       | string  |                    | name of the custom log. wildcard is supported    | v2.1.0 |
+| message    | string  |                    | message of the custom log. wildcard is supported | v2.1.0 |
+| icon       | string  | default state icon | icon to use                                      | v2.1.0 |
+| icon_color | string  |                    | icon color for this custom log                   | v2.1.0 |
+| hidden     | boolean | false              | hide custom log                                  | v2.3.0 |
 
 If you use wildcard, make sure to put the more specific custom log first.
 

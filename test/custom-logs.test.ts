@@ -176,6 +176,7 @@ describe('map_state', () => {
           name: wildcardToRegExp('my name'),
           icon: 'mdi:lightbulb-on',
           icon_color: '#211081',
+          hidden: false,
         },
       ],
     });
@@ -195,6 +196,7 @@ describe('map_state', () => {
           message: wildcardToRegExp('my other message'),
           icon: 'mdi:lightbulb-on',
           icon_color: '#211081',
+          hidden: false,
         },
       ],
     });
@@ -215,6 +217,7 @@ describe('map_state', () => {
           message: wildcardToRegExp('my message'),
           icon: 'mdi:lightbulb-on',
           icon_color: '#211081',
+          hidden: false,
         },
       ],
     });
@@ -225,5 +228,19 @@ describe('map_state', () => {
       { icon: undefined, icon_color: undefined },
       { icon: undefined, icon_color: undefined },
     ]);
+  });
+
+  test('should filter if hidden', () => {
+    const configuration = buildConfig({
+      log_map: [
+        {
+          name: wildcardToRegExp('my name'),
+          hidden: true,
+        },
+      ],
+    });
+
+    const customLogs = toCustomLogs(configuration, entries);
+    expect(customLogs).toMatchObject([{ name: 'my other name' }]);
   });
 });

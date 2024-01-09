@@ -16,6 +16,7 @@ export const toCustomLogMapRegex = (entityCustomLogMap: CustomLogMapConfig[] | u
       ...customLog,
       name: wildcardToRegExp(customLog.name),
       message: wildcardToRegExp(customLog.message),
+      hidden: customLog.hidden || false,
     };
   }) ?? [];
 

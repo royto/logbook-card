@@ -26,18 +26,24 @@ export interface LogbookEntry {
   context_message?: string;
 }
 
-const findMatchingLogMap = (entry: LogbookEntry, customLogMap: CustomLogMap[]): CustomLogMap | undefined => {
-  return customLogMap.find(m => {
-    if (m.message && m.name) {
-      return m.name.test(entry.name) && m.message.test(entry.message || '');
-    }
+const matchEntry = (entry: LogbookEntry, m: CustomLogMap): boolean => {
+  if (m.message && m.name) {
+    return m.name.test(entry.name) && m.message.test(entry.message || '');
+  }
 
-    if (m.message) {
-      return m.message?.test(entry.message || '');
-    }
+  if (m.message) {
+    return m.message?.test(entry.message || '');
+  }
 
-    return m.name?.test(entry.name);
-  });
+  if (m.name) {
+    return m.name.test(entry.name);
+  }
+
+  return false;
+};
+
+const findMatchingLogMap = (entry: LogbookEntry, customLogMaps: CustomLogMap[]): CustomLogMap | undefined => {
+  return customLogMaps.find(m => matchEntry(entry, m));
 };
 
 const mapIcon = (entry: LogbookEntry, customLogMap: CustomLogMap[]): string | undefined => {
@@ -63,9 +69,14 @@ const isTriggeredByScript = (entry: LogbookEntry): boolean => {
   return entry.context_domain === 'script';
 };
 
+const notHidden = (entry: LogbookEntry, logMap: CustomLogMap[]): boolean => {
+  return !logMap.filter(l => l.hidden).some(log => matchEntry(entry, log));
+};
+
 export const toCustomLogs = (entityConfig: EntityCustomLogConfig, entries: LogbookEntry[]): CustomLogEvent[] => {
   return entries
     .filter(entry => isCustomLog(entry) || isTriggeredAutomation(entry) || isTriggeredByScript(entry))
+    .filter(entry => notHidden(entry, entityConfig.log_map))
     .map(e => ({
       type: customLogType,
       start: new Date(e.when),
@@ -90,6 +101,7 @@ export interface CustomLogMap {
   message?: RegExp;
   icon?: string;
   icon_color?: string;
+  hidden: boolean;
 }
 
 export const getCustomLogsPromise = (
