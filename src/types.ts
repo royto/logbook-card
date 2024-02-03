@@ -12,6 +12,7 @@ export interface ExtendedHomeAssistant extends HomeAssistant {
 export interface LogbookCardConfigBase extends LovelaceCardConfig {
   title?: string;
   history?: number;
+  hours_to_show?: number;
   collapse?: number;
   date_format?: string | 'relative';
   desc?: boolean;

@@ -18,6 +18,7 @@ import { toCustomLogMapRegex, toHiddenRegex, toStateMapRegex } from './config-he
 import { LogbookBaseCard } from './logbook-base-card';
 import { checkBaseConfig } from './config-validator';
 import { addCustomCard } from './ha/custom-card';
+import { calculateStartDate, dayToHours } from './date-helpers';
 
 addCustomCard('logbook-card', 'Logbook Card', 'A custom card to display entity history');
 
@@ -68,6 +69,11 @@ export class LogbookCard extends LogbookBaseCard {
       show_history: true,
       custom_log_map: [],
       ...config,
+      hours_to_show: config.hours_to_show
+        ? config.hours_to_show
+        : config.history
+        ? dayToHours(config.history)
+        : undefined,
       state_map: toStateMapRegex(config.state_map),
       hidden_state_regexp: toHiddenRegex(config.hidden_state),
       show: { ...DEFAULT_SHOW, ...config.show },
@@ -88,7 +94,7 @@ export class LogbookCard extends LogbookBaseCard {
         this.config.title =
           this.config?.title ?? localize('logbook_card.default_title', '{entity}', stateObj.attributes.friendly_name);
 
-        const startDate = new Date(new Date().setDate(new Date().getDate() - (this.config.history ?? 5)));
+        const startDate = calculateStartDate(this.config.hours_to_show);
         const entityConfig: EntityHistoryConfig = {
           attributes: this.config.attributes,
           entity: this.config.entity,

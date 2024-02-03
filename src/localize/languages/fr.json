@@ -32,7 +32,7 @@
     "appearance_option_description": "Configurer le titre, nombre d'entrée à afficher, etc ...",
     "entity_label": "Entité (Requis)",
     "title_label": "Titre (Optionel)",
-    "history_label": "History: Numbres de jour d'historique du journal",
+    "hours_to_show_label": "Heures à afficher",
     "max_items_label": "Max Items: Maximum d'entrée à afficher (-1 pour les afficher tous)",
     "no_event_label": "Texte si aucune entrée",
     "collapse_label": "Collapse: Nombre des entrées à afficher. Les entrées suivantes seront affichés dans une section retractable",

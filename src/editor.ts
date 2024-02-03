@@ -56,9 +56,9 @@ export class LogbookCardEditor extends LitElement implements LovelaceCardEditor 
     return '';
   }
 
-  get _history(): number {
+  get _hours_to_show(): number | '' {
     if (this._config) {
-      return this._config.history || 5;
+      return this._config.hours_to_show || '';
     }
 
     return 5;
@@ -208,10 +208,10 @@ export class LogbookCardEditor extends LitElement implements LovelaceCardEditor 
                 ></ha-textfield>
                 <ha-textfield
                   type="number"
-                  .label=${localize('editor.history_label')}
+                  .label=${localize('editor.hours_to_show_label')}
                   min="1"
-                  .value=${this._history}
-                  .configValue=${'history'}
+                  .value=${this._hours_to_show}
+                  .configValue=${'hours_to_show'}
                   @input=${this._valueChanged}
                 ></ha-textfield>
                 <ha-textfield

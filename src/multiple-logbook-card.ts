@@ -20,6 +20,7 @@ import { LogbookBaseCard } from './logbook-base-card';
 import { checkBaseConfig } from './config-validator';
 import { addCustomCard } from './ha/custom-card';
 import { localize } from './localize/localize';
+import { calculateStartDate, dayToHours } from './date-helpers';
 
 addCustomCard(
   'multiple-logbook-card',
@@ -55,7 +56,6 @@ export class MultipleLogbookCard extends LogbookBaseCard {
     //Check for attributes / states / hidden_state
 
     this.config = {
-      history: 5,
       desc: true,
       max_items: -1,
       no_event: localize('common.default_no_event'),
@@ -64,6 +64,11 @@ export class MultipleLogbookCard extends LogbookBaseCard {
       custom_logs: false,
       show_history: true,
       ...config,
+      hours_to_show: config.hours_to_show
+        ? config.hours_to_show
+        : config.history
+        ? dayToHours(config.history)
+        : undefined,
       entities: config.entities?.map(e => ({
         attributes: e.attributes ?? [],
         entity: e.entity,
@@ -90,7 +95,7 @@ export class MultipleLogbookCard extends LogbookBaseCard {
       );
 
       if (existingEntities.length > 0) {
-        const startDate = new Date(new Date().setDate(new Date().getDate() - (this.config.history ?? 5)));
+        const startDate = calculateStartDate(this.config.hours_to_show);
 
         const historyPromises = new Array<Promise<History[]>>();
         const customLogsPromises = new Array<Promise<CustomLogEvent[]>>();

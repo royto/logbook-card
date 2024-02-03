@@ -32,7 +32,7 @@
     "appearance_option_description": "Customize the title, number of events to display, etc ...",
     "entity_label": "Entity (Required)",
     "title_label": "Title (Optional)",
-    "history_label": "History: Numbers of days of history of the logbook",
+    "hours_to_show_label": "Hours to show",
     "max_items_label": "Max Items: Maximum of events to display (-1 to display all events)",
     "no_event_label": "Text when no event",
     "collapse_label": "Collapse: Number of entities to show. Rest will be available in expandable section",
