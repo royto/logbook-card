@@ -19,6 +19,7 @@ import { LogbookBaseCard } from './logbook-base-card';
 import { checkBaseConfig } from './config-validator';
 import { addCustomCard } from './ha/custom-card';
 import { calculateStartDate, dayToHours } from './date-helpers';
+import { classMap } from 'lit/directives/class-map.js';
 
 addCustomCard('logbook-card', 'Logbook Card', 'A custom card to display entity history');
 
@@ -68,13 +69,14 @@ export class LogbookCard extends LogbookBaseCard {
       custom_logs: false,
       show_history: true,
       custom_log_map: [],
+      allow_copy: false,
       ...config,
       hours_to_show: config.hours_to_show
         ? config.hours_to_show
         : config.history
         ? dayToHours(config.history)
         : undefined,
-      state_map: toStateMapRegex(config.state_map),
+      state_map: config.state_map,
       hidden_state_regexp: toHiddenRegex(config.hidden_state),
       show: { ...DEFAULT_SHOW, ...config.show },
       duration: { ...DEFAULT_DURATION, ...config.duration },
@@ -98,7 +100,7 @@ export class LogbookCard extends LogbookBaseCard {
         const entityConfig: EntityHistoryConfig = {
           attributes: this.config.attributes,
           entity: this.config.entity,
-          state_map: this.config.state_map,
+          state_map: toStateMapRegex(this.config.state_map),
           hidden_state_regexp: this.config.hidden_state_regexp,
           date_format: this.config.date_format,
           minimal_duration: this.config.minimal_duration,
@@ -145,9 +147,10 @@ export class LogbookCard extends LogbookBaseCard {
     }
 
     const contentCardClass = this.config.scroll ? 'card-content-scroll' : '';
+    const cardClass = { copy: this.config.allow_copy || false };
 
     return html`
-      <ha-card tabindex="0">
+      <ha-card class=${classMap(cardClass)} tabindex="0">
         <h1
           aria-label=${`${this.config.title}`}
           class="card-header"

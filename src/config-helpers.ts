@@ -1,12 +1,26 @@
 import { CustomLogMap } from './custom-logs';
 import { wildcardToRegExp } from './helpers';
-import { CustomLogMapConfig, HiddenConfig, HiddenRegExp, StateMap } from './types';
+import {
+  AttributeStateConfig,
+  AttributeStateConfigRegexp,
+  CustomLogMapConfig,
+  HiddenConfig,
+  HiddenRegExp,
+  StateMap,
+  StateMapRegexp,
+} from './types';
 
-export const toStateMapRegex = (entityStateMap: StateMap[] | undefined): StateMap[] =>
+export const toAttributeStateMapRegex = (attribute: AttributeStateConfig): AttributeStateConfigRegexp => ({
+  name: attribute.name,
+  value: wildcardToRegExp(attribute.value),
+});
+
+export const toStateMapRegex = (entityStateMap: StateMap[] | undefined): StateMapRegexp[] =>
   entityStateMap?.map(state => {
     return {
       ...state,
-      regexp: wildcardToRegExp(state.value ?? ''),
+      value: wildcardToRegExp(state.value ?? ''),
+      attributes: state.attributes?.map(a => toAttributeStateMapRegex(a)) ?? [],
     };
   }) ?? [];
 

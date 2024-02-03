@@ -138,14 +138,22 @@ the `custom:multiple-logbook-card` card has been introduce in v2.0.0.
 
 #### State map object
 
-| Name                   |  Type  |      Default       | Description                             | Since  |
-| ---------------------- | :----: | :----------------: | --------------------------------------- | ------ |
-| value **_(required)_** | string |                    | Value to convert. wildcard is supported |        |
-| label                  | string |   same as value    | String to show as label.                |        |
-| icon                   | string | default state icon | Icon to show.                           |        |
-| icon_color             | string |                    | icon color for this state.              | v1.6.0 |
+| Name                   |  Type                                                     |      Default       | Description                             | Since  |
+| ---------------------- | :-------------------------------------------------------: | :----------------: | --------------------------------------- | ------ |
+| value **_(required)_** | string                                                    |                    | Value to convert. wildcard is supported |        |
+| label                  | string                                                    |   same as value    | String to show as label.                |        |
+| icon                   | string                                                    | default state icon | Icon to show.                           |        |
+| icon_color             | string                                                    |                    | icon color for this state.              | v1.6.0 |
+| attributes             | [attribute state map object](#attribute-state-map-object) | []                 | Attributes to match to be converted     | v2.5.0 |
 
 If you use wildcard, make sure to put the more specific states first.
+
+#### Attribute state map object
+
+| Name                   |  Type   | Default | Description                             | Since  |
+| ---------------------- | :-----: | :-----: | --------------------------------------- | ------ |
+| name **_(required)_**  | string  |         | attribute name.                         | v2.5.0 |
+| value **_(required)_** | string  |         | attribute value. wildcard is supported  | v2.5.0 |
 
 #### Custom log map object
 

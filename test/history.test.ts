@@ -48,7 +48,7 @@ const rawHistory = [
   {
     entity_id: 'light.escalier',
     state: 'on',
-    attributes: { color_mode: 'onoff', battery_level: 80, friendly_name: 'Escalier' },
+    attributes: { color_mode: 'color', battery_level: 80, friendly_name: 'Escalier' },
     last_changed: '2023-05-29T17:27:30.199538+00:00',
     last_updated: '2023-05-29T17:27:30.199538+00:00',
     context: context,
@@ -78,14 +78,12 @@ describe('map_state', () => {
     const configuration = buildConfig({
       state_map: [
         {
-          value: 'on',
+          value: wildcardToRegExp('on'),
           label: 'Marche',
-          regexp: wildcardToRegExp('on'),
         },
         {
-          value: 'off',
+          value: wildcardToRegExp('off'),
           label: 'Arrêt',
-          regexp: wildcardToRegExp('off'),
         },
       ],
     });
@@ -99,15 +97,13 @@ describe('map_state', () => {
     const configuration = buildConfig({
       state_map: [
         {
-          value: 'on',
+          value: wildcardToRegExp('on'),
           icon: 'mdi:lightbulb-on',
-          regexp: wildcardToRegExp('on'),
         },
         {
-          value: 'off',
+          value: wildcardToRegExp('off'),
           icon: 'mdi:lightbulb',
           icon_color: '#211081',
-          regexp: wildcardToRegExp('off'),
         },
       ],
     });
@@ -121,14 +117,12 @@ describe('map_state', () => {
     const configuration = buildConfig({
       state_map: [
         {
-          value: 'on',
+          value: wildcardToRegExp('on'),
           icon: 'mdi:lightbulb-on',
-          regexp: wildcardToRegExp('on'),
         },
         {
-          value: 'off',
+          value: wildcardToRegExp('off'),
           icon_color: '#211081',
-          regexp: wildcardToRegExp('off'),
         },
       ],
     });
@@ -136,6 +130,67 @@ describe('map_state', () => {
     const history = toHistory(rawHistory, hass, configuration);
     expect(history[0].icon).toMatchObject({ icon: 'mdi:lightbulb-on', color: undefined });
     expect(history[1].icon).toMatchObject({ icon: 'hass:lightbulb', color: '#211081' });
+  });
+
+  test.only('should apply based on attribute', () => {
+    const rawHistory = [
+      {
+        entity_id: 'light.escalier',
+        state: 'on',
+        attributes: { color_mode: 'color', battery_level: 80, friendly_name: 'Escalier' },
+        last_changed: '2023-05-29T17:27:30.199538+00:00',
+        last_updated: '2023-05-29T17:27:30.199538+00:00',
+        context: context,
+      },
+      {
+        entity_id: 'light.escalier',
+        state: 'off',
+        attributes: { friendly_name: 'Escalier', battery_level: 80 },
+        last_changed: '2023-05-29T18:04:29.805697+00:00',
+        last_updated: '2023-05-29T18:04:29.805697+00:00',
+        context: context,
+      },
+      {
+        entity_id: 'light.escalier',
+        state: 'on',
+        attributes: { color_mode: 'grey', battery_level: 80, friendly_name: 'Escalier' },
+        last_changed: '2023-05-29T17:27:30.199538+00:00',
+        last_updated: '2023-05-29T17:27:30.199538+00:00',
+        context: context,
+      },
+    ];
+
+    const configuration = buildConfig({
+      state_map: [
+        {
+          value: wildcardToRegExp('on'),
+          icon: 'mdi:lightbulb-on',
+          icon_color: 'red',
+          label: 'Red light',
+          attributes: [
+            {
+              name: 'color_mode',
+              value: wildcardToRegExp('color'),
+            },
+          ],
+        },
+        {
+          value: wildcardToRegExp('on'),
+          label: 'Grey light',
+          icon: 'mdi:lightbulb-on',
+          icon_color: 'grey',
+        },
+        {
+          value: wildcardToRegExp('off'),
+          icon_color: '#211081',
+        },
+      ],
+    });
+
+    const history = toHistory(rawHistory, hass, configuration);
+    expect(history[0]).toMatchObject({ label: 'Red light', icon: { icon: 'mdi:lightbulb-on', color: 'red' } });
+    expect(history[1]).toMatchObject({ icon: { icon: 'hass:lightbulb', color: '#211081' } });
+    expect(history[2]).toMatchObject({ label: 'Grey light', icon: { icon: 'mdi:lightbulb-on', color: 'grey' } });
   });
 });
 

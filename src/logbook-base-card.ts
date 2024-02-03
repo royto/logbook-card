@@ -257,6 +257,11 @@ export abstract class LogbookBaseCard extends LitElement {
 
   static get styles(): CSSResultGroup {
     return css`
+      .copy {
+        user-select: text;
+        background-color: red;
+      }
+
       .card-content-scroll {
         max-height: 345px;
         overflow-y: auto;

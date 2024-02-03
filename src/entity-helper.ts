@@ -1,12 +1,26 @@
 import { HassEntity } from 'home-assistant-js-websocket/dist/types';
-import { Attribute, AttributeConfig, ExtendedHomeAssistant, History, IconState, StateMap } from './types';
+import { Attribute, AttributeConfig, ExtendedHomeAssistant, History, IconState, StateMapRegexp } from './types';
 import { computeStateDisplay, stateIcon } from 'custom-card-helpers';
 import { formatAttributeValue, formatEntityAttributeValue } from './formatter';
 import { addSlashes } from './helpers';
 import { EntityHistoryConfig } from './history';
 
-export const mapState = (hass: ExtendedHomeAssistant, entity: HassEntity, states: StateMap[]): string => {
-  const s = states.find(s => s.regexp?.test(entity.state));
+const findMatchingState = (states: StateMapRegexp[], entity: HassEntity): StateMapRegexp | undefined => {
+  return states.find(
+    s =>
+      s.value?.test(entity.state) &&
+      (s.attributes === undefined ||
+        s.attributes.every(
+          attribute =>
+            attribute.name === undefined ||
+            attribute.value === undefined ||
+            attribute.value.test(entity.attributes[attribute?.name]),
+        )),
+  );
+};
+
+export const mapState = (hass: ExtendedHomeAssistant, entity: HassEntity, states: StateMapRegexp[]): string => {
+  const s = findMatchingState(states, entity);
   if (s !== undefined && s.label) {
     return s.label;
   }
@@ -21,8 +35,8 @@ export const mapState = (hass: ExtendedHomeAssistant, entity: HassEntity, states
   return entity.state;
 };
 
-export const mapIcon = (item: HassEntity, states: StateMap[]): IconState | null => {
-  const s = states.find(s => s.regexp?.test(addSlashes(item.state)));
+export const mapIcon = (item: HassEntity, states: StateMapRegexp[]): IconState | null => {
+  const s = findMatchingState(states, item);
   if (s === undefined || (s.icon === undefined && s.icon_color === undefined)) {
     return null;
   }

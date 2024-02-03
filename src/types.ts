@@ -27,12 +27,13 @@ export interface LogbookCardConfigBase extends LovelaceCardConfig {
   tap_action?: ActionConfig;
   hold_action?: ActionConfig;
   double_tap_action?: ActionConfig;
+  allow_copy?: boolean;
 }
 
 export interface EntityCardConfig {
+  attributes?: Array<AttributeConfig>;
   entity?: string;
   label?: string;
-  attributes?: Array<AttributeConfig>;
   state_map?: Array<StateMap>;
   hidden_state?: Array<string | HiddenConfig>;
   custom_logs?: boolean;
@@ -86,10 +87,28 @@ export interface DurationLabel {
 
 export interface StateMap {
   value?: string;
+  attributes?: Array<AttributeStateConfig>;
   label?: string;
   icon?: string;
   icon_color?: string;
-  regexp?: RegExp;
+}
+
+export interface AttributeStateConfig {
+  name: string;
+  value: string;
+}
+
+export interface AttributeStateConfigRegexp {
+  name: string;
+  value?: RegExp;
+}
+
+export interface StateMapRegexp {
+  value?: RegExp;
+  attributes?: Array<AttributeStateConfigRegexp>;
+  label?: string;
+  icon?: string;
+  icon_color?: string;
 }
 
 export interface CustomLogMapConfig {

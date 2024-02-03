@@ -1,5 +1,5 @@
 import { HassEntity } from 'home-assistant-js-websocket/dist/types';
-import { History, ExtendedHomeAssistant, StateMap, AttributeConfig, HiddenRegExp } from './types';
+import { History, ExtendedHomeAssistant, AttributeConfig, HiddenRegExp, StateMapRegexp } from './types';
 
 import {
   extractAttributes,
@@ -17,7 +17,7 @@ export interface EntityHistoryConfig {
   entity_name?: string;
   hidden_state_regexp: Array<HiddenRegExp>;
   minimal_duration?: number;
-  state_map?: StateMap[];
+  state_map?: StateMapRegexp[];
   show_history: boolean;
 }
 
