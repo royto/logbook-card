@@ -172,7 +172,8 @@ export abstract class LogbookBaseCard extends LitElement {
   private renderIcon(state: HassEntity, icon: string | undefined, color: string | undefined): TemplateResult {
     return html`
       <div class="item-icon">
-        <state-badge .stateObj=${state} .overrideIcon=${icon} .color=${color} .stateColor=${true}> </state-badge>
+        <state-badge .hass=${this.hass} .stateObj=${state} .overrideIcon=${icon} .color=${color} .stateColor=${true}>
+        </state-badge>
       </div>
     `;
   }
