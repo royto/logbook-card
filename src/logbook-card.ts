@@ -151,6 +151,7 @@ export class LogbookCard extends LogbookBaseCard {
         <h1
           aria-label=${`${this.config.title}`}
           class="card-header"
+          .entity=${`${this.config.entity}`}
           @action=${this._handleAction}
           .actionHandler=${actionHandler({
             hasHold: hasAction(this.config.hold_action),
