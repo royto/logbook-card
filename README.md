@@ -238,7 +238,7 @@ Introduce in 1.10.0
 | Name      |  Type                                                             |   Default   | Description        |
 | -------   | :---------------------------------------------------------------: | :---------: | ------------------ |
 | state     | string                                                            |             | state to hide.     |
-| attribute | [Attribute hidden config object](#attribute-hidden-config-object) |             | label for minute.  |
+| attribute | [Attribute hidden config object](#attribute-hidden-config-object) |             | attribute to match |
 
 #### Attribute hidden config object
 
