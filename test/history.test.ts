@@ -132,7 +132,7 @@ describe('map_state', () => {
     expect(history[1].icon).toMatchObject({ icon: 'hass:lightbulb', color: '#211081' });
   });
 
-  test.only('should apply based on attribute', () => {
+  test('should apply based on attribute', () => {
     const rawHistory = [
       {
         entity_id: 'light.escalier',
@@ -215,6 +215,27 @@ describe('attributes', () => {
         { name: 'Nom', value: 'Escalier' },
         { name: 'battery_level', value: 80 },
       ]);
+    });
+  });
+
+  test('should show attribute even if value is zero', () => {
+    const configuration = buildConfig({
+      attributes: [
+        {
+          value: 'battery_level',
+        },
+      ],
+    });
+
+    const historyWithBatteryLevelAtZero = rawHistory.map(h => ({
+      ...h,
+      attributes: { ...h.attributes, battery_level: 0 },
+    }));
+
+    const history = toHistory(historyWithBatteryLevelAtZero, hass, configuration);
+    history.forEach(h => {
+      expect(h.attributes).toHaveLength(1);
+      expect(h.attributes).toEqual([{ name: 'battery_level', value: 0 }]);
     });
   });
 

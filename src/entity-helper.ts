@@ -56,7 +56,7 @@ export const extractAttributes = (
   }
 
   return config?.attributes.reduce((p: Array<Attribute>, c: AttributeConfig): Array<Attribute> => {
-    if (item.attributes[c.value]) {
+    if (item.attributes[c.value] !== undefined) {
       const attribute = item.attributes[c.value];
       if (typeof attribute === 'object' && !Array.isArray(attribute)) {
         const keys = Object.keys(attribute);
