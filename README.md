@@ -336,6 +336,21 @@ Here is the list of style you can override:
 | .separator             | entry separator (needs !important) |
 | .date-separator        | date separator                     |
 
+## Usage in panel mode
+
+The card can be used in panel mode. Use this custom style to have the card in full page
+
+```yaml
+type: custom:logbook-card
+entity: light.living_room
+card_mod:
+  style: |
+    ha-card .card-content-scroll {
+      height: 100%;
+      max-height: 100%;
+    }
+```
+
 ## Example usage
 
 ### Hidden states
