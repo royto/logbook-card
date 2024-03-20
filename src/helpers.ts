@@ -34,5 +34,6 @@ export const wildcardToRegExp = (s: string | undefined): RegExp | undefined => {
         .map(x => regExpEscape(x))
         .join('.*') +
       '$',
+    's',
   );
 };

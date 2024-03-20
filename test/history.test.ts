@@ -4,7 +4,7 @@ import { wildcardToRegExp } from '../src/helpers';
 import { History } from '../src/types';
 import { expect, test, describe } from 'vitest';
 import { Context } from 'home-assistant-js-websocket';
-import { toHiddenRegex } from '../src/config-helpers';
+import { toHiddenRegex, toStateMapRegex } from '../src/config-helpers';
 
 const hass = {
   locale: {
@@ -247,6 +247,59 @@ describe('attributes', () => {
     const history = toHistory(rawHistory, hass, configuration);
     history.forEach(h => {
       expect(h.attributes).toHaveLength(0);
+    });
+  });
+
+  test('should return only attributes present', () => {
+    const configuration = buildConfig({
+      attributes: [
+        {
+          value: 'unknown',
+          label: 'Inconnu',
+        },
+        {
+          value: 'battery_level',
+        },
+      ],
+    });
+
+    const history = toHistory(rawHistory, hass, configuration);
+    history.forEach(h => {
+      expect(h.attributes).toHaveLength(1);
+      expect(h.attributes).toEqual([{ name: 'battery_level', value: 80 }]);
+    });
+  });
+
+  test('state with line breaks', () => {
+    const raw = [
+      {
+        entity_id: 'sensor.notify_last_redmi_all_attr',
+        state: 'state with multiple line\nline2\nline3',
+        attributes: {
+          Apps: 'com.google.android.apps.messaging',
+          icon: 'mdi:message',
+          friendly_name: 'Notify last redmi all attr',
+        },
+        last_changed: '2023-05-29T17:27:30.199538+00:00',
+        last_updated: '2023-05-29T17:27:30.199538+00:00',
+        context: context,
+      },
+    ];
+
+    const configuration = buildConfig({
+      state_map: [
+        {
+          value: wildcardToRegExp('*'),
+          icon: 'mid: home',
+          icon_color: '#094689',
+          attributes: [{ name: 'Apps', value: wildcardToRegExp('com.google.android.apps.messaging') }],
+        },
+      ],
+    });
+
+    const history = toHistory(raw, hass, configuration);
+    history.forEach(h => {
+      expect(h.icon.color).toBe('#094689');
     });
   });
 });
