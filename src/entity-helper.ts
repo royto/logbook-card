@@ -57,25 +57,41 @@ export const extractAttributes = (
 
   return config?.attributes.reduce((p: Array<Attribute>, c: AttributeConfig): Array<Attribute> => {
     if (item.attributes.hasOwnProperty(c.value)) {
-      const attribute = item.attributes[c.value];
-      if (typeof attribute === 'object' && !Array.isArray(attribute)) {
-        const keys = Object.keys(attribute);
+      const attributeValue = item.attributes[c.value];
+      if (attributeValue === null) {
+        const attributeName = hass.formatEntityAttributeName ? hass.formatEntityAttributeName(item, c.value) : c.value;
+        p.push({
+          name: c.label ? c.label : attributeName,
+          value: 'null',
+        });
+        return p;
+      }
+      if (typeof attributeValue === 'object' && !Array.isArray(attributeValue)) {
+        const keys = Object.keys(attributeValue);
         keys.forEach(key => {
           p.push({
             name: key,
-            value: formatAttributeValue(hass, attribute[key], undefined, config.date_format),
+            value: formatAttributeValue(hass, attributeValue[key], undefined, config.date_format),
           });
         });
-      } else if (Array.isArray(attribute)) {
+      } else if (Array.isArray(attributeValue)) {
         p.push({
           name: c.label ? c.label : c.value,
-          value: formatAttributeValue(hass, attribute.join(','), undefined, config.date_format),
+          value: formatAttributeValue(hass, attributeValue.join(','), undefined, config.date_format),
         });
       } else {
         const attributeName = hass.formatEntityAttributeName ? hass.formatEntityAttributeName(item, c.value) : c.value;
         p.push({
           name: c.label ? c.label : attributeName,
-          value: formatEntityAttributeValue(hass, item, c.value, attribute, c.type, config.date_format, c.link_label),
+          value: formatEntityAttributeValue(
+            hass,
+            item,
+            c.value,
+            attributeValue,
+            c.type,
+            config.date_format,
+            c.link_label,
+          ),
         });
       }
     }

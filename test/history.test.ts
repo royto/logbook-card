@@ -270,6 +270,43 @@ describe('attributes', () => {
     });
   });
 
+  test('attributes with null', () => {
+    const raw = [
+      {
+        entity_id: 'sensor.notify_last_redmi_all_attr',
+        state: 'state with multiple line\nline2\nline3',
+        attributes: {
+          Apps: null,
+          icon: 'mdi:message',
+          friendly_name: 'Notify last redmi all attr',
+        },
+        last_changed: '2023-05-29T17:27:30.199538+00:00',
+        last_updated: '2023-05-29T17:27:30.199538+00:00',
+        context: context,
+      },
+    ];
+
+    const configuration = buildConfig({
+      attributes: [
+        {
+          value: 'Apps',
+        },
+        {
+          value: 'icon',
+        },
+      ],
+    });
+
+    const history = toHistory(raw, hass, configuration);
+    history.forEach(h => {
+      expect(h.attributes.length).toBe(2);
+      expect(h.attributes).toEqual([
+        { name: 'Apps', value: 'null' },
+        { name: 'icon', value: 'mdi:message' },
+      ]);
+    });
+  });
+
   test('state with line breaks', () => {
     const raw = [
       {
