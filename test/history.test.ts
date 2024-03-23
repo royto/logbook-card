@@ -270,7 +270,7 @@ describe('attributes', () => {
     });
   });
 
-  test('attributes with null', () => {
+  test('attributes with null should be ignored', () => {
     const raw = [
       {
         entity_id: 'sensor.notify_last_redmi_all_attr',
@@ -299,11 +299,8 @@ describe('attributes', () => {
 
     const history = toHistory(raw, hass, configuration);
     history.forEach(h => {
-      expect(h.attributes.length).toBe(2);
-      expect(h.attributes).toEqual([
-        { name: 'Apps', value: 'null' },
-        { name: 'icon', value: 'mdi:message' },
-      ]);
+      expect(h.attributes.length).toBe(1);
+      expect(h.attributes).toEqual([{ name: 'icon', value: 'mdi:message' }]);
     });
   });
 

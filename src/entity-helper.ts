@@ -59,11 +59,6 @@ export const extractAttributes = (
     if (item.attributes.hasOwnProperty(c.value)) {
       const attributeValue = item.attributes[c.value];
       if (attributeValue === null) {
-        const attributeName = hass.formatEntityAttributeName ? hass.formatEntityAttributeName(item, c.value) : c.value;
-        p.push({
-          name: c.label ? c.label : attributeName,
-          value: 'null',
-        });
         return p;
       }
       if (typeof attributeValue === 'object' && !Array.isArray(attributeValue)) {
