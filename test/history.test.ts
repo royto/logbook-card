@@ -304,6 +304,43 @@ describe('attributes', () => {
     });
   });
 
+  test('ignore attributes with empty strings', () => {
+    const raw = [
+      {
+        entity_id: 'sensor.notify_last_redmi_all_attr',
+        state: 'state with multiple line\nline2\nline3',
+        attributes: {
+          Apps: '',
+          icon: 'mdi:android',
+          friendly_name: '  ',
+        },
+        last_changed: '2023-05-29T17:27:30.199538+00:00',
+        last_updated: '2023-05-29T17:27:30.199538+00:00',
+        context: context,
+      },
+    ];
+
+    const configuration = buildConfig({
+      attributes: [
+        {
+          value: 'Apps',
+        },
+        {
+          value: 'icon',
+        },
+        {
+          value: 'friendly_name',
+        },
+      ],
+    });
+
+    const history = toHistory(raw, hass, configuration);
+    history.forEach(h => {
+      expect(h.attributes.length).toBe(1);
+      expect(h.attributes).toEqual([{ name: 'icon', value: 'mdi:android' }]);
+    });
+  });
+
   test('state with line breaks', () => {
     const raw = [
       {

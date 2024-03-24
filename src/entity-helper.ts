@@ -58,7 +58,7 @@ export const extractAttributes = (
   return config?.attributes.reduce((p: Array<Attribute>, c: AttributeConfig): Array<Attribute> => {
     if (item.attributes.hasOwnProperty(c.value)) {
       const attributeValue = item.attributes[c.value];
-      if (attributeValue === null) {
+      if (attributeValue === null || (typeof attributeValue === 'string' && attributeValue.trim() === '')) {
         return p;
       }
       if (typeof attributeValue === 'object' && !Array.isArray(attributeValue)) {
