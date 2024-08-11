@@ -410,7 +410,7 @@ attributes:
   - value: next_rising
     label: Next Rising
     type: date
-date_format: dd/MM/YYYY hh:mm
+date_format: DD/MM/YYYY HH:mm
 ```
 
 ![Attributes and custom date format](images/attributes.png)
