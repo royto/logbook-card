@@ -261,7 +261,9 @@ export abstract class LogbookBaseCard extends LitElement {
         user-select: text;
         background-color: red;
       }
-
+      ha-card {
+        overflow: clip;
+      }
       .card-content-scroll {
         max-height: 345px;
         overflow-y: auto;
