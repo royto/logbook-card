@@ -292,6 +292,9 @@ export abstract class LogbookBaseCard extends LitElement {
       state-badge {
         line-height: 1.5rem;
       }
+      state-badge[icon] {
+        height: fit-content;
+      }
       .state {
         white-space: pre-wrap;
       }
