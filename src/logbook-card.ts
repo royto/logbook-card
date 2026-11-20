@@ -32,6 +32,8 @@ export class LogbookCard extends LogbookBaseCard {
   public static getStubConfig(_hass: ExtendedHomeAssistant, entities: Array<any>): Record<string, unknown> {
     return {
       entity: entities[0],
+      hours_to_show: 12,
+      max_items: 10,
     };
   }
 
